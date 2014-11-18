@@ -26,7 +26,8 @@
         android:layout_alignParentLeft="true"
 
         android:layout_toLeftOf="@+id/searchButton"
-        android:layout_toStartOf="@+id/searchButton" />
+
+        />
 
 
 
@@ -35,7 +36,8 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/searchButton"
         android:layout_toLeftOf="@+id/searchButton"
-        android:layout_toStartOf="@+id/searchButton">
+
+        >
 
 
         <RadioButton
@@ -43,8 +45,6 @@
             android:layout_height="wrap_content"
             android:text="Artist"
             android:id="@+id/artistButton"
-            android:layout_toRightOf="@+id/albumButton"
-            android:layout_toEndOf="@+id/albumButton"
             android:onClick="onRadioButtonClicked"
             android:checked="true" />
 
@@ -53,9 +53,7 @@
             android:layout_height="wrap_content"
             android:text="Album"
             android:id="@+id/albumButton"
-            android:layout_above="@+id/awsomeB"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+
             android:onClick="onRadioButtonClicked"
             android:checked="false" />
 
@@ -64,10 +62,7 @@
             android:layout_height="wrap_content"
             android:text="Track"
             android:id="@+id/trackButton"
-            android:layout_toEndOf="@+id/artistButton"
             android:checked="false"
-            android:layout_alignTop="@+id/artistButton"
-            android:layout_toRightOf="@+id/artistButton"
             android:onClick="onRadioButtonClicked"
 
             />
@@ -78,9 +73,7 @@
             android:layout_height="wrap_content"
             android:text="Playlist"
             android:id="@+id/playlistButton"
-            android:layout_toEndOf="@+id/trackButton"
             android:checked="false"
-            android:layout_toRightOf="@+id/trackButton"
             android:onClick="onRadioButtonClicked"/>
 
 
