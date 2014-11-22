@@ -151,15 +151,21 @@ public class GetSongs extends Activity {
             try {
 
                 item = json.getJSONObject(itemKind);
+                if(itemKind == "track"){
+                   JSONArray images = json.getJSONArray("images");
+                }
 
 
                 JSONArray items = item.getJSONArray("items");
+
                 for (int i = 0; i < items.length(); i++) {
-                    JSONObject c = items.getJSONObject(i);
+                    JSONObject identifier = items.getJSONObject(i);
 
 
-                    String id = c.getString("id");
-                    String name = c.getString("name");
+
+                    String id = identifier.getString("id");
+                    String name = identifier.getString("name");
+                    String url = images.getString("url");
                     Singleton.getInstance().playlist.addSong(id, name);
 
                 }

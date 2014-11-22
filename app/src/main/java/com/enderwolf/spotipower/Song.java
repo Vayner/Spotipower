@@ -7,14 +7,19 @@ package com.enderwolf.spotipower;
  */
 public class Song {
 
+
     private String id;
     private String name;
+    String urlImage;
 
     public Song(){};
 
-    public Song(String id, String name){
+
+
+    public Song(String id, String name, String URL){
         this.id = id;
         this.name = name;
+        this.urlImage = URL;
     }
 
     public String getId() {
@@ -32,6 +37,14 @@ public class Song {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getUrlImage() { return urlImage; }
+
+    public void setUrlImage(String urlImage) { this.urlImage = urlImage; }
+
+
 }
+
+
 
 
