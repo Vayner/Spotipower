@@ -18,16 +18,16 @@ public class Playlist {
 
     public Playlist(){}
 
-    public void addSong(String id, String name){
+    public void addSong(String id, String name, String URL){
 
-        Songs.add(new Song(id, name));
+        Songs.add(new Song(id, name, URL));
         Log.d("debugg", name);
 
     }
 
-    public void deleteSong(String id, String name){
+    public void deleteSong(String id, String name, String URL){
 
-        Song tempSong = new Song(id, name);
+        Song tempSong = new Song(id, name, URL);
         for (int i = 0; i < Songs.size(); i++){
             if(tempSong.equals(Songs.get(i))){
                 Songs.remove(i);

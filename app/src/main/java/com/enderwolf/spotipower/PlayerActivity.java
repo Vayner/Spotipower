@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -16,6 +17,10 @@ import com.spotify.sdk.android.playback.ConnectionStateCallback;
 import com.spotify.sdk.android.playback.Player;
 import com.spotify.sdk.android.playback.PlayerNotificationCallback;
 import com.spotify.sdk.android.playback.PlayerState;
+import com.spotify.sdk.android.playback.PlayerStateCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlayerActivity extends Activity implements
@@ -29,11 +34,22 @@ public class PlayerActivity extends Activity implements
     // Music Player
     private Player mPlayer;
     private PlayerState mPlayerState;
+    private List<String> mPlayList;
+    private int mPlayListPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+        mPlayList = new ArrayList<String>();
+
+        mPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
+        mPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
+        mPlayList.add("spotify:track:5eS6pTvDNOvh2kyxeZtK3r");
+        mPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
+        mPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
+        mPlayListPos = 2;
 
         //authenticate user
         //TODO: scopes
@@ -42,7 +58,16 @@ public class PlayerActivity extends Activity implements
     }
 
     public void playPause(View view) {
-        mPlayer.pause();
+        mPlayer.getPlayerState(new PlayerStateCallback() {
+            @Override
+            public void onPlayerState(PlayerState playerState) {
+                if (playerState.playing) {
+                    mPlayer.pause();
+                } else {
+                    mPlayer.resume();
+                }
+            }
+        });
     }
 
 
@@ -80,7 +105,6 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onLoggedIn() {
-
     }
 
     @Override
@@ -119,7 +143,7 @@ public class PlayerActivity extends Activity implements
                 public void onInitialized() {
                     mPlayer.addConnectionStateCallback(PlayerActivity.this);
                     mPlayer.addPlayerNotificationCallback(PlayerActivity.this);
-                    //mPlayer.play("spotify:track:1mXuMM6zjPgjL4asbBsgnt");
+                    mPlayer.play(mPlayList, mPlayListPos);
                 }
 
                 @Override

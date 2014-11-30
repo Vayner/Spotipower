@@ -96,22 +96,12 @@ public class GetSongs extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
-
-
     JSONParser jsonParser = new JSONParser();
     private ProgressDialog pDialog;
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_TRACKS = "tracks";
 
     JSONArray tracks = null;
-
-
-
-
 
     class GetSongInfoFromSpotify extends AsyncTask<String, String, String> {
 
@@ -165,8 +155,8 @@ public class GetSongs extends Activity {
 
                     String id = identifier.getString("id");
                     String name = identifier.getString("name");
-                    String url = images.getString("url");
-                    Singleton.getInstance().playlist.addSong(id, name);
+                    String url = identifier.getString("url");
+                    Singleton.getInstance().playlist.addSong(id, name, url);
 
                 }
 
@@ -188,10 +178,5 @@ public class GetSongs extends Activity {
 
         }
     }
-
-
-
-
-
 }
 
