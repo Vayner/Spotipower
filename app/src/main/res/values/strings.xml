@@ -9,6 +9,11 @@
     <string name="playpause">Play/Pause</string>
     <string name="back">Back</string>
     <string name="next">Next</string>
+    <string name="search">Search</string>
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="track">Track</string>
+    <string name="playlist">Playlist</string>
 
 
 </resources>
