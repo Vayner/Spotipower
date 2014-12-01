@@ -5,14 +5,14 @@ package com.enderwolf.spotipower.ui;
  */
 public interface IGuiPlayback {
 
-    void onPlay();
-    void onPause();
-    void onStop();
-    void onNext();
-    void onPrevious();
-    void onForward();
-    void onBackward();
+    void onPlayPressed();
+    void onPausePressed();
+    void onStopPressed();
+    void onNextPressed();
+    void onPreviousPressed();
+    void onForwardPressed();
+    void onBackwardPressed();
 
-    void onLoop(boolean state);
-    void onRandom(boolean state);
+    void onLoopPressed(boolean state);
+    void onRandomPressed(boolean state);
 }

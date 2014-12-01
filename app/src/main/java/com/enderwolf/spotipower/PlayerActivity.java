@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.enderwolf.spotipower.ui.IGuiPlayback;
+import com.enderwolf.spotipower.ui.MiniPlayer;
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
@@ -24,7 +27,7 @@ import java.util.List;
 
 
 public class PlayerActivity extends Activity implements
-        PlayerNotificationCallback, ConnectionStateCallback {
+        PlayerNotificationCallback, ConnectionStateCallback, IGuiPlayback {
 
     // TODO: find a way to transfer this outside of git
     //private final static String CLIENT_ID = getString(R.string.spotify_client_id);
@@ -36,6 +39,8 @@ public class PlayerActivity extends Activity implements
     private PlayerState mPlayerState;
     private List<String> mPlayList;
     private int mPlayListPos;
+
+    private MiniPlayer miniPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,8 @@ public class PlayerActivity extends Activity implements
         mPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
         mPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
         mPlayListPos = 2;
+
+        miniPlayer = MiniPlayer.newInstance();
 
         //authenticate user
         //TODO: scopes
@@ -143,7 +150,9 @@ public class PlayerActivity extends Activity implements
                 public void onInitialized() {
                     mPlayer.addConnectionStateCallback(PlayerActivity.this);
                     mPlayer.addPlayerNotificationCallback(PlayerActivity.this);
-                    mPlayer.play(mPlayList, mPlayListPos);
+                    mPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
+
+                    getFragmentManager().beginTransaction().replace(R.id.myMiniPlayer, miniPlayer).commit();
                 }
 
                 @Override
@@ -158,5 +167,59 @@ public class PlayerActivity extends Activity implements
     protected void onDestroy() {
         Spotify.destroyPlayer(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPlayPressed() {
+        mPlayer.getPlayerState(new PlayerStateCallback() {
+            @Override
+            public void onPlayerState(PlayerState playerState) {
+                if(!playerState.playing && playerState.trackUri == null) {
+                    mPlayer.play(mPlayList, mPlayListPos);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onPausePressed() {
+        mPlayer.pause();
+    }
+
+    @Override
+    public void onStopPressed() {
+        mPlayer.pause();
+        mPlayer.seekToPosition(0);
+    }
+
+    @Override
+    public void onNextPressed() {
+
+    }
+
+    @Override
+    public void onPreviousPressed() {
+
+    }
+
+    @Override
+    public void onForwardPressed() {
+
+    }
+
+    @Override
+    public void onBackwardPressed() {
+
+    }
+
+    @Override
+    public void onLoopPressed(boolean state) {
+
+    }
+
+    @Override
+    public void onRandomPressed(boolean state) {
+
     }
 }

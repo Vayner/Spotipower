@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageButton;
 import com.enderwolf.spotipower.R;
 
  /**
@@ -60,24 +62,46 @@ public class MiniPlayer extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mini_player, container, false);
-    }
+        View root = inflater.inflate(R.layout.fragment_mini_player, container, false);
 
-    public void onPlay(View view) {
-        if (mListener == null) {
-            return;
-        }
+        ImageButton next = (ImageButton) root.findViewById(R.id.next);
+        ImageButton play = (ImageButton) root.findViewById(R.id.play);
+        ImageButton prev = (ImageButton) root.findViewById(R.id.prev);
 
-        this.mListener.onPlay();
-    }
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener == null) {
+                    return;
+                }
 
-    public void onPause(View view) {
-        if (mListener == null) {
-            return;
-        }
+                mListener.onNextPressed();
+            }
+        });
 
-    this.mListener.onPause();
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener == null) {
+                    return;
+                }
+
+                mListener.onPlayPressed();
+            }
+        });
+
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener == null) {
+                    return;
+                }
+
+                mListener.onPreviousPressed();
+            }
+        });
+
+        return root;
     }
 
     @Override
