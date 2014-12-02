@@ -12,7 +12,7 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/prev"
+            android:id="@+id/mini_prev"
             android:src="@drawable/ic_skip_previous_white_24dp"
             android:layout_weight="1"
             />
@@ -20,7 +20,7 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/play"
+            android:id="@+id/mini_play"
             android:src="@drawable/ic_play_arrow_white_24dp"
             android:layout_weight="3"
             />
@@ -28,7 +28,7 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/next"
+            android:id="@+id/mini_next"
             android:src="@drawable/ic_skip_next_white_24dp"
             android:layout_weight="1"
             />
@@ -39,7 +39,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar2"
+        android:id="@+id/mini_progress"
         android:layout_gravity="center_horizontal"
         android:progress="27"/>
 

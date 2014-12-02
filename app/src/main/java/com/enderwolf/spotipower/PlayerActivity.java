@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
+import com.enderwolf.spotipower.event.PlayBackProgressEvent;
 import com.enderwolf.spotipower.ui.IGuiPlayback;
 import com.enderwolf.spotipower.ui.MiniPlayer;
 import com.spotify.sdk.android.Spotify;
@@ -21,9 +19,12 @@ import com.spotify.sdk.android.playback.Player;
 import com.spotify.sdk.android.playback.PlayerNotificationCallback;
 import com.spotify.sdk.android.playback.PlayerState;
 import com.spotify.sdk.android.playback.PlayerStateCallback;
+import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class PlayerActivity extends Activity implements
@@ -35,46 +36,35 @@ public class PlayerActivity extends Activity implements
     private static final String REDIRECT_URI = "spotipower-login://callback";
 
     // Music Player
-    private Player mPlayer;
-    private PlayerState mPlayerState;
-    private List<String> mPlayList;
-    private int mPlayListPos;
+    private Player musicPlayer;
+    private PlayerState musicPlayerState;
+    private List<String> musicPlayList;
+    private int musicPlayListPos;
 
     private MiniPlayer miniPlayer;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        mPlayList = new ArrayList<String>();
+        musicPlayList = new ArrayList<String>();
 
-        mPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
-        mPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
-        mPlayList.add("spotify:track:5eS6pTvDNOvh2kyxeZtK3r");
-        mPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
-        mPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
-        mPlayListPos = 2;
+        musicPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
+        musicPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
+        musicPlayList.add("spotify:track:5eS6pTvDNOvh2kyxeZtK3r");
+        musicPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
+        musicPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
+        musicPlayListPos = 2;
 
         miniPlayer = MiniPlayer.newInstance();
+        timer = new Timer();
 
         //authenticate user
         //TODO: scopes
         SpotifyAuthentication.openAuthWindow(getString(R.string.spotify_client_id), "token", REDIRECT_URI,
                         new String[]{"user-read-private", "streaming"}, null, this);
-    }
-
-    public void playPause(View view) {
-        mPlayer.getPlayerState(new PlayerStateCallback() {
-            @Override
-            public void onPlayerState(PlayerState playerState) {
-                if (playerState.playing) {
-                    mPlayer.pause();
-                } else {
-                    mPlayer.resume();
-                }
-            }
-        });
     }
 
 
@@ -102,7 +92,7 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-        mPlayerState = playerState;
+        musicPlayerState = playerState;
     }
 
     @Override
@@ -145,14 +135,15 @@ public class PlayerActivity extends Activity implements
         if (uri != null) {
             AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
             Spotify spotify = new Spotify(response.getAccessToken());
-            mPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
+            musicPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
                 @Override
                 public void onInitialized() {
-                    mPlayer.addConnectionStateCallback(PlayerActivity.this);
-                    mPlayer.addPlayerNotificationCallback(PlayerActivity.this);
-                    mPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
+                    musicPlayer.addConnectionStateCallback(PlayerActivity.this);
+                    musicPlayer.addPlayerNotificationCallback(PlayerActivity.this);
+                    musicPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
 
                     getFragmentManager().beginTransaction().replace(R.id.myMiniPlayer, miniPlayer).commit();
+                    timer.schedule(new ProgressUpdate(), 1000, 1000);
                 }
 
                 @Override
@@ -171,11 +162,11 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onPlayPressed() {
-        mPlayer.getPlayerState(new PlayerStateCallback() {
+        musicPlayer.getPlayerState(new PlayerStateCallback() {
             @Override
             public void onPlayerState(PlayerState playerState) {
-                if(!playerState.playing && playerState.trackUri == null) {
-                    mPlayer.play(mPlayList, mPlayListPos);
+                if (!playerState.playing && playerState.trackUri == null) {
+                    musicPlayer.play(musicPlayList, musicPlayListPos);
                 }
             }
         });
@@ -184,13 +175,13 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onPausePressed() {
-        mPlayer.pause();
+        musicPlayer.pause();
     }
 
     @Override
     public void onStopPressed() {
-        mPlayer.pause();
-        mPlayer.seekToPosition(0);
+        musicPlayer.pause();
+        musicPlayer.seekToPosition(0);
     }
 
     @Override
@@ -221,5 +212,18 @@ public class PlayerActivity extends Activity implements
     @Override
     public void onRandomPressed(boolean state) {
 
+    }
+
+    class ProgressUpdate extends TimerTask {
+        @Override
+        public void run() {
+            musicPlayer.getPlayerState(new PlayerStateCallback() {
+                @Override
+                public void onPlayerState(PlayerState playerState) {
+                    int progress = (int) (((float) playerState.positionInMs / (float) playerState.durationInMs) * 100.f);
+                    EventBus.getDefault().post(new PlayBackProgressEvent(progress));
+                }
+            });
+        }
     }
 }
