@@ -3,7 +3,7 @@ package me.sbstensby.spotipowerhost;
 import android.util.Log;
 
 /**
- * Package: com.enderwolf.spotipower
+ * Package: me.sbstensby.spotipowerhost
  * Project: Spotipower
  * Filename: HostServer.java
  * Created by stensby on 02/12/14.

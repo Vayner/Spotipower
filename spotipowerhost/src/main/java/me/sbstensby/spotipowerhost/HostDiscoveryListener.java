@@ -11,11 +11,11 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
- * Package: com.enderwolf.spotipower
+ * Package: me.sbstensby.spotipowerhost
  * Project: Spotipower
  * Filename: HostDiscoveryListener.java
  * Created by stensby on 01/12/14.
- * Listens on port 36251 for the package "SPOTIPOWER_HOST_DISCOVERY".
+ * Listens on port 36251 for the UDP package "SPOTIPOWER_HOST_DISCOVERY".
  * Returns ("HOST_HERE:" + hostname) on 36252.
  * As only one can run at once, this class is a singleton.
  * Implements Runnable, as it is designed to run asynchronously.
@@ -69,7 +69,7 @@ public class HostDiscoveryListener implements Runnable {
                     Log.i("HostDiscoveryListener", "Pinged by " + packet.getAddress().toString());
                     Socket socketSender = new Socket(packet.getAddress(), 36252);
                     BufferedWriter bufferedWriter = new BufferedWriter (new OutputStreamWriter(socketSender.getOutputStream()));
-                    bufferedWriter.write("HOST_HERE:" + HostServer.getInstance().getHostname());
+                    bufferedWriter.write("SPOTIPOWER_HOST_HERE:" + HostServer.getInstance().getHostname());
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
                     socketSender.close();

@@ -1,1 +1,1 @@
-include ':app', ':hosttest', ':spotipowerhost'
+include ':app', ':hosttest', ':spotipowerhost', ':clienttest'
