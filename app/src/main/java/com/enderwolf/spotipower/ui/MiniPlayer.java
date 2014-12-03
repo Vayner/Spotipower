@@ -10,20 +10,32 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.event.PlayBackProgressEvent;
+import com.enderwolf.spotipower.event.MediaButtonEvent;
+import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
 import de.greenrobot.event.EventBus;
 
-/**
- * Activities that contain this fragment must implement the
- * {@link IGuiPlayback} interface
- * to handle interaction events.
- * Use the {@link MiniPlayer#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class MiniPlayer extends Fragment {
-    private IGuiPlayback listener;
     private ProgressBar progressBar;
+    private ImageButton playPauseButton;
+
+    private DisplayMode playPauseToggle = DisplayMode.PLAY;
+
+    private enum DisplayMode {
+        PLAY(R.drawable.ic_play_arrow_white_24dp, MediaButtonEvent.ButtonType.PLAY),
+        PAUSE(R.drawable.ic_pause_white_24dp, MediaButtonEvent.ButtonType.PAUSE);
+
+        DisplayMode (int imageId, MediaButtonEvent.ButtonType type) {
+            this.imageId = imageId;
+            this.type = type;
+        }
+
+        public final int imageId;
+        public final MediaButtonEvent.ButtonType type;
+
+        public static DisplayMode getOpposite (DisplayMode mode) {
+            return (mode == PLAY) ? PAUSE : PLAY;
+        }
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -58,39 +70,28 @@ public class MiniPlayer extends Fragment {
         View root = inflater.inflate(R.layout.fragment_mini_player, container, false);
 
         ImageButton next = (ImageButton) root.findViewById(R.id.mini_next);
-        ImageButton play = (ImageButton) root.findViewById(R.id.mini_play);
+        playPauseButton = (ImageButton) root.findViewById(R.id.mini_play);
         ImageButton prev = (ImageButton) root.findViewById(R.id.mini_prev);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener == null) {
-                    return;
-                }
-
-                listener.onNextPressed();
+                EventBus.getDefault().post(new MediaButtonEvent(MediaButtonEvent.ButtonType.NEXT, true));
             }
         });
 
-        play.setOnClickListener(new View.OnClickListener() {
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener == null) {
-                    return;
-                }
-
-                listener.onPlayPressed();
+                EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
+                setDisplayMode(DisplayMode.getOpposite(playPauseToggle));
             }
         });
 
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener == null) {
-                    return;
-                }
-
-                listener.onPreviousPressed();
+                EventBus.getDefault().post(new MediaButtonEvent(MediaButtonEvent.ButtonType.PREVIOUS, true));
             }
         });
 
@@ -99,27 +100,29 @@ public class MiniPlayer extends Fragment {
         return root;
     }
 
-    public void onEvent(PlayBackProgressEvent event) {
-        progressBar.setProgress(event.progress);
+    public void onEvent(PlayBackUpdateEvent event) {
+        int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
+        progressBar.setProgress(progress);
+    }
+
+    private void setDisplayMode(DisplayMode mode) {
+        if(this.playPauseToggle == mode) {
+            return;
+        }
+
+        this.playPauseToggle = mode;
+        this.playPauseButton.setImageResource(mode.imageId);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            listener = (IGuiPlayback) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
-       EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 }

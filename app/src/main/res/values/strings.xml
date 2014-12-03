@@ -8,6 +8,7 @@
     <string name="title_activity_player">PlayerActivity</string>
     <string name="playpause">Play/Pause</string>
     <string name="back">Back</string>
+    <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="search">Search</string>
     <string name="artist">Artist</string>
