@@ -22,7 +22,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
+
             <!-- An intent filter that will receive the response from the authentication service -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -38,6 +38,10 @@
         <activity
             android:name="com.enderwolf.spotipower.GetSongs"
             android:label="@string/title_activity_get_songs" >
+        </activity>
+        <activity
+            android:name="com.enderwolf.spotipower.NavDrawer"
+            android:label="@string/title_activity_nav_drawer" >
         </activity>
     </application>
 
