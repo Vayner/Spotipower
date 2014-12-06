@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
@@ -129,6 +130,15 @@ public class PlayerActivity extends Activity implements
     public void onConnectionMessage(String s) {
 
     }
+
+
+    public void onSearchForSongs(View view) {
+
+        Intent myIntent = new Intent(PlayerActivity.this, ListOfSearchedSongs.class);
+        PlayerActivity.this.startActivity(myIntent);
+        // Do something in response to button
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

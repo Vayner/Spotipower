@@ -50,6 +50,14 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/progressBar"
         android:id="@+id/myMiniPlayer">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="get songs"
+            android:id="@+id/getSongs"
+            android:layout_gravity="left|center_vertical"
+            android:onClick="onSearchForSongs" />
     </FrameLayout>
 
 </RelativeLayout>

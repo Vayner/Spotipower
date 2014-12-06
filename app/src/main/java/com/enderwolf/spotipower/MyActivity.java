@@ -79,11 +79,11 @@ public class MyActivity extends Activity {
         Singleton.getInstance().playlist.deleteSongs();
 
         Log.d("search ", search);
-        Intent intent = new Intent (this, GetSongs.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putString("searchQuery", search);
-        mBundle.putString("kindOfSearch", kindOfSearch);
-        intent.putExtras(mBundle);
+        Intent intent = new Intent (this, ListOfSearchedSongs.class);
+        //Bundle mBundle = new Bundle();
+        //mBundle.putString("searchQuery", search);
+       // mBundle.putString("kindOfSearch", kindOfSearch);
+        //intent.putExtras(mBundle);
 
         startActivity(intent);
     }
