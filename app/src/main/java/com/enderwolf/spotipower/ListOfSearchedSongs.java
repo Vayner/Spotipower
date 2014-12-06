@@ -11,16 +11,32 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,28 +50,67 @@ public class ListOfSearchedSongs extends Activity {
 
     private static final String url = "https://api.spotify.com/v1/search?query=flame&offset=0&limit=20&type=track";
     private ProgressDialog pDialog;
+    private AlertDialog.Builder DialogRequestSong;
+
+    // -- List --
     private List<Song> Songs = new ArrayList<Song>();
     private ListView listView;
     private CustomeSongList adapter;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_searched_songs);
 
+        DialogRequestSong = new AlertDialog.Builder(this);  // User dialog to request a song into playlist
+
         listView = (ListView) findViewById(R.id.list);
         adapter = new CustomeSongList(this, Songs);
         listView.setAdapter(adapter);
+
+ ;
+
+        registerForContextMenu(listView);
+
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id){
-                System.out.println("Working " + Songs.get(position).getName());
 
+               /* Toast.makeText(getApplicationContext(), "You clicked " + Songs.get(position).getName(),
+                        Toast.LENGTH_LONG).show(); */
+
+
+                DialogRequestSong.setMessage(Songs.get(position).getName())
+                .setPositiveButton("Request song", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //TODO Send song to other android system
+                        // Send Song = Songs.get(position);
+                        // Song -> to android phone
+                    }
+                })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                DialogRequestSong.show();
 
             }
+
         });
+
+
+
+
+
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
@@ -116,14 +171,6 @@ public class ListOfSearchedSongs extends Activity {
                                 {
                                     System.out.println(s);
                                 }
-
-
-
-
-
-
-
-                                //Log.d("Response 1", name + " image:  " + ThumbnailUrl);
                             }
                         }
                         catch (JSONException e) {
@@ -145,6 +192,7 @@ public class ListOfSearchedSongs extends Activity {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getRequest);
     }
+
 
 
     @Override
