@@ -9,35 +9,19 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -68,13 +52,13 @@ public class ListOfSearchedSongs extends Activity {
 
         DialogRequestSong = new AlertDialog.Builder(this);  // User dialog to request a song into playlist
 
-        listView = (ListView) findViewById(R.id.list);
+        listView = (ListView) findViewById(R.id.listSearched);
         adapter = new CustomeSongList(this, Songs);
         listView.setAdapter(adapter);
 
- ;
+        Songs.clear();
 
-        registerForContextMenu(listView);
+
 
 
 
@@ -121,6 +105,24 @@ public class ListOfSearchedSongs extends Activity {
         getActionBar().setBackgroundDrawable(
                 new ColorDrawable(Color.parseColor("#1b1b1b")));
 
+        /**
+         *
+         * Request a single JSONObject from a webresource via volley library.
+         *
+         * first JSONObject which is returned is with the tag "tracks"
+         *
+         * JSONObject[tracks] ->
+         *             JSONArray[items]->
+         *                      JSONObject[JSONArray[index]]->
+         *                                          JSONObject[album] -> JSONObject[images] (medium quality) (want to get a sharp image) But not download to must bitrate.
+         *                                          JSONArray[artists]-> JSONObject[artist] (artists.lenght())
+         *
+         *
+         *
+         *
+         *
+         */
+
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -133,12 +135,12 @@ public class ListOfSearchedSongs extends Activity {
                             JSONArray items = type.getJSONArray("items");
                             for (int i = 0; i < items.length(); i++) {
                                 JSONObject typeItem = items.getJSONObject(i);           // Every track
-                                JSONObject album = typeItem.getJSONObject("album");     //get the album the song is in
-                                JSONArray artists = typeItem.getJSONArray("artists");    //get all artist who is featured in the song
-                                String albumName = album.getString("name");                  // get album name
+                                JSONObject album = typeItem.getJSONObject("album");     // get the album the song is in
+                                JSONArray artists = typeItem.getJSONArray("artists");   // get all artist who is featured in the song
+                                String albumName = album.getString("name");             // get album name
                                 JSONArray images = album.getJSONArray("images");        // get array of different image quality
-                                JSONObject thumbnailUrl = images.getJSONObject(1);      //get medium quality [0 = bad] [ 1 = medium] [2 = good]
-                                String imageURL = thumbnailUrl.getString("url");    // get url to the image used in the album
+                                JSONObject thumbnailUrl = images.getJSONObject(1);      // get medium quality [0 = bad] [ 1 = medium] [2 = good]
+                                String imageURL = thumbnailUrl.getString("url");        // get url to the image used in the album
 
                                 ArrayList<String> artistList = new ArrayList<String>();
 
@@ -151,31 +153,35 @@ public class ListOfSearchedSongs extends Activity {
                                 }
 
 
-
+                                // Adding song to the listSearched -- Songs --
                                 Song song = new Song();
-                                song.setId(typeItem.getString("id"));
-                                song.setName(typeItem.getString("name"));
+                                song.setId(typeItem.getString("id"));  // Getting id from the JSONObject
+                                song.setName(typeItem.getString("name")); // Getting name from the JSONObject
                                 song.setAlbumName(albumName);
                                 song.setThumbnailUrl(imageURL);
                                 song.setArtist(artistList);
                                 Songs.add(song);
 
 
+                                // -- TEST CASE --
                                 System.out.println("id: " + String.valueOf(song.getId())+ "\n");
                                 System.out.println("name: " + song.getName() + "\n");
                                 System.out.println("album name: " + song.getAlbumName() + "\n");
                                 System.out.println("image " + song.getThumbnailUrl() + "\n");
 
-                                ArrayList<String> n1artistList = song.getArtist();
-                                for(String s : n1artistList)
+                                ArrayList<String> TestArtistList = song.getArtist();
+                                for(String s : TestArtistList)
                                 {
                                     System.out.println(s);
                                 }
+
+                                // -- REMOVING WHEN PUBLISHED --
                             }
                         }
                         catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        // Makes the custome listSearched updating itself with the new songs added to songs listSearched.
                         adapter.notifyDataSetChanged();
                     }
 

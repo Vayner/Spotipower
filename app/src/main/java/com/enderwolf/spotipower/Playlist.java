@@ -25,6 +25,19 @@ public class Playlist {
 
     }
 
+    public void addSong(Song song)
+    {
+        Songs.add(song);
+    }
+
+    public List<Song> getSongs() {
+        return Songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        Songs = songs;
+    }
+
     public void deleteSong(String id, String name, String URL){
 
         Song tempSong = new Song(id, name, URL);

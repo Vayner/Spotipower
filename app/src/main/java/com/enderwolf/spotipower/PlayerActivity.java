@@ -134,7 +134,7 @@ public class PlayerActivity extends Activity implements
 
     public void onSearchForSongs(View view) {
 
-        Intent myIntent = new Intent(PlayerActivity.this, ListOfSearchedSongs.class);
+        Intent myIntent = new Intent(PlayerActivity.this, ListOfQuedSongs.class);
         PlayerActivity.this.startActivity(myIntent);
         // Do something in response to button
     }
