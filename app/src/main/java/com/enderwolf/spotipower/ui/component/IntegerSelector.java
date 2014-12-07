@@ -3,34 +3,22 @@ package com.enderwolf.spotipower.ui.component;
 import android.content.Context;
 import android.text.InputType;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 /**
  * Created by !Tulingen on 07.12.2014.
  */
-public class BooleanToggle extends LinearLayout {
-    
-    private ToggleButton button;
+public class IntegerSelector extends LinearLayout {
+    private EditText numberField;
     private TextView text;
 
-    public BooleanToggle(Context context, String name, boolean value) {
+    public IntegerSelector(Context context, String name, Integer value) {
         super(context);
 
         this.setOrientation(LinearLayout.HORIZONTAL);
-
-        this.button = new ToggleButton(context);
-        this.button.setChecked(value);
-
-        LayoutParams paramsButton = generateDefaultLayoutParams();
-        paramsButton.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        paramsButton.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-        this.addView(this.button, paramsButton);
 
         this.text = new TextView(context);
         this.text.setInputType(InputType.TYPE_NULL);
@@ -41,10 +29,20 @@ public class BooleanToggle extends LinearLayout {
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         this.addView(this.text, paramsText);
+
+        this.numberField = new EditText(context);
+        this.numberField.setInputType(InputType.TYPE_CLASS_NUMBER);
+        this.numberField.setText(String.valueOf(value));
+
+        LayoutParams paramsNumberField = generateDefaultLayoutParams();
+        paramsNumberField.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        this.addView(this.numberField, paramsText);
     }
 
-    public ToggleButton getButton() {
-        return this.button;
+    public EditText getNumberField() {
+        return this.numberField;
     }
 
     public TextView getText() {
