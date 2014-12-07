@@ -15,6 +15,7 @@
             android:id="@+id/mini_prev"
             android:src="@drawable/ic_skip_previous_white_24dp"
             android:layout_weight="1"
+            android:contentDescription="@string/previous"
             />
 
         <ImageButton
@@ -23,7 +24,7 @@
             android:id="@+id/mini_play"
             android:src="@drawable/ic_play_arrow_white_24dp"
             android:layout_weight="3"
-            />
+            android:contentDescription="@string/playpause"/>
 
         <ImageButton
             android:layout_width="0dp"
@@ -31,7 +32,7 @@
             android:id="@+id/mini_next"
             android:src="@drawable/ic_skip_next_white_24dp"
             android:layout_weight="1"
-            />
+            android:contentDescription="@string/next"/>
 
     </LinearLayout>
 

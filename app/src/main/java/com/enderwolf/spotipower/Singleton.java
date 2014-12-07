@@ -8,26 +8,24 @@ public class Singleton {
 
     public static Singleton mInstance = null;
 
-    public Playlist playlist = new Playlist();
+    public Playlist playlist = new Playlist("Queue");
 
-    public Playlist getPlaylist(){
-
-        return playlist;
+    public Playlist getPlaylist() {
+        return this.playlist;
     }
 
-    public void setPlaylist(Playlist _playlist){
-
-        playlist = _playlist;
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
     }
 
     private Singleton() {
     }
 
-    public static Singleton getInstance(){
-        if(mInstance == null)
-        {
+    public static Singleton getInstance() {
+        if(mInstance == null) {
             mInstance = new Singleton();
         }
+
         return mInstance;
     }
 

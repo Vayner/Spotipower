@@ -13,11 +13,9 @@ import android.widget.RadioButton;
 
 public class MyActivity extends Activity {
 
-
-
-    String search;
-    String kindOfSearch = "artist";
-    EditText mSearchInput;
+    private String search;
+    private SearchKind kindOfSearch = SearchKind.Artist;
+    private EditText mSearchInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +40,7 @@ public class MyActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -54,19 +53,19 @@ public class MyActivity extends Activity {
         switch(view.getId()) {
             case R.id.artistButton:
                 if (checked)
-                    kindOfSearch = "artist";
+                    kindOfSearch = SearchKind.Artist;
                 break;
             case R.id.albumButton:
                 if (checked)
-                    kindOfSearch = "album";
+                    kindOfSearch = SearchKind.Album;
                 break;
             case R.id.trackButton:
                 if (checked)
-                    kindOfSearch = "track";
+                    kindOfSearch = SearchKind.Track;
                 break;
             case R.id.playlistButton:
                 if (checked)
-                    kindOfSearch = "playlist";
+                    kindOfSearch = SearchKind.Playlist;
                 break;
         }
     }
@@ -75,18 +74,34 @@ public class MyActivity extends Activity {
 
         search = mSearchInput.getText().toString();
 
-
-        Singleton.getInstance().playlist.deleteSongs();
+        Singleton.getInstance().playlist.clear();
 
         Log.d("search ", search);
-        Intent intent = new Intent (this, GetSongs.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putString("searchQuery", search);
-        mBundle.putString("kindOfSearch", kindOfSearch);
-        intent.putExtras(mBundle);
+        Intent intent = new Intent (this, ListOfSearchedSongs.class);
+
+        //Bundle mBundle = new Bundle();
+        //mBundle.putString("searchQuery", search);
+        //mBundle.putString("kindOfSearch", kindOfSearch);
+        //intent.putExtras(mBundle);
 
         startActivity(intent);
     }
 
+    private enum SearchKind {
+        Artist("artist"),
+        Album("album"),
+        Track("track"),
+        Playlist("playlist");
+
+        private String value;
+        private SearchKind(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+    }
 }
 

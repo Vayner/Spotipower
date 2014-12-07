@@ -2,71 +2,46 @@ package com.enderwolf.spotipower;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.enderwolf.spotipower.event.PlayBackProgressEvent;
-import com.enderwolf.spotipower.ui.IGuiPlayback;
+import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.MiniPlayer;
+import com.enderwolf.spotipower.ui.PlayerFragment;
+import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.authentication.SpotifyAuthentication;
-import com.spotify.sdk.android.playback.ConnectionStateCallback;
-import com.spotify.sdk.android.playback.Player;
-import com.spotify.sdk.android.playback.PlayerNotificationCallback;
-import com.spotify.sdk.android.playback.PlayerState;
-import com.spotify.sdk.android.playback.PlayerStateCallback;
 import de.greenrobot.event.EventBus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+public class PlayerActivity extends Activity {
 
-
-public class PlayerActivity extends Activity implements
-        PlayerNotificationCallback, ConnectionStateCallback, IGuiPlayback {
-
-    // TODO: find a way to transfer this outside of git
-    //private final static String CLIENT_ID = getString(R.string.spotify_client_id);
-    //private static final String CLIENT_ID = "8cf97e259dc14327b50a3316ae6c3b60";
-    private static final String REDIRECT_URI = "spotipower-login://callback";
-
-    // Music Player
-    private Player musicPlayer;
-    private PlayerState musicPlayerState;
-    private List<String> musicPlayList;
-    private int musicPlayListPos;
+    private boolean dualPane = false;
 
     private MiniPlayer miniPlayer;
-    private Timer timer;
+    private PlayerFragment playerFragment;
+
+    private SettingsFragment settingsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        Settings.loadSettings(this);
+        dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        musicPlayList = new ArrayList<String>();
+        settingsFragment = SettingsFragment.newInstance();
 
-        musicPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
-        musicPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
-        musicPlayList.add("spotify:track:5eS6pTvDNOvh2kyxeZtK3r");
-        musicPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
-        musicPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
-        musicPlayListPos = 2;
-
-        miniPlayer = MiniPlayer.newInstance();
-        timer = new Timer();
+        if(dualPane) {
+            playerFragment = PlayerFragment.newInstance();
+        } else {
+            miniPlayer = MiniPlayer.newInstance();
+        }
 
         //authenticate user
-        //TODO: scopes
-        SpotifyAuthentication.openAuthWindow(getString(R.string.spotify_client_id), "token", REDIRECT_URI,
-                        new String[]{"user-read-private", "streaming"}, null, this);
+        MusicPlayer.initMusicPlayer(this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,67 +66,24 @@ public class PlayerActivity extends Activity implements
     }
 
     @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-        musicPlayerState = playerState;
-    }
-
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
-
-    }
-
-    @Override
-    public void onLoggedIn() {
-    }
-
-    @Override
-    public void onLoggedOut() {
-
-    }
-
-    @Override
-    public void onLoginFailed(Throwable throwable) {
-
-    }
-
-    @Override
-    public void onTemporaryError() {
-
-    }
-
-    @Override
-    public void onNewCredentials(String s) {
-
-    }
-
-    @Override
-    public void onConnectionMessage(String s) {
-
-    }
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Uri uri = intent.getData();
         if (uri != null) {
-            AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
-            Spotify spotify = new Spotify(response.getAccessToken());
-            musicPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
-                @Override
-                public void onInitialized() {
-                    musicPlayer.addConnectionStateCallback(PlayerActivity.this);
-                    musicPlayer.addPlayerNotificationCallback(PlayerActivity.this);
-                    musicPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
-
-                    getFragmentManager().beginTransaction().replace(R.id.myMiniPlayer, miniPlayer).commit();
-                    timer.schedule(new ProgressUpdate(), 1000, 1000);
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-                }
-            });
+            MusicPlayer.finalizeInitMusicPlayer(this, uri);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Settings.loadSettings(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Settings.saveSettings(this);
     }
 
     @Override
@@ -160,70 +92,9 @@ public class PlayerActivity extends Activity implements
         super.onDestroy();
     }
 
-    @Override
-    public void onPlayPressed() {
-        musicPlayer.getPlayerState(new PlayerStateCallback() {
-            @Override
-            public void onPlayerState(PlayerState playerState) {
-                if (!playerState.playing && playerState.trackUri == null) {
-                    musicPlayer.play(musicPlayList, musicPlayListPos);
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onPausePressed() {
-        musicPlayer.pause();
-    }
-
-    @Override
-    public void onStopPressed() {
-        musicPlayer.pause();
-        musicPlayer.seekToPosition(0);
-    }
-
-    @Override
-    public void onNextPressed() {
-
-    }
-
-    @Override
-    public void onPreviousPressed() {
-
-    }
-
-    @Override
-    public void onForwardPressed() {
-
-    }
-
-    @Override
-    public void onBackwardPressed() {
-
-    }
-
-    @Override
-    public void onLoopPressed(boolean state) {
-
-    }
-
-    @Override
-    public void onRandomPressed(boolean state) {
-
-    }
-
-    class ProgressUpdate extends TimerTask {
-        @Override
-        public void run() {
-            musicPlayer.getPlayerState(new PlayerStateCallback() {
-                @Override
-                public void onPlayerState(PlayerState playerState) {
-                    int progress = (int) (((float) playerState.positionInMs / (float) playerState.durationInMs) * 100.f);
-                    EventBus.getDefault().post(new PlayBackProgressEvent(progress));
-                }
-            });
-        }
+    // TODO orientation things
+    public void initGui() {
+        getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
     }
 }
