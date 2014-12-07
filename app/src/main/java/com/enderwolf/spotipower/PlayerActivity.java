@@ -1,6 +1,7 @@
 package com.enderwolf.spotipower;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
 import com.enderwolf.spotipower.ui.MiniPlayer;
+import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
@@ -31,9 +34,6 @@ import java.util.TimerTask;
 public class PlayerActivity extends Activity implements
         PlayerNotificationCallback, ConnectionStateCallback {
 
-    // TODO: find a way to transfer this outside of git
-    //private final static String CLIENT_ID = getString(R.string.spotify_client_id);
-    //private static final String CLIENT_ID = "8cf97e259dc14327b50a3316ae6c3b60";
     private static final String REDIRECT_URI = "spotipower-login://callback";
 
     // Music Player
@@ -50,7 +50,10 @@ public class PlayerActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        musicPlayList = new ArrayList<String>();
+        Settings.loadSettings(this);
+
+
+        musicPlayList = new ArrayList<>();
 
         musicPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
         musicPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
@@ -63,12 +66,18 @@ public class PlayerActivity extends Activity implements
         timer = new Timer();
 
         EventBus.getDefault().register(this);
+
         //authenticate user
         //TODO: scopes
-        SpotifyAuthentication.openAuthWindow(getString(R.string.spotify_client_id), "token", REDIRECT_URI,
-                        new String[]{"user-read-private", "streaming"}, null, this);
+        SpotifyAuthentication.openAuthWindow(
+            getString(R.string.spotify_client_id),
+            "token",
+            REDIRECT_URI,
+            new String[]{"user-read-private", "streaming"},
+            null,
+            this
+        );
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,7 +108,6 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onPlaybackError(ErrorType errorType, String s) {
-
     }
 
     @Override
@@ -108,29 +116,23 @@ public class PlayerActivity extends Activity implements
 
     @Override
     public void onLoggedOut() {
-
     }
 
     @Override
     public void onLoginFailed(Throwable throwable) {
-
     }
 
     @Override
     public void onTemporaryError() {
-
     }
 
     @Override
     public void onNewCredentials(String s) {
-
     }
 
     @Override
     public void onConnectionMessage(String s) {
-
     }
-
 
     public void onSearchForSongs(View view) {
 
@@ -153,7 +155,11 @@ public class PlayerActivity extends Activity implements
                     musicPlayer.addPlayerNotificationCallback(PlayerActivity.this);
                     musicPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
 
+                    SettingsFragment settingsFragment = new SettingsFragment();
+
                     getFragmentManager().beginTransaction().replace(R.id.myMiniPlayer, miniPlayer).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.settings_view, settingsFragment).commit();
+
                     timer.schedule(new ProgressUpdate(), 1000, 1000);
                 }
 
@@ -163,6 +169,18 @@ public class PlayerActivity extends Activity implements
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Settings.loadSettings(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Settings.saveSettings(this);
     }
 
     @Override
@@ -207,8 +225,6 @@ public class PlayerActivity extends Activity implements
     }
 
     public void onPlayPressed() {
-
-
     }
 
     class ProgressUpdate extends TimerTask {

@@ -4,9 +4,7 @@ import android.content.Context;
 import com.enderwolf.spotipower.utility.SaveSystem;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
+import java.util.*;
 
 /**
  * Created by !Tulingen on 07.12.2014.
@@ -14,15 +12,15 @@ import java.util.Observable;
 public class Settings extends Observable implements Serializable {
     public static final String FILENAME = "settings.data";
     private static Settings settings = null;
-    private Map<String, String> settingValues = new HashMap<>();
+    private Map<String, Object> settingValues = new HashMap<>();
 
     // TODO change over to objects / class hierarchy?
     private Settings () {
-        settingValues.put("Test", "false");
+        settingValues.put("Test", false);
     }
 
     private void overwriteSettings(Settings settings) {
-        for(Map.Entry<String, String> e : settings.settingValues.entrySet()) {
+        for(Map.Entry<String, Object> e : settings.settingValues.entrySet()) {
             this.settingValues.put(e.getKey(), e.getValue());
         }
 
@@ -34,7 +32,7 @@ public class Settings extends Observable implements Serializable {
      * @param key to the value
      * @return the value
      */
-    public String get(String key) {
+    public Object get(String key) {
         return this.settingValues.get(key);
     }
 
@@ -43,10 +41,17 @@ public class Settings extends Observable implements Serializable {
      * @param key
      * @param value
      */
-    public void put(String key, String value) {
+    public void put(String key, Object value) {
         if(this.settingValues.containsKey(key)) {
             this.settingValues.put(key, value);
         }
+    }
+
+    Map.Entry<String, Object>[] getAsList() {
+        Map.Entry<String, Object>[] data = new Map.Entry[this.settingValues.size()];
+        data = this.settingValues.entrySet().toArray(data);
+
+        return data;
     }
 
     /**
@@ -63,7 +68,13 @@ public class Settings extends Observable implements Serializable {
      * @param context
      */
     public static void loadSettings(String fileName, Context context) {
-        getSettings().overwriteSettings(SaveSystem.<Settings>LoadData(FILENAME, context));
+        Settings loaded = SaveSystem.<Settings>LoadData(FILENAME, context);
+
+        if(loaded == null) {
+            return;
+        }
+
+        getSettings().overwriteSettings(loaded);
     }
 
     /**
@@ -83,6 +94,10 @@ public class Settings extends Observable implements Serializable {
         SaveSystem.SaveData(FILENAME, context, getSettings());
     }
 
+    /**
+     * Gets the settings object
+     * @return
+     */
     public static Settings getSettings() {
         if(settings == null) {
             settings = new Settings();
