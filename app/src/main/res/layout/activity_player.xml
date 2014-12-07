@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/myMiniPlayer">
+        android:id="@+id/miniplayer_view">
 
     </FrameLayout>
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/settings_view">
+        android:id="@+id/content_view">
     </FrameLayout>
 
 </RelativeLayout>

@@ -1,56 +1,44 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.ListView;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.data.Settings;
-import com.enderwolf.spotipower.data.SettingsListAdapter;
 
-public class SettingsFragment extends Fragment {
-
-    private Settings settings = null;
+public class PlayerFragment extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment Settings.
+     * @return A new instance of fragment PlayerFragment.
      */
-    public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
+    public static PlayerFragment newInstance() {
+        PlayerFragment fragment = new PlayerFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public SettingsFragment() {
+    public PlayerFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(settings == null) {
-            settings = Settings.getSettings();
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_settings, container, false);
-
-        ListView list = (ListView) root.findViewById(R.id.settings_view);
-        list.setAdapter(new SettingsListAdapter(this.getActivity(), settings));
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return root;
+        return inflater.inflate(R.layout.fragment_player, container, false);
     }
 
     @Override
