@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ToggleButton;
+import com.enderwolf.spotipower.ui.component.BooleanToggle;
 
 import java.util.*;
 
@@ -27,16 +28,16 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
         for (final Map.Entry<String, Object> entry : list) {
             boolean value = (Boolean) entry.getValue();
 
-            ToggleButton b = new ToggleButton(context);
-            b.setChecked(value);
-            b.setOnClickListener(new View.OnClickListener() {
+            BooleanToggle toggle = new BooleanToggle(context, entry.getKey(), value);
+
+            toggle.getButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     settings.put(entry.getKey(), ((ToggleButton) view).isChecked());
                 }
             });
 
-            views.add(b);
+            views.add(toggle);
         }
     }
 
