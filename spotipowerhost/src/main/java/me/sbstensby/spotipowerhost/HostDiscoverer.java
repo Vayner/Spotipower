@@ -5,9 +5,9 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import java.io.BufferedWriter;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -16,6 +16,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.net.ServerSocket;
 
 /**
  * Package: me.sbstensby.spotipowerhost
@@ -34,6 +35,7 @@ public class HostDiscoverer implements Runnable {
     private ArrayList<RemoteHostData> hostList;
     private DatagramSocket socket;
     private Context mContext;
+    private boolean listening;
     private static final byte[] sendData = "SPOTIPOWER_HOST_DISCOVERY".getBytes();
 
     public HostDiscoverer(HostDiscovererInterface returnInterface, Context mContext) {
@@ -46,7 +48,36 @@ public class HostDiscoverer implements Runnable {
     public void run() {
         Log.i("HostDiscoverer", "START");
 
-        // Push back the hosts.
+        // Makes a serversocket on port 23457, used to receive inquiries.
+        ServerSocket serverSocet = null;
+        try {
+            serverSocet = new ServerSocket(36252);
+
+            Socket socket = new Socket();
+
+            // While there is communications
+            while ((socket = serverSocet.accept())!=null) {
+
+                // Makes an object to read from the stream.
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                // Reads a line from the client.
+                String inputTmp = bufferedReader.readLine();
+
+                // Split on /
+                String[] splitTmp = {""};
+                if (inputTmp != null) {
+                    splitTmp = inputTmp.split(":");
+                }
+                // Push back the hosts.
+
+                if (splitTmp[0].equals("SPOTIPOWER_HOST_HERE")) {
+                    Log.i("HostDiscoverer", "Found " + splitTmp[1] + " at " + socket.getInetAddress().toString().replaceFirst("/", ""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         returnInterface.pushBackHosts(hostList);
     }
 
@@ -109,17 +140,6 @@ public class HostDiscoverer implements Runnable {
                 } catch (IOException ex) {
 
                 }
-
-                /*try {
-                    Socket socketSender = new Socket(InetAddress.getByName("192.168.2.23"), 36251);
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socketSender.getOutputStream()));
-                    bufferedWriter.write("SPOTIPOWER_HOST_DISCOVERY" + HostServer.getInstance().getHostname());
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-                    socketSender.close();
-                } catch (IOException e) {
-                    Log.e("HostDiscoverer", "UNABLE TO SEND PACKET:\n" + e.toString());
-                }*/
             }
         }.start();
     }
