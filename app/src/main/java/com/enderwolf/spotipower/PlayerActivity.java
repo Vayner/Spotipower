@@ -1,14 +1,20 @@
 package com.enderwolf.spotipower;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -19,7 +25,7 @@ import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 import de.greenrobot.event.EventBus;
 
-public class PlayerActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class PlayerActivity extends Activity {
 
     private boolean dualPane = false;
 
@@ -28,7 +34,9 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
 
     private SettingsFragment settingsFragment;
 
-    private NavigationDrawerFragment drawer;
+    private ListView drawerList;
+    private DrawerLayout layout;
+    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +46,16 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
         Settings.loadSettings(this);
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        settingsFragment = SettingsFragment.newInstance();
-        playerFragment = PlayerFragment.newInstance();
-        miniPlayer = MiniPlayer.newInstance();
-        drawer = new NavigationDrawerFragment();
-        DrawerLayout layout = new DrawerLayout(this);
-        drawer.setUp(R.id.container, layout);
-
-        ListView drawerList = (ListView) this.findViewById(R.id.navigation_drawer);
-
-        String[] list = {"Hey", "Test"};
-
-        drawerList.setAdapter(new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                list
-        ));
+        this.initGui();
 
         //authenticate user
         MusicPlayer.initMusicPlayer(this);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
     }
 
     @Override
@@ -68,13 +67,9 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -87,12 +82,17 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
 
         boolean prevOrientation = dualPane;
         dualPane = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        drawerToggle.onConfigurationChanged(newConfig);
 
         if(prevOrientation != dualPane) {
             this.setContentView(R.layout.activity_nav_drawer);
+
+            settingsFragment = SettingsFragment.newInstance();
+            playerFragment = PlayerFragment.newInstance();
+            miniPlayer = MiniPlayer.newInstance();
+
             this.initGui();
         }
-
     }
 
     @Override
@@ -125,6 +125,48 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
     // TODO orientation things
     public void initGui() {
 
+        settingsFragment = SettingsFragment.newInstance();
+        playerFragment = PlayerFragment.newInstance();
+        miniPlayer = MiniPlayer.newInstance();
+
+        drawerList = (ListView) this.findViewById(R.id.left_drawer);
+        layout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+
+        drawerToggle = new ActionBarDrawerToggle(
+                this,                   /* host Activity */
+                layout,                 /* DrawerLayout object */
+                R.drawable.ic_drawer,   /* nav drawer icon to replace 'Up' caret */
+                R.string.app_name,      /* "open drawer" description */
+                R.string.app_name       /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(R.string.app_name);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(R.string.app_name);
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        layout.setDrawerListener(drawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        String[] list = {"Hey", "Test"};
+
+        drawerList.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                list
+        ));
+
         if(dualPane)  {
             getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
             getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
@@ -132,10 +174,5 @@ public class PlayerActivity extends Activity implements NavigationDrawerFragment
             getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
             getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
         }
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-
     }
 }
