@@ -151,9 +151,6 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
             public void onInitialized() {
                 musicPlayer.player.addConnectionStateCallback(musicPlayer);
                 musicPlayer.player.addPlayerNotificationCallback(musicPlayer);
-                musicPlayer.player.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
-
-                SettingsFragment settingsFragment = new SettingsFragment();
 
                 EventBus.getDefault().register(musicPlayer);
                 app.initGui();
