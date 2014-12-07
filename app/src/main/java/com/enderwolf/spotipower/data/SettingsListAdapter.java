@@ -61,7 +61,6 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
         final SettingsEntry entry = list[i];
         Class type = entry.getType();
 
-        Log.d("SettingsEntry", "Added one");
 
         if(type.equals(Boolean.TYPE)) {
             boolean value = (Boolean) entry.getValue();

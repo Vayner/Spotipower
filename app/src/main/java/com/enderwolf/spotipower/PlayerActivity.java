@@ -3,10 +3,14 @@ package com.enderwolf.spotipower;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.MiniPlayer;
@@ -15,7 +19,7 @@ import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 import de.greenrobot.event.EventBus;
 
-public class PlayerActivity extends Activity {
+public class PlayerActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private boolean dualPane = false;
 
@@ -24,20 +28,32 @@ public class PlayerActivity extends Activity {
 
     private SettingsFragment settingsFragment;
 
+    private NavigationDrawerFragment drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
+        setContentView(R.layout.activity_nav_drawer);
+
         Settings.loadSettings(this);
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         settingsFragment = SettingsFragment.newInstance();
+        playerFragment = PlayerFragment.newInstance();
+        miniPlayer = MiniPlayer.newInstance();
+        drawer = new NavigationDrawerFragment();
+        DrawerLayout layout = new DrawerLayout(this);
+        drawer.setUp(R.id.container, layout);
 
-        if(dualPane) {
-            playerFragment = PlayerFragment.newInstance();
-        } else {
-            miniPlayer = MiniPlayer.newInstance();
-        }
+        ListView drawerList = (ListView) this.findViewById(R.id.navigation_drawer);
+
+        String[] list = {"Hey", "Test"};
+
+        drawerList.setAdapter(new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                list
+        ));
 
         //authenticate user
         MusicPlayer.initMusicPlayer(this);
@@ -63,6 +79,20 @@ public class PlayerActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        boolean prevOrientation = dualPane;
+        dualPane = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        if(prevOrientation != dualPane) {
+            this.setContentView(R.layout.activity_nav_drawer);
+            this.initGui();
+        }
+
     }
 
     @Override
@@ -94,7 +124,18 @@ public class PlayerActivity extends Activity {
 
     // TODO orientation things
     public void initGui() {
-        getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
-        getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+
+        if(dualPane)  {
+            getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+        } else {
+            getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+        }
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+
     }
 }
