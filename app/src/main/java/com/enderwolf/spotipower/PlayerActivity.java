@@ -56,8 +56,10 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
         this.initGui();
 
-        //authenticate user
-        MusicPlayer.initMusicPlayer(this);
+        if(!MusicPlayer.getInit()) {
+            //authenticate user
+            MusicPlayer.initMusicPlayer(this);
+        }
     }
 
     @Override
@@ -95,10 +97,6 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         if(prevOrientation != dualPane) {
             this.setContentView(R.layout.activity_nav_drawer);
 
-            settingsFragment = SettingsFragment.newInstance();
-            playerFragment = PlayerFragment.newInstance();
-            miniPlayer = MiniPlayer.newInstance();
-
             this.initGui();
         }
     }
@@ -134,7 +132,6 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
     // TODO orientation things
     public void initGui() {
-
 
         playerFragment = PlayerFragment.newInstance();
         miniPlayer = MiniPlayer.newInstance();
@@ -184,7 +181,6 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
         if(dualPane)  {
 
-
             drawerDataToFragments[0] = playlistFragment;
             drawerDataToFragments[1] = searchFragment;
             drawerDataToFragments[2] = playlistFragment;
@@ -192,25 +188,24 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             drawerDataToFragments[4] = settingsFragment;
             drawerDataToFragments[5] = aboutFragment;
 
-
             getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
+
         } else {
+
             drawerDataToFragments[0] = playerFragment;
             drawerDataToFragments[1] = searchFragment;
             drawerDataToFragments[2] = playlistFragment;
             drawerDataToFragments[3] = connectionManagerFragment;
             drawerDataToFragments[4] = settingsFragment;
             drawerDataToFragments[5] = aboutFragment;
-
-            getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
         }
+
+        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
+        getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.d("onItemClick", String.valueOf(i));
         drawerDataCurrent = i;
         drawerLayout.closeDrawers();
 

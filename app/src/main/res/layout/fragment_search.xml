@@ -37,34 +37,25 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-                <fragment
+                <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:name="com.enderwolf.spotipower.ui.PlaylistFragment"
-                    android:id="@+id/tab1"
-                    tools:layout="@layout/fragment_playlist" />
+                    android:id="@+id/tab1"></FrameLayout>
 
-                <fragment
+                <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:name="com.enderwolf.spotipower.ui.PlaylistFragment"
-                    android:id="@+id/tab2"
-                    tools:layout="@layout/fragment_playlist" />
+                    android:id="@+id/tab2"></FrameLayout>
 
-                <fragment
+                <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:name="com.enderwolf.spotipower.ui.PlaylistFragment"
-                    android:id="@+id/tab3"
-                    tools:layout="@layout/fragment_playlist" />
+                    android:id="@+id/tab3"></FrameLayout>
 
-                <fragment
+                <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:name="com.enderwolf.spotipower.ui.PlaylistFragment"
-                    android:id="@+id/tab4"
-                    tools:layout="@layout/fragment_playlist" />
-
+                    android:id="@+id/tab4"></FrameLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

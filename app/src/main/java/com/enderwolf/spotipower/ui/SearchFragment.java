@@ -44,10 +44,20 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
+
+        playlistFragment = PlaylistFragment.newInstance();
+        trackFragment = PlaylistFragment.newInstance();
+        albumFragment = PlaylistFragment.newInstance();
+        artistFragment = PlaylistFragment.newInstance();
+
+        this.getFragmentManager().beginTransaction().replace(R.id.tab1, playlistFragment).commit();
+        this.getFragmentManager().beginTransaction().replace(R.id.tab2, trackFragment).commit();
+        this.getFragmentManager().beginTransaction().replace(R.id.tab3, albumFragment).commit();
+        this.getFragmentManager().beginTransaction().replace(R.id.tab4, artistFragment).commit();
+
+        return root;
     }
 
     @Override

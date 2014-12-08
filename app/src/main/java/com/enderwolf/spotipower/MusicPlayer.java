@@ -33,6 +33,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
     private static final String REDIRECT_URI = "spotipower-login://callback";
 
     private static MusicPlayer musicPlayer = null;
+    private static boolean init = false;
 
     private Player player;
     private Timer timer;
@@ -154,10 +155,10 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
             public void onInitialized() {
                 musicPlayer.player.addConnectionStateCallback(musicPlayer);
                 musicPlayer.player.addPlayerNotificationCallback(musicPlayer);
-
+                musicPlayer.timer.schedule(new ProgressUpdate(musicPlayer.player), 1000, 1000);
                 EventBus.getDefault().register(musicPlayer);
 
-                musicPlayer.timer.schedule(new ProgressUpdate(musicPlayer.player), 1000, 1000);
+                init = true;
             }
 
             @Override
@@ -165,6 +166,10 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
                 Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
             }
         });
+    }
+
+    public static boolean getInit() {
+        return init;
     }
 
     //-----
