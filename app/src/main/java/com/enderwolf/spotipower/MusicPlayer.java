@@ -153,7 +153,6 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
                 musicPlayer.player.addPlayerNotificationCallback(musicPlayer);
 
                 EventBus.getDefault().register(musicPlayer);
-                app.initGui();
 
                 musicPlayer.timer.schedule(new ProgressUpdate(musicPlayer.player), 1000, 1000);
             }
