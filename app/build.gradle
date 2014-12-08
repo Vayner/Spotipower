@@ -38,4 +38,5 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.spotify.sdk:spotifysdk:1.0.0-beta5@aar'
     compile 'com.android.support:support-v4:21.0.0'
+    compile project(":spotipowerhost")
 }
