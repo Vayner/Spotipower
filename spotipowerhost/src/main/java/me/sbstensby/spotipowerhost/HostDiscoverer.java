@@ -73,6 +73,11 @@ public class HostDiscoverer implements Runnable {
 
                 if (splitTmp[0].equals("SPOTIPOWER_HOST_HERE")) {
                     Log.i("HostDiscoverer", "Found " + splitTmp[1] + " at " + socket.getInetAddress().toString().replaceFirst("/", ""));
+                    RemoteHostData rh = new RemoteHostData();
+                    rh.name = splitTmp[1];
+                    rh.address = socket.getInetAddress();
+                    hostList.add(rh);
+                    returnInterface.pushBackHosts(hostList);
                 }
             }
         } catch (IOException e) {
