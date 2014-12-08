@@ -14,8 +14,6 @@ public interface HostRecieverInterface {
     public void controlPause();
     public void controlResume();
     public void controlSkip();
-    public void controlVolumeUp();
-    public void controlVolumeDown();
 
     public boolean joinOP();
 }

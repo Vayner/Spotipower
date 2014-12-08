@@ -133,21 +133,6 @@ public class HostReceiver implements Runnable {
                                 returnInterface.controlSkip();
                                 break;
 
-                            case "VOLUME":
-                                //Change the volume.
-                                switch (splitTmp[2]) {
-                                    case "UP":
-                                        Log.i("HostReciever", "VOLUME:UP");
-                                        returnInterface.controlVolumeUp();
-                                        break;
-
-                                    case "DOWN":
-                                        Log.i("HostReciever", "VOLUME:DOWN");
-                                        returnInterface.controlVolumeDown();
-                                        break;
-                                }
-                                break;
-
                             default: break;
                         }
                         break;

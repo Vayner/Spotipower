@@ -172,47 +172,59 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
      */
     @Override
     public void queueAdd(String uri) {
-        
+
     }
 
+    /**
+     * Removes song at index from playlist
+     * @param index index of song to be removed
+     */
     @Override
     public void queueRemove(int index) {
-
+        queue.remove(index);
     }
 
+    /**
+     * Replaces the entire queue with a playlist.
+     * @param uri the uri of the new playlist
+     */
     @Override
     public void queueReplace(String uri) {
 
     }
 
+    /**
+     * pause playback.
+     */
     @Override
     public void controlPause() {
-
+        player.pause();
     }
 
+    /**
+     * resume playback
+     */
     @Override
     public void controlResume() {
-
+        player.resume();
     }
 
+    /**
+     * skip to the next song.
+     */
     @Override
     public void controlSkip() {
-
+        player.skipToNext();
     }
 
-    @Override
-    public void controlVolumeUp() {
-
-    }
-
-    @Override
-    public void controlVolumeDown() {
-
-    }
-
+    /**
+     * Asks if a user can join op
+     * @return if the user can join OP.
+     */
     @Override
     public boolean joinOP() {
-        return false;
+        //TODO: SOMETHING
+        return true;
     }
 }
 
