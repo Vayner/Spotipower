@@ -69,7 +69,7 @@ public class Settings extends Observable implements Serializable {
      * @param context
      */
     public static void loadSettings(String fileName, Context context) {
-        Settings loaded = SaveSystem.<Settings>LoadData(FILENAME, context);
+        Settings loaded = SaveSystem.LoadData(fileName, context);
 
         if(loaded == null) {
             return;
@@ -92,7 +92,7 @@ public class Settings extends Observable implements Serializable {
      * @param context
      */
     public static void saveSettings(String fileName, Context context) {
-        SaveSystem.SaveData(FILENAME, context, getSettings());
+        SaveSystem.SaveData(fileName, context, getSettings());
     }
 
     /**
