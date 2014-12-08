@@ -36,19 +36,24 @@ public class Client {
         this.connectedHost = host;
     }
 
-    public boolean sendMessage(String message) {
-        try {
-            Socket socket = new Socket(this.connectedHost.address, 36250);
-            BufferedWriter bufferedWriter = new BufferedWriter (new OutputStreamWriter(socket.getOutputStream()));
-            bufferedWriter.write(message);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-            socket.close();
-            return true;
-        } catch (IOException e) {
-            //Unable to send message.
-            return false;
-        }
+    public void sendMessage(String _message) {
+        final String message = _message;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(Client.getInstance().getHostAddress(), 36250);
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    bufferedWriter.write(message);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                    socket.close();
+                } catch (IOException e) {
+                    //Unable to send message.
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private Client() {

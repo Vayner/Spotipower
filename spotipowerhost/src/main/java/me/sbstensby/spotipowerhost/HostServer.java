@@ -2,6 +2,9 @@ package me.sbstensby.spotipowerhost;
 
 import android.util.Log;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
+
 /**
  * Package: me.sbstensby.spotipowerhost
  * Project: Spotipower
@@ -10,7 +13,7 @@ import android.util.Log;
  * As only one can run at once, this class is a singleton.
  * Implements Runnable, as it is designed to run asynchronously.
  */
-public class HostServer implements Runnable{
+public class HostServer implements Runnable {
     /**
      * private holder class for instance of class.
      */
@@ -21,6 +24,7 @@ public class HostServer implements Runnable{
     private boolean hosting;
     private String hostname;
     private Thread thread;
+    private ArrayList<InetAddress> OPs = new ArrayList<>(); //List of connected clients with OP permissions.
 
     /**
      * Get instance of the Singleton.
@@ -36,6 +40,24 @@ public class HostServer implements Runnable{
     private HostServer() {
     }
 
+    /**
+     * Checks if a client on clientIP is OP.
+     * @param clientIP The IP of the client
+     * @return is OP.
+     */
+    boolean isOP(InetAddress clientIP) {
+        for (InetAddress OP : OPs) {
+            if (OP.equals(clientIP)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void addOP(InetAddress clientIP) {
+        OPs.add(clientIP);
+    }
+
 
     /**
      * Asynchronous runner of the class. Asks gets input and interprets.
@@ -43,6 +65,7 @@ public class HostServer implements Runnable{
     @Override
     public void run() {
         Log.i("HostServer", "START");
+        HostReceiver.getInstance().startHosting();
         HostDiscoveryListener.getInstance().startHosting();
         while (this.hosting) {
             //Do some shit!

@@ -11,6 +11,6 @@ import java.net.InetAddress;
  * Struct for saving info about remote hosts.
  */
 public class RemoteHostData {
-    String name;
-    InetAddress address;
+    public String name;
+    public InetAddress address;
 }

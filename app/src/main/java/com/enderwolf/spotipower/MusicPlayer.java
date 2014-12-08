@@ -1,14 +1,10 @@
 package com.enderwolf.spotipower;
 
-import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
-import com.enderwolf.spotipower.ui.PlayerFragment;
-import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
@@ -23,12 +19,14 @@ import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
+import me.sbstensby.spotipowerhost.HostRecieverInterface;
+
 /**
  * Created by vayner on 07.12.14.
  *
  * is the connection point between the application and the spotify player.
  */
-public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateCallback {
+public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateCallback, HostRecieverInterface {
     private static final String REDIRECT_URI = "spotipower-login://callback";
 
     private static MusicPlayer musicPlayer = null;
@@ -162,6 +160,59 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
                 Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
             }
         });
+    }
+
+    //-----
+    //Callbacks from HostReciever.
+    //-----
+
+    /**
+     * Adds uri to queue
+     * @param uri adds uri to queue
+     */
+    @Override
+    public void queueAdd(String uri) {
+        
+    }
+
+    @Override
+    public void queueRemove(int index) {
+
+    }
+
+    @Override
+    public void queueReplace(String uri) {
+
+    }
+
+    @Override
+    public void controlPause() {
+
+    }
+
+    @Override
+    public void controlResume() {
+
+    }
+
+    @Override
+    public void controlSkip() {
+
+    }
+
+    @Override
+    public void controlVolumeUp() {
+
+    }
+
+    @Override
+    public void controlVolumeDown() {
+
+    }
+
+    @Override
+    public boolean joinOP() {
+        return false;
     }
 }
 
