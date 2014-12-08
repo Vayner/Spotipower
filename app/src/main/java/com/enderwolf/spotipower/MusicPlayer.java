@@ -10,6 +10,7 @@ import com.enderwolf.spotipower.utility.Parser;
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
+import com.spotify.sdk.android.playback.Config;
 import com.spotify.sdk.android.playback.ConnectionStateCallback;
 import com.spotify.sdk.android.playback.Player;
 import com.spotify.sdk.android.playback.PlayerNotificationCallback;
@@ -144,9 +145,11 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
     public static void finalizeInitMusicPlayer(final PlayerActivity app, final Uri uri) {
         AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
-        Spotify spotify = new Spotify(response.getAccessToken());
+        Spotify spotify = new Spotify();
+        Config playerConfig = new Config(app, response.getAccessToken(), app.getString(R.string.spotify_client_id));
+
         musicPlayer = getMusicPlayer();
-        musicPlayer.player = spotify.getPlayer(app, "My Company Name", app, new Player.InitializationObserver() {
+        musicPlayer.player = spotify.getPlayer(playerConfig, app, new Player.InitializationObserver() {
             @Override
             public void onInitialized() {
                 musicPlayer.player.addConnectionStateCallback(musicPlayer);
