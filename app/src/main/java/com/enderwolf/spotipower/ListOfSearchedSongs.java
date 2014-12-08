@@ -171,8 +171,11 @@ public class ListOfSearchedSongs extends Activity {
                 JSONArray items = type.getJSONArray("items");
                 for (int i = 0; i < items.length(); i++) {
                     JSONObject typeItem = items.getJSONObject(i);           // Every track
-                    Song song = new Song(typeItem);
-                    Songs.add(song);
+                    Song song = Song.newInstance(typeItem);
+
+                    if(song != null) {
+                        Songs.add(song);
+                    }
                 }
             }
 
