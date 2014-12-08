@@ -110,10 +110,12 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         }
     }
 
-    @Override
+
+
     protected void onResume() {
         super.onResume();
         Settings.loadSettings(this);
+
     }
 
     @Override

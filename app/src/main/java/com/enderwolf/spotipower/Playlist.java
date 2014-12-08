@@ -11,7 +11,6 @@ public class Playlist extends ArrayList<Song> {
 
         this.name = name;
     }
-
     public String getName() {
         return this.name;
     }

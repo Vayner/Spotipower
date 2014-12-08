@@ -11,35 +11,19 @@ import de.greenrobot.event.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -67,11 +51,13 @@ public class ListOfSearchedSongs extends Activity {
 
         DialogRequestSong = new AlertDialog.Builder(this);  // User dialog to request a song into playlist
 
-        listView = (ListView) findViewById(R.id.list);
+        listView = (ListView) findViewById(R.id.listSearched);
         adapter = new CustomeSongList(this, Songs);
         listView.setAdapter(adapter);
 
-        registerForContextMenu(listView);
+        // clear songs from previouse searches
+        Songs.clear();
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -106,6 +92,24 @@ public class ListOfSearchedSongs extends Activity {
         // changing action bar color
         getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
 
+        /**
+         *
+         * Request a single JSONObject from a webresource via volley library.
+         *
+         * first JSONObject which is returned is with the tag "tracks"
+         *
+         * JSONObject[tracks] ->
+         *             JSONArray[items]->
+         *                      JSONObject[JSONArray[index]]->
+         *                                          JSONObject[album] -> JSONObject[images] (medium quality) (want to get a sharp image) But not download to must bitrate.
+         *                                          JSONArray[artists]-> JSONObject[artist] (artists.lenght())
+         *
+         *
+         *
+         *
+         *
+         */
+
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
             new SongParser(),
             new Response.ErrorListener() {
@@ -116,7 +120,6 @@ public class ListOfSearchedSongs extends Activity {
                 }
             }
         );
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getRequest);
     }
@@ -168,8 +171,11 @@ public class ListOfSearchedSongs extends Activity {
                 JSONArray items = type.getJSONArray("items");
                 for (int i = 0; i < items.length(); i++) {
                     JSONObject typeItem = items.getJSONObject(i);           // Every track
-                    Song song = new Song(typeItem);
-                    Songs.add(song);
+                    Song song = Song.newInstance(typeItem);
+
+                    if(song != null) {
+                        Songs.add(song);
+                    }
                 }
             }
 
