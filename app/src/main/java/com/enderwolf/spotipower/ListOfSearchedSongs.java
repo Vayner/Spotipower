@@ -40,7 +40,7 @@ public class ListOfSearchedSongs extends Activity {
     private AlertDialog.Builder DialogRequestSong;
 
     // -- List --
-    private List<Song> Songs = new ArrayList<Song>();
+    private List<Song> Songs = new ArrayList<>();
     private ListView listView;
     private CustomeSongList adapter;
 

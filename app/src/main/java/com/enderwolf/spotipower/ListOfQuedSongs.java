@@ -82,8 +82,7 @@ public class ListOfQuedSongs extends Activity {
         pDialog.show();
 
         // changing action bar color
-        getActionBar().setBackgroundDrawable(
-                new ColorDrawable(Color.parseColor("#1b1b1b")));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
             new SongParser(),
