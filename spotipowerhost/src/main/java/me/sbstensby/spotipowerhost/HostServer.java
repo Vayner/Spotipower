@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * As only one can run at once, this class is a singleton.
  * Implements Runnable, as it is designed to run asynchronously.
  */
-public class HostServer implements Runnable{
+public class HostServer implements Runnable {
     /**
      * private holder class for instance of class.
      */

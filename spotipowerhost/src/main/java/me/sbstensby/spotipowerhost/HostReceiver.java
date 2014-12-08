@@ -23,12 +23,17 @@ public class HostReceiver implements Runnable {
     private Thread thread;
     private ServerSocket serverSocket;
     private Socket socket;
+    private HostRecieverInterface returnInterface;
 
     public static HostReceiver getInstance() {
         return Holder.INSTANCE;
     }
 
     private HostReceiver() {
+    }
+
+    public void setReturnInterface (HostRecieverInterface _returnInterface) {
+        this.returnInterface = _returnInterface;
     }
 
     public void startHosting() {
@@ -83,21 +88,19 @@ public class HostReceiver implements Runnable {
                             case "ADD":
                                 //Add a song to the back of the queue.
                                 Log.i("HostReciever", "ADD");
+                                returnInterface.queueAdd(splitTmp[2] + ":" + splitTmp[3] + ":" + splitTmp[4]);
                                 break;
 
                             case "REMOVE":
                                 //Remove a song from the queue.
                                 Log.i("HostReciever", "REMOVE");
+                                returnInterface.queueRemove(Integer.getInteger(splitTmp[2]));
                                 break;
 
                             case "REPLACE":
                                 //Replace the queue playlist.
                                 Log.i("HostReciever", "REPLACE");
-                                break;
-
-                            case "NEXT":
-                                //Add a song to the front of the queue.
-                                Log.i("HostReciever", "NEXT");
+                                returnInterface.queueReplace(splitTmp[2] + ":" + splitTmp[3] + ":" + splitTmp[4]);
                                 break;
 
                             default: break;
@@ -115,16 +118,19 @@ public class HostReceiver implements Runnable {
                             case "PAUSE":
                                 //Pause playback.
                                 Log.i("HostReciever", "PAUSE");
+                                returnInterface.controlPause();
                                 break;
 
                             case "RESUME":
                                 //Resume playback.
                                 Log.i("HostReciever", "RESUME");
+                                returnInterface.controlResume();
                                 break;
 
                             case "SKIP":
                                 //Skip the current song.
                                 Log.i("HostReciever", "SKIP");
+                                returnInterface.controlSkip();
                                 break;
 
                             case "VOLUME":
@@ -132,10 +138,12 @@ public class HostReceiver implements Runnable {
                                 switch (splitTmp[2]) {
                                     case "UP":
                                         Log.i("HostReciever", "VOLUME:UP");
+                                        returnInterface.controlVolumeUp();
                                         break;
 
                                     case "DOWN":
                                         Log.i("HostReciever", "VOLUME:DOWN");
+                                        returnInterface.controlVolumeDown();
                                         break;
                                 }
                                 break;
@@ -146,9 +154,10 @@ public class HostReceiver implements Runnable {
 
                     case "JOINOP":
                         //A user asks to join with OP permissions.
-                        //TODO: Make it ask!
-                        HostServer.getInstance().addOP(socket.getInetAddress());
-                        Log.i("HostReciever", "joinedOP");
+                        if (returnInterface.joinOP()) {
+                            HostServer.getInstance().addOP(socket.getInetAddress());
+                            Log.i("HostReciever", "joinedOP");
+                        }
                         break;
                     default: break;
                 }
