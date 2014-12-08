@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
+import com.enderwolf.spotipower.utility.ParseCompleteCallback;
+import com.enderwolf.spotipower.utility.Parser;
 import com.spotify.sdk.android.Spotify;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.SpotifyAuthentication;
@@ -172,7 +174,14 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
      */
     @Override
     public void queueAdd(String uri) {
-
+        Parser.ParseUri(uri.split(":")[2], new ParseCompleteCallback() {
+            @Override
+            public void OnParseComplete(Playlist playlist) {
+                if (!playlist.isEmpty()) {
+                    queue.add(playlist.get(0));
+                }
+            }
+        });
     }
 
     /**
