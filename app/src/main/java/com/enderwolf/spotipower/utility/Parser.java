@@ -69,15 +69,13 @@ class SongJSONParser implements Response.Listener<JSONObject> {
         Playlist playlist = new Playlist("");
 
         try {
-            JSONObject type = response.getJSONObject(("tracks"));
-            JSONArray items = type.getJSONArray("items");
-            for (int i = 0; i < items.length(); i++) {
-                JSONObject typeItem = items.getJSONObject(i);
+            JSONArray type = response.getJSONArray(("tracks"));
+            for (int i = 0; i < type.length(); i++) {
+                JSONObject typeItem = type.getJSONObject(i);
+
                 Song song = Song.newInstance(typeItem);
 
-                if(song != null) {
-                    playlist.add(song);
-                }
+                playlist.add(song);
             }
         }
 
