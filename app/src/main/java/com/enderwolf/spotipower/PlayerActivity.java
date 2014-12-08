@@ -22,6 +22,7 @@ import com.enderwolf.spotipower.ui.ConnectionManagerFragment;
 import com.enderwolf.spotipower.ui.MiniPlayer;
 import com.enderwolf.spotipower.ui.PlayerFragment;
 import com.enderwolf.spotipower.ui.PlaylistFragment;
+import com.enderwolf.spotipower.ui.SearchFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 
@@ -31,6 +32,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
     private MiniPlayer miniPlayer;
     private PlayerFragment playerFragment;
+    private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
     private ConnectionManagerFragment connectionManagerFragment;
     private SettingsFragment settingsFragment;
@@ -40,7 +42,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
-    private static String[] drawerDataList = {"Home", "Playlist", "Connections", "Settings", "About"};
+    private static String[] drawerDataList = {"Home", "Search", "Playlist", "Connections", "Settings", "About"};
     private Fragment[] drawerDataToFragments = new Fragment[drawerDataList.length];
     private int drawerDataCurrent = 0;
 
@@ -136,6 +138,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
         playerFragment = PlayerFragment.newInstance();
         miniPlayer = MiniPlayer.newInstance();
+        searchFragment = SearchFragment.newInstance();
         playlistFragment = PlaylistFragment.newInstance();
         connectionManagerFragment = ConnectionManagerFragment.newInstance();
         settingsFragment = SettingsFragment.newInstance();
@@ -180,21 +183,25 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         drawerList.setOnItemClickListener(this);
 
         if(dualPane)  {
+
+
             drawerDataToFragments[0] = playlistFragment;
-            drawerDataToFragments[1] = playlistFragment;
-            drawerDataToFragments[2] = connectionManagerFragment;
-            drawerDataToFragments[3] = settingsFragment;
-            drawerDataToFragments[4] = aboutFragment;
+            drawerDataToFragments[1] = searchFragment;
+            drawerDataToFragments[2] = playlistFragment;
+            drawerDataToFragments[3] = connectionManagerFragment;
+            drawerDataToFragments[4] = settingsFragment;
+            drawerDataToFragments[5] = aboutFragment;
 
 
             getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
             getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
         } else {
             drawerDataToFragments[0] = playerFragment;
-            drawerDataToFragments[1] = playlistFragment;
-            drawerDataToFragments[2] = connectionManagerFragment;
-            drawerDataToFragments[3] = settingsFragment;
-            drawerDataToFragments[4] = aboutFragment;
+            drawerDataToFragments[1] = searchFragment;
+            drawerDataToFragments[2] = playlistFragment;
+            drawerDataToFragments[3] = connectionManagerFragment;
+            drawerDataToFragments[4] = settingsFragment;
+            drawerDataToFragments[5] = aboutFragment;
 
             getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
             getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
