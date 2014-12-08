@@ -1,42 +1,48 @@
 package com.enderwolf.spotipower;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.Context;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.enderwolf.spotipower.data.Settings;
+import com.enderwolf.spotipower.ui.AboutFragment;
+import com.enderwolf.spotipower.ui.ConnectionManagerFragment;
 import com.enderwolf.spotipower.ui.MiniPlayer;
 import com.enderwolf.spotipower.ui.PlayerFragment;
+import com.enderwolf.spotipower.ui.PlaylistFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
-import de.greenrobot.event.EventBus;
 
-public class PlayerActivity extends Activity {
+public class PlayerActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private boolean dualPane = false;
 
     private MiniPlayer miniPlayer;
     private PlayerFragment playerFragment;
-
+    private PlaylistFragment playlistFragment;
+    private ConnectionManagerFragment connectionManagerFragment;
     private SettingsFragment settingsFragment;
+    private AboutFragment aboutFragment;
 
     private ListView drawerList;
-    private DrawerLayout layout;
+    private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
+
+    private static String[] drawerDataList = {"Home", "Playlist", "Connections", "Settings", "About"};
+    private Fragment[] drawerDataToFragments = new Fragment[drawerDataList.length];
+    private int drawerDataCurrent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,16 +131,20 @@ public class PlayerActivity extends Activity {
     // TODO orientation things
     public void initGui() {
 
-        settingsFragment = SettingsFragment.newInstance();
+
         playerFragment = PlayerFragment.newInstance();
         miniPlayer = MiniPlayer.newInstance();
+        playlistFragment = PlaylistFragment.newInstance();
+        connectionManagerFragment = ConnectionManagerFragment.newInstance();
+        settingsFragment = SettingsFragment.newInstance();
+        aboutFragment = AboutFragment.newInstance();
 
         drawerList = (ListView) this.findViewById(R.id.left_drawer);
-        layout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,                   /* host Activity */
-                layout,                 /* DrawerLayout object */
+                drawerLayout,           /* DrawerLayout object */
                 R.drawable.ic_drawer,   /* nav drawer icon to replace 'Up' caret */
                 R.string.app_name,      /* "open drawer" description */
                 R.string.app_name       /* "close drawer" description */
@@ -154,25 +164,47 @@ public class PlayerActivity extends Activity {
         };
 
         // Set the drawer toggle as the DrawerListener
-        layout.setDrawerListener(drawerToggle);
+        drawerLayout.setDrawerListener(drawerToggle);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        String[] list = {"Hey", "Test"};
-
         drawerList.setAdapter(new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                list
+            this,
+            android.R.layout.simple_list_item_1,
+            drawerDataList
         ));
 
+        drawerList.setOnItemClickListener(this);
+
         if(dualPane)  {
+            drawerDataToFragments[0] = playlistFragment;
+            drawerDataToFragments[1] = playlistFragment;
+            drawerDataToFragments[2] = connectionManagerFragment;
+            drawerDataToFragments[3] = settingsFragment;
+            drawerDataToFragments[4] = aboutFragment;
+
+
             getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
         } else {
+            drawerDataToFragments[0] = playerFragment;
+            drawerDataToFragments[1] = playlistFragment;
+            drawerDataToFragments[2] = connectionManagerFragment;
+            drawerDataToFragments[3] = settingsFragment;
+            drawerDataToFragments[4] = aboutFragment;
+
             getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Log.d("onItemClick", String.valueOf(i));
+        drawerDataCurrent = i;
+        drawerLayout.closeDrawers();
+
+        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[i]).commit();
     }
 }

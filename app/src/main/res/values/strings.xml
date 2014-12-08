@@ -25,5 +25,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="title_activity_list_of_searched_songs">ListOfSearchedSongs</string>
+    <string name="about_text">Spotipower is a student project created by 3 studens. etc...</string>
 
 </resources>
