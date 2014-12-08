@@ -6,6 +6,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import de.greenrobot.event.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +34,7 @@ public class ListOfSearchedSongs extends Activity {
 
     private static final String TAG = ListOfSearchedSongs.class.getSimpleName();
 
+    //Testsearch
     private static final String url = "https://api.spotify.com/v1/search?query=flame&offset=0&limit=20&type=track";
     private ProgressDialog pDialog;
     private AlertDialog.Builder DialogRequestSong;
@@ -40,10 +43,6 @@ public class ListOfSearchedSongs extends Activity {
     private List<Song> Songs = new ArrayList<Song>();
     private ListView listView;
     private CustomeSongList adapter;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +55,8 @@ public class ListOfSearchedSongs extends Activity {
         adapter = new CustomeSongList(this, Songs);
         listView.setAdapter(adapter);
 
+        // clear songs from previouse searches
         Songs.clear();
-
-
-
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,33 +65,24 @@ public class ListOfSearchedSongs extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id){
 
-               /* Toast.makeText(getApplicationContext(), "You clicked " + Songs.get(position).getName(),
+               /* Toast.makeText(getApplicationContext(), "You clicked " + songList.get(position).getName(),
                         Toast.LENGTH_LONG).show(); */
+                final int currentPos = position;
 
-
-                DialogRequestSong.setMessage(Songs.get(position).getName())
-                .setPositiveButton("Request song", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //TODO Send song to other android system
-                        // Send Song = Songs.get(position);
-                        // Song -> to android phone
-                    }
-                })
+                DialogRequestSong.setMessage(Songs.get(currentPos).getName())
+                        .setPositiveButton("Request song", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                EventBus.getDefault().post(new SongQueuedClientEvent(Songs.get(currentPos)));
+                            }
+                        })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                             }
                         });
                 DialogRequestSong.show();
-
             }
-
         });
-
-
-
-
-
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
@@ -102,8 +90,7 @@ public class ListOfSearchedSongs extends Activity {
         pDialog.show();
 
         // changing action bar color
-        getActionBar().setBackgroundDrawable(
-                new ColorDrawable(Color.parseColor("#1b1b1b")));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         /**
          *
@@ -124,77 +111,15 @@ public class ListOfSearchedSongs extends Activity {
          */
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // display response
-                        hidePDialog();
-                        Log.d("Response", response.toString());
-                        try {
-                            JSONObject type = response.getJSONObject(("tracks"));
-                            JSONArray items = type.getJSONArray("items");
-                            for (int i = 0; i < items.length(); i++) {
-                                JSONObject typeItem = items.getJSONObject(i);           // Every track
-                                JSONObject album = typeItem.getJSONObject("album");     // get the album the song is in
-                                JSONArray artists = typeItem.getJSONArray("artists");   // get all artist who is featured in the song
-                                String albumName = album.getString("name");             // get album name
-                                JSONArray images = album.getJSONArray("images");        // get array of different image quality
-                                JSONObject thumbnailUrl = images.getJSONObject(1);      // get medium quality [0 = bad] [ 1 = medium] [2 = good]
-                                String imageURL = thumbnailUrl.getString("url");        // get url to the image used in the album
-
-                                ArrayList<String> artistList = new ArrayList<String>();
-
-                                Log.d("Response value of artist", String.valueOf(artists.length()));
-
-                                for (int j = 0; j < artists.length(); j++) {
-                                    JSONObject artist = artists.getJSONObject(j);
-                                    artistList.add(artist.getString("name"));
-                                    Log.d("Response", artist.getString("name") );
-                                }
-
-
-                                // Adding song to the listSearched -- Songs --
-                                Song song = new Song();
-                                song.setId(typeItem.getString("id"));  // Getting id from the JSONObject
-                                song.setName(typeItem.getString("name")); // Getting name from the JSONObject
-                                song.setAlbumName(albumName);
-                                song.setThumbnailUrl(imageURL);
-                                song.setArtist(artistList);
-                                Songs.add(song);
-
-
-                                // -- TEST CASE --
-                                System.out.println("id: " + String.valueOf(song.getId())+ "\n");
-                                System.out.println("name: " + song.getName() + "\n");
-                                System.out.println("album name: " + song.getAlbumName() + "\n");
-                                System.out.println("image " + song.getThumbnailUrl() + "\n");
-
-                                ArrayList<String> TestArtistList = song.getArtist();
-                                for(String s : TestArtistList)
-                                {
-                                    System.out.println(s);
-                                }
-
-                                // -- REMOVING WHEN PUBLISHED --
-                            }
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        // Makes the custome listSearched updating itself with the new songs added to songs listSearched.
-                        adapter.notifyDataSetChanged();
-                    }
-
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        VolleyLog.d(TAG, "Error: " + error.getMessage());
-                        hidePDialog();
-
-                    }
-                });
-
+            new SongParser(),
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    hidePDialog();
+                }
+            }
+        );
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(getRequest);
     }
@@ -232,5 +157,30 @@ public class ListOfSearchedSongs extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class SongParser implements Response.Listener<JSONObject> {
+        @Override
+        public void onResponse(JSONObject response) {
+            // display response
+            hidePDialog();
+            Log.d("Response", response.toString());
+
+            try {
+                JSONObject type = response.getJSONObject(("tracks"));
+                JSONArray items = type.getJSONArray("items");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject typeItem = items.getJSONObject(i);           // Every track
+                    Song song = new Song(typeItem);
+                    Songs.add(song);
+                }
+            }
+
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            adapter.notifyDataSetChanged();
+        }
     }
 }

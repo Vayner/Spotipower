@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
+import com.spotify.sdk.android.playback.PlayerState;
+
 import de.greenrobot.event.EventBus;
 
 public class MiniPlayer extends Fragment {
@@ -33,7 +35,11 @@ public class MiniPlayer extends Fragment {
         public final MediaButtonEvent.ButtonType type;
 
         public static DisplayMode getOpposite (DisplayMode mode) {
-            return (mode == PLAY) ? PAUSE : PLAY;
+            return (mode == PLAY)? PAUSE : PLAY;
+        }
+
+        public static DisplayMode getFromPlayerState (PlayerState state) {
+            return (state.playing)? PLAY : PAUSE;
         }
     }
 
@@ -47,8 +53,6 @@ public class MiniPlayer extends Fragment {
     public static MiniPlayer newInstance() {
         MiniPlayer fragment = new MiniPlayer();
         Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,10 +63,6 @@ public class MiniPlayer extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -84,7 +84,6 @@ public class MiniPlayer extends Fragment {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
-                setDisplayMode(DisplayMode.getOpposite(playPauseToggle));
             }
         });
 
@@ -103,6 +102,7 @@ public class MiniPlayer extends Fragment {
     public void onEvent(PlayBackUpdateEvent event) {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
         progressBar.setProgress(progress);
+        setDisplayMode(DisplayMode.getFromPlayerState(event.state));
     }
 
     private void setDisplayMode(DisplayMode mode) {

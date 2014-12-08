@@ -2,73 +2,62 @@ package com.enderwolf.spotipower;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-import com.enderwolf.spotipower.event.MediaButtonEvent;
-import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
+import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.MiniPlayer;
+import com.enderwolf.spotipower.ui.PlayerFragment;
+import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.authentication.SpotifyAuthentication;
-import com.spotify.sdk.android.playback.ConnectionStateCallback;
-import com.spotify.sdk.android.playback.Player;
-import com.spotify.sdk.android.playback.PlayerNotificationCallback;
-import com.spotify.sdk.android.playback.PlayerState;
-import com.spotify.sdk.android.playback.PlayerStateCallback;
 import de.greenrobot.event.EventBus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+public class PlayerActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-
-public class PlayerActivity extends Activity implements
-        PlayerNotificationCallback, ConnectionStateCallback {
-
-    // TODO: find a way to transfer this outside of git
-    //private final static String CLIENT_ID = getString(R.string.spotify_client_id);
-    //private static final String CLIENT_ID = "8cf97e259dc14327b50a3316ae6c3b60";
-    private static final String REDIRECT_URI = "spotipower-login://callback";
-
-    // Music Player
-    private Player musicPlayer;
-    private PlayerState musicPlayerState;
-    private List<String> musicPlayList;
-    private int musicPlayListPos;
+    private boolean dualPane = false;
 
     private MiniPlayer miniPlayer;
-    private Timer timer;
+    private PlayerFragment playerFragment;
+
+    private SettingsFragment settingsFragment;
+
+    private NavigationDrawerFragment drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
+        setContentView(R.layout.activity_nav_drawer);
 
-        musicPlayList = new ArrayList<String>();
+        Settings.loadSettings(this);
+        dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        musicPlayList.add("spotify:track:35SnuWHCBTJkfJYetXUF7X");
-        musicPlayList.add("spotify:track:5WJROlNr1bY44AHLBAydU3");
-        musicPlayList.add("spotify:track:5eS6pTvDNOvh2kyxeZtK3r");
-        musicPlayList.add("spotify:track:2aIRtTfx8Uc94znIaTANdf");
-        musicPlayList.add("spotify:track:4IdiGMOzEYXOh2897XOV8i");
-        musicPlayListPos = 2;
-
+        settingsFragment = SettingsFragment.newInstance();
+        playerFragment = PlayerFragment.newInstance();
         miniPlayer = MiniPlayer.newInstance();
-        timer = new Timer();
+        drawer = new NavigationDrawerFragment();
+        DrawerLayout layout = new DrawerLayout(this);
+        drawer.setUp(R.id.container, layout);
 
-        EventBus.getDefault().register(this);
+        ListView drawerList = (ListView) this.findViewById(R.id.navigation_drawer);
+
+        String[] list = {"Hey", "Test"};
+
+        drawerList.setAdapter(new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                list
+        ));
+
         //authenticate user
-        //TODO: scopes
-        SpotifyAuthentication.openAuthWindow(getString(R.string.spotify_client_id), "token", REDIRECT_URI,
-                        new String[]{"user-read-private", "streaming"}, null, this);
+        MusicPlayer.initMusicPlayer(this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,50 +82,17 @@ public class PlayerActivity extends Activity implements
     }
 
     @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-        musicPlayerState = playerState;
-    }
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
+        boolean prevOrientation = dualPane;
+        dualPane = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-    }
+        if(prevOrientation != dualPane) {
+            this.setContentView(R.layout.activity_nav_drawer);
+            this.initGui();
+        }
 
-    @Override
-    public void onLoggedIn() {
-    }
-
-    @Override
-    public void onLoggedOut() {
-
-    }
-
-    @Override
-    public void onLoginFailed(Throwable throwable) {
-
-    }
-
-    @Override
-    public void onTemporaryError() {
-
-    }
-
-    @Override
-    public void onNewCredentials(String s) {
-
-    }
-
-    @Override
-    public void onConnectionMessage(String s) {
-
-    }
-
-
-    public void onSearchForSongs(View view) {
-
-        Intent myIntent = new Intent(PlayerActivity.this, ListOfQuedSongs.class);
-        PlayerActivity.this.startActivity(myIntent);
-        // Do something in response to button
     }
 
     @Override
@@ -144,82 +100,44 @@ public class PlayerActivity extends Activity implements
         super.onNewIntent(intent);
         Uri uri = intent.getData();
         if (uri != null) {
-            AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
-            Spotify spotify = new Spotify(response.getAccessToken());
-            musicPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
-                @Override
-                public void onInitialized() {
-                    musicPlayer.addConnectionStateCallback(PlayerActivity.this);
-                    musicPlayer.addPlayerNotificationCallback(PlayerActivity.this);
-                    musicPlayer.play("spotify:track:2G6d1OttEYLmDJ2KzpJxvm");
-
-                    getFragmentManager().beginTransaction().replace(R.id.myMiniPlayer, miniPlayer).commit();
-                    timer.schedule(new ProgressUpdate(), 1000, 1000);
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-                }
-            });
+            MusicPlayer.finalizeInitMusicPlayer(this, uri);
         }
+    }
+
+
+
+    protected void onResume() {
+        super.onResume();
+        Settings.loadSettings(this);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Settings.saveSettings(this);
     }
 
     @Override
     protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
         Spotify.destroyPlayer(this);
         super.onDestroy();
     }
 
-    public void onEvent(MediaButtonEvent event) {
-        switch (event.type) {
-            case NEXT:
+    // TODO orientation things
+    public void initGui() {
 
-            break;
-
-            case PREVIOUS:
-
-            break;
-
-            case PLAY:
-                musicPlayer.getPlayerState(new PlayerStateCallback() {
-                    @Override
-                    public void onPlayerState(PlayerState playerState) {
-                        if (!playerState.playing && playerState.trackUri == null) {
-                            musicPlayer.play(musicPlayList, musicPlayListPos);
-                        } else {
-                            musicPlayer.resume();
-                        }
-                    }
-                });
-            break;
-
-            case PAUSE:
-                musicPlayer.pause();
-            break;
-
-            case STOP:
-                musicPlayer.pause();
-                musicPlayer.seekToPosition(0);
-            break;
+        if(dualPane)  {
+            getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
+        } else {
+            getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_view, settingsFragment).commit();
         }
     }
 
-    public void onPlayPressed() {
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
 
-
-    }
-
-    class ProgressUpdate extends TimerTask {
-        @Override
-        public void run() {
-            musicPlayer.getPlayerState(new PlayerStateCallback() {
-                @Override
-                public void onPlayerState(PlayerState playerState) {
-                    EventBus.getDefault().post(new PlayBackUpdateEvent(playerState));
-                }
-            });
-        }
     }
 }
