@@ -56,10 +56,6 @@ public class Parser {
     }
 }
 
-interface ParseCompleteCallback {
-    void OnParseComplete(Playlist playlist);
-}
-
 class SongJSONParser implements Response.Listener<JSONObject> {
 
     private ParseCompleteCallback callback;
