@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">Spotipower</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_get_songs">GetSongs</string>
-    <string name="title_activity_player">PlayerActivity</string>
+    <string name="title_activity_player">Spotipower</string>
     <string name="playpause">Play/Pause</string>
     <string name="back">Back</string>
     <string name="previous">Previous</string>
@@ -15,9 +13,6 @@
     <string name="album">Album</string>
     <string name="track">Track</string>
     <string name="playlist">Playlist</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_hosting_test">HostingTest</string>
-    <string name="title_activity_nav_drawer">NavDrawer</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -26,6 +21,6 @@
     <string name="action_example">Example action</string>
     <string name="title_activity_list_of_searched_songs">ListOfSearchedSongs</string>
     <string name="title_activity_list_of_qued_songs">ListOfQuedSongs</string>
-    <string name="about_text">Spotipower is a student project created by 3 studens. etc...</string>
+    <string name="about_text">Spotipower is a student project created by 3 studens. etc…</string>
 
 </resources>
