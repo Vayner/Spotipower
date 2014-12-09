@@ -6,6 +6,7 @@ import android.util.Log;
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
 import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -92,7 +93,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
     }
 
-    public void onEvent(SongQueuedClientEvent event){
+    public void onEvent(SongQueuedEvent event){
         this.queue.add(event.song);
     }
 
@@ -197,9 +198,8 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         Parser.ParseLookup(uri.split(":")[2], new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
-                if (!playlist.isEmpty()) {
-                    queue.add(playlist.get(0));
-                }
+                queue.add(playlist.get(0));
+                Log.i("MusicPlayer", "Queued " + playlist.get(0).getName());
             }
         });
     }
