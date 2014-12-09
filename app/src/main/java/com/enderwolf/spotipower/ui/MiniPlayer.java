@@ -48,7 +48,7 @@ public class MiniPlayer extends Fragment {
         }
 
         public static DisplayMode getFromPlayerState (PlayerState state) {
-            if(state.trackUri == null) {
+            if(state.trackUri.equals("")) {
                 return PLAY;
             }
 
