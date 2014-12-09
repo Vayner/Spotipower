@@ -97,6 +97,7 @@ public class HostServer implements Runnable {
      */
     public void stopHosting() {
         HostDiscoveryListener.getInstance().stopHosting();
+        HostReceiver.getInstance().stopHosting();
         this.hosting = false;
     }
 

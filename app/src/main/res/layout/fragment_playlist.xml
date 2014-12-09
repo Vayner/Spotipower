@@ -11,4 +11,6 @@
         android:layout_height="wrap_content"
         layout="@layout/playlist_view"
         android:layout_gravity="center" />
+
+
 </FrameLayout>
