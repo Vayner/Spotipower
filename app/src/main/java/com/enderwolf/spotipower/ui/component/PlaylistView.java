@@ -34,22 +34,12 @@ public class PlaylistView extends FrameLayout {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-    }
-
-    @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
 
         if(visibility == View.VISIBLE) {
             display();
         }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
     }
 
     private void display() {

@@ -24,7 +24,7 @@ import java.util.List;
 public class Parser {
     private static final String lookupAddres = "https://api.spotify.com/v1/tracks/?ids=";
 
-    public static void ParseUriList (List<String> uris, final ParseCompleteCallback callback) {
+    public static void ParseLookupList(List<String> uris, final ParseCompleteCallback callback) {
         StringBuilder request = new StringBuilder(lookupAddres);
 
         for (String uri : uris) {
@@ -50,11 +50,28 @@ public class Parser {
         AppController.getInstance().addToRequestQueue(getRequest);
     }
 
-    public static void ParseUri (String uri, ParseCompleteCallback callback) {
+    public static void ParseLookup(String uri, ParseCompleteCallback callback) {
         List<String> dataList = new ArrayList<String>();
         dataList.add(uri);
 
-        ParseUriList(dataList, callback);
+        ParseLookupList(dataList, callback);
+    }
+
+    public static void ParseSearch(String search, ParseCompleteCallback callback) {
+        JsonObjectRequest getRequest = new JsonObjectRequest (
+            Request.Method.GET,
+            search,
+            null,
+            new SearchJSONParser(callback),
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d("Parser", "Error: " + error.getMessage());
+                }
+            }
+        );
+
+        AppController.getInstance().addToRequestQueue(getRequest);
     }
 }
 
@@ -74,6 +91,39 @@ class SongJSONParser implements Response.Listener<JSONObject> {
             JSONArray type = response.getJSONArray(("tracks"));
             for (int i = 0; i < type.length(); i++) {
                 JSONObject typeItem = type.getJSONObject(i);
+
+                Song song = Song.newInstance(typeItem);
+
+                playlist.add(song);
+            }
+        }
+
+        catch (JSONException e) {
+            Log.e("SongJSONParser", "Invalid JSON", e);
+            playlist = null;
+        }
+
+        callback.OnParseComplete(playlist);
+    }
+}
+
+class SearchJSONParser implements Response.Listener<JSONObject> {
+
+    private ParseCompleteCallback callback;
+
+    public SearchJSONParser(ParseCompleteCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Playlist playlist = new Playlist("");
+
+        try {
+            JSONObject type = response.getJSONObject(("tracks"));
+            JSONArray items = type.getJSONArray("items");
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject typeItem = items.getJSONObject(i);
 
                 Song song = Song.newInstance(typeItem);
 

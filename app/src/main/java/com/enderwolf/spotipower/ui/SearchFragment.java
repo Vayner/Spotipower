@@ -2,7 +2,6 @@ package com.enderwolf.spotipower.ui;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,10 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 
-import com.enderwolf.spotipower.PlayerActivity;
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -119,7 +116,7 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
         list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
 
-        Parser.ParseUriList(list, new ParseCompleteCallback() {
+        Parser.ParseLookupList(list, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 if (playlist == null) {
