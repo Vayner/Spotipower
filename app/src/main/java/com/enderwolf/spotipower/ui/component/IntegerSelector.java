@@ -25,8 +25,9 @@ public class IntegerSelector extends LinearLayout {
         this.text.setText(name);
 
         LayoutParams paramsText = generateDefaultLayoutParams();
-        paramsText.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsText.width = 0;
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsText.weight = 1;
 
         this.addView(this.text, paramsText);
 
@@ -35,10 +36,11 @@ public class IntegerSelector extends LinearLayout {
         this.numberField.setText(String.valueOf(value));
 
         LayoutParams paramsNumberField = generateDefaultLayoutParams();
-        paramsNumberField.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsNumberField.width = 0;
         paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsNumberField.weight = 1;
 
-        this.addView(this.numberField, paramsText);
+        this.addView(this.numberField, paramsNumberField);
     }
 
     public EditText getNumberField() {
