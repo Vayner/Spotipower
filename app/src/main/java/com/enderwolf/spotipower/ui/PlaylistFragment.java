@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.adapter.CustomeSongList;
 import com.enderwolf.spotipower.app.AppController;
+import com.enderwolf.spotipower.event.SongUpdateEvent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +44,7 @@ public class PlaylistFragment extends Fragment {
     private ListView listView;
     private CustomeSongList adapter;
 
-    //Testsearch
+    //Test search
     private static final String url = "https://api.spotify.com/v1/search?query=flame&offset=0&limit=10&type=track";
     private ProgressDialog pDialog;
     private AlertDialog.Builder DialogRequestSong;
@@ -73,12 +75,16 @@ public class PlaylistFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_playlist, container, false);
-
         listView = (ListView) root.findViewById(R.id.listSearched);
 
         adapter = new CustomeSongList(getActivity(), Songs);
         listView.setAdapter(adapter);
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                EventBus.getDefault().post(new SongUpdateEvent(Songs.get(position)));
+            }
+        });
         pDialog = new ProgressDialog(getActivity());
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");

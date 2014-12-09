@@ -148,10 +148,7 @@ public class ListOfQuedSongs extends Activity {
                     quedSongs.add(song);
 
                     // -- TEST CASE --
-                    System.out.println("id: " + String.valueOf(song.getId())+ "\n");
-                    System.out.println("name: " + song.getName() + "\n");
-                    System.out.println("album name: " + song.getAlbumName() + "\n");
-                    System.out.println("image " + song.getThumbnailUrl() + "\n");
+
 
                     ArrayList<String> TestArtistList = song.getArtist();
                     for(String s : TestArtistList) {

@@ -7,10 +7,22 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.enderwolf.spotipower.R;
+import com.enderwolf.spotipower.Song;
+import com.enderwolf.spotipower.app.AppController;
+import com.enderwolf.spotipower.event.SongUpdateEvent;
+
+import de.greenrobot.event.EventBus;
 
 public class PlayerFragment extends Fragment {
+
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private Song currentSong = null;
+    NetworkImageView thumbNail;
 
     /**
      * Use this factory method to create a new instance of
@@ -35,10 +47,32 @@ public class PlayerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_player, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_player, container, false);
+
+        thumbNail = (NetworkImageView) root.findViewById(R.id.albumHighCenter);
+
+
+        return root;
+    }
+
+    public void onEvent(SongUpdateEvent event){
+        if(!event.song.equals(currentSong)){
+            currentSong = event.song;
+            thumbNail.setImageUrl(currentSong.getThumbnailUrl(Song.Quality.Medium), imageLoader);
+
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
