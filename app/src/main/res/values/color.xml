@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="textColor">#237674</color>
-    <color name="albumName">#237674</color>
+
     <color name="list_divider">#237674</color>
     <color name="list_row_start_color">#00676262</color>
     <color name="list_row_end_color">#00676262</color>
