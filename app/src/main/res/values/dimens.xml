@@ -6,9 +6,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="navigation_drawer_width">240dp</dimen>
 
-    <dimen name="title">12sp</dimen>
+    <dimen name="title">15sp</dimen>
     <dimen name="rating">9sp</dimen>
-    <dimen name="artist">9sp</dimen>
-    <dimen name="album">6sp</dimen>
+    <dimen name="artist">12sp</dimen>
+    <dimen name="album">11sp</dimen>
 
 </resources>

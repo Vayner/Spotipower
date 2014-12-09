@@ -89,6 +89,7 @@ public class PlaylistFragment extends Fragment {
         Parser.ParseSearch(url, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
+                Songs = playlist;
                 showPlaylist(playlist);
             }
         });
