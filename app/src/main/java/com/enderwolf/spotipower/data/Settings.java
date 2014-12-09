@@ -106,8 +106,6 @@ public class Settings extends Observable implements Serializable {
         if(settings == null) {
             settings = new Settings();
         }
-        Log.i("GETSETTINGS", "Observers = " + settings.countObservers());
-
         return settings;
     }
 }

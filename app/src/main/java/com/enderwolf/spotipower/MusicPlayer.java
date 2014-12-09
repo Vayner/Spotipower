@@ -24,6 +24,7 @@ import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
+import me.sbstensby.spotipowerhost.HostReceiver;
 import me.sbstensby.spotipowerhost.HostRecieverInterface;
 
 /**
@@ -46,6 +47,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
     private MusicPlayer () {
         timer = new Timer();
         queue = new Playlist("queue");
+        HostReceiver.getInstance().setReturnInterface(this);
     }
 
     @Override
