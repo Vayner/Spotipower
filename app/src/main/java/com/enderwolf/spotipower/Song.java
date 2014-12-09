@@ -16,10 +16,11 @@ public class Song {
     private String id;
     private String name;
     private String albumName;
-    private String songUrl;
-    private String thumbnailUrl;
+    private String songUri;
 
-    private ArrayList<String> artists;
+    private ArrayList<String> thumbnailUrl = new ArrayList<>();
+    private ArrayList<String> artists = new ArrayList<>();
+
     private int rating;
 
     public static Song newInstance(JSONObject songData) {
@@ -31,15 +32,17 @@ public class Song {
             JSONArray images = album.getJSONArray("images");
 
             song.id = songData.getString("id");
+            song.songUri = songData.getString("href");
             song.name = songData.getString("name");
             song.albumName = album.getString("name");
 
-            for (int j = 0; j < artists.length(); j++) {
-                song.artists.add(artists.getJSONObject(j).getString("name"));
+            for (int i = 0; i < artists.length(); i++) {
+                song.artists.add(artists.getJSONObject(i).getString("name"));
             }
 
-            //Get medium quality [0 = bad] [ 1 = medium] [2 = good]
-            song.thumbnailUrl = images.getJSONObject(1).getString("url");
+            for (int i = 0; i < images.length(); i++) {
+                song.thumbnailUrl.add(images.getJSONObject(i).getString("url"));
+            }
 
         } catch (JSONException e) {
             Log.e("Song init", "Invalid JSON object given to constructor", e);
@@ -51,13 +54,6 @@ public class Song {
 
     private Song () {
         // To be used by factory
-    }
-
-    public Song(String id, String name, String albumName, String SongUrl){
-        this.id = id;
-        this.name = name;
-        this.albumName = albumName;
-        this.songUrl = SongUrl;
     }
 
     public String getId() {
@@ -73,23 +69,15 @@ public class Song {
     }
 
     public String getSongUrl() {
-        return songUrl;
+        return songUri;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public String getThumbnailUrl(Quality quality) {
+        return thumbnailUrl.get(quality.getQuality());
     }
 
     public ArrayList<String> getArtist() {
         return artists;
-    }
-
-    public void setArtist(ArrayList<String> artists) {
-        this.artists = artists;
     }
 
     public String getStringOfArtists() {
@@ -109,9 +97,19 @@ public class Song {
         return rating;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    enum Quality {
+        Small(0),
+        Medium(1),
+        Large(2);
+
+        private int quality;
+
+        Quality(int q) {
+            this.quality = q;
+        }
+
+        public int getQuality() {
+            return quality;
+        }
     }
-
-
 }
