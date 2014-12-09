@@ -180,9 +180,11 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         return init;
     }
 
-    //-----
-    //Callbacks from HostReciever.
-    //-----
+    /*
+     * ------------------------------
+     * Callbacks from HostReciever.
+     * ------------------------------
+     */
 
     /**
      * Adds uri to queue
