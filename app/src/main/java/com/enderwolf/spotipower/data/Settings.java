@@ -12,14 +12,15 @@ import java.util.*;
 public class Settings extends Observable implements Serializable {
     public static final String FILENAME = "settings.data";
     private static Settings settings = null;
-    private Map<String, SettingsEntry> settingValues = new HashMap<>();
+    private SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
 
     // TODO change over to objects / class hierarchy?
     private Settings () {
         this.settingValues.put("Test1", new BooleanEntry("Test1", false));
         this.settingValues.put("Test2", new BooleanEntry("Test2", false));
         this.settingValues.put("Test3", new BooleanEntry("Test3", false));
-        //this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
+        this.settingValues.put("String test", new StringEntry("String test", "Hello"));
+        this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
     }
 
     private void overwriteSettings(Settings settings) {
