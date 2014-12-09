@@ -9,6 +9,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.Song;
+import com.enderwolf.spotipower.app.AppController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,12 +25,10 @@ public class Parser {
     private static final String lookupAddres = "https://api.spotify.com/v1/tracks/?ids=";
 
     public static void ParseUriList (List<String> uris, final ParseCompleteCallback callback) {
-        Log.d("Parser.ParseUri", "Request to parse " + uris.size()  + " uris");
-
         StringBuilder request = new StringBuilder(lookupAddres);
 
         for (String uri : uris) {
-            request.append(uri.substring(uri.lastIndexOf(':')));
+            request.append(uri.substring(uri.lastIndexOf(':') + 1));
             request.append(',');
         }
 
@@ -47,10 +46,11 @@ public class Parser {
                 }
             }
         );
+
+        AppController.getInstance().addToRequestQueue(getRequest);
     }
 
     public static void ParseUri (String uri, ParseCompleteCallback callback) {
-        Log.d("Parser.ParseUri", "Request to parse " + uri);
         List<String> dataList = new ArrayList<String>();
         dataList.add(uri);
 
@@ -68,7 +68,6 @@ class SongJSONParser implements Response.Listener<JSONObject> {
 
     @Override
     public void onResponse(JSONObject response) {
-        Log.d("SongJSONParser.onResponse", "Starting parsing now");
         Playlist playlist = new Playlist("");
 
         try {
@@ -83,11 +82,10 @@ class SongJSONParser implements Response.Listener<JSONObject> {
         }
 
         catch (JSONException e) {
-            Log.e("SongJSONParser","Invalid JSON",e);
+            Log.e("SongJSONParser", "Invalid JSON", e);
             playlist = null;
         }
 
-        Log.d("SongJSONParser.onResponse", "Calling callback now");
         callback.OnParseComplete(playlist);
     }
 }

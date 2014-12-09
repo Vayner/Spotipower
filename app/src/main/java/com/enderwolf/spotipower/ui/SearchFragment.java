@@ -19,6 +19,9 @@ import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchFragment extends Fragment implements TabHost.OnTabChangeListener {
 
     private PlaylistView playlistView;
@@ -110,10 +113,20 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         super.onAttach(activity);
 
         Log.d("onAttach", "getting playlist data");
-        Parser.ParseUri("spotify:track:4VXdDBoubJhBsTuO3V3qwt", new ParseCompleteCallback() {
+        List<String> list = new ArrayList<>();
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+
+        Parser.ParseUriList(list, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
-                Log.d("OnParseComplete", "showing playlist data");
+                if (playlist == null) {
+                    Log.e("ParseCompleteCallback", "Invalid playlist");
+                    return;
+                }
+
                 trackView.showPlaylist(playlist);
             }
         });
