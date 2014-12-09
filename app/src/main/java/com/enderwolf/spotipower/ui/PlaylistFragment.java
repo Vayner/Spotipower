@@ -84,7 +84,7 @@ public class PlaylistFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EventBus.getDefault().post(new SongQueuedClientEvent(Songs.get(position)));
+                EventBus.getDefault().post(new SongUpdateEvent(Songs.get(position)));
 
             }
         });

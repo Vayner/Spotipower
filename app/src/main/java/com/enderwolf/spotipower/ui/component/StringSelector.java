@@ -24,8 +24,9 @@ public class StringSelector extends LinearLayout {
         this.text.setText(name);
 
         LayoutParams paramsText = generateDefaultLayoutParams();
-        paramsText.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        paramsText.width = 0;
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsText.weight = 1;
 
         this.addView(this.text, paramsText);
 
@@ -33,11 +34,12 @@ public class StringSelector extends LinearLayout {
         this.textField.setInputType(InputType.TYPE_CLASS_TEXT);
         this.textField.setText(String.valueOf(value));
 
-        LayoutParams paramsNumberField = generateDefaultLayoutParams();
-        paramsNumberField.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        LayoutParams paramsEditText = generateDefaultLayoutParams();
+        paramsEditText.width = 0;
+        paramsEditText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsEditText.weight = 1;
 
-        this.addView(this.textField, paramsText);
+        this.addView(this.textField, paramsEditText);
     }
 
     public EditText getTextField() {

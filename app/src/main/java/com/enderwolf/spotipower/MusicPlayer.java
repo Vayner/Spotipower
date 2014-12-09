@@ -160,6 +160,8 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         Config playerConfig = new Config(app, response.getAccessToken(), app.getString(R.string.spotify_client_id));
 
         musicPlayer = getMusicPlayer();
+
+        System.out.println(" Music player " + String.valueOf(musicPlayer.currentTrackIndex));
         musicPlayer.player = spotify.getPlayer(playerConfig, app, new Player.InitializationObserver() {
             @Override
             public void onInitialized() {
@@ -270,6 +272,7 @@ class ProgressUpdate extends TimerTask {
         player.getPlayerState(new PlayerStateCallback() {
             @Override
             public void onPlayerState(PlayerState playerState) {
+                System.out.println("PlayerState uri " + playerState.trackUri);
                 EventBus.getDefault().post(new PlayBackUpdateEvent(playerState));
 
             }
