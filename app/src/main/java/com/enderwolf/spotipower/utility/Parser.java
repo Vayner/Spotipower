@@ -24,6 +24,7 @@ public class Parser {
     private static final String lookupAddres = "https://api.spotify.com/v1/tracks/?ids=";
 
     public static void ParseUriList (List<String> uris, final ParseCompleteCallback callback) {
+        Log.d("Parser.ParseUri", "Request to parse " + uris.size()  + " uris");
 
         StringBuilder request = new StringBuilder(lookupAddres);
 
@@ -49,6 +50,7 @@ public class Parser {
     }
 
     public static void ParseUri (String uri, ParseCompleteCallback callback) {
+        Log.d("Parser.ParseUri", "Request to parse " + uri);
         List<String> dataList = new ArrayList<String>();
         dataList.add(uri);
 
@@ -66,6 +68,7 @@ class SongJSONParser implements Response.Listener<JSONObject> {
 
     @Override
     public void onResponse(JSONObject response) {
+        Log.d("SongJSONParser.onResponse", "Starting parsing now");
         Playlist playlist = new Playlist("");
 
         try {
@@ -84,6 +87,7 @@ class SongJSONParser implements Response.Listener<JSONObject> {
             playlist = null;
         }
 
+        Log.d("SongJSONParser.onResponse", "Calling callback now");
         callback.OnParseComplete(playlist);
     }
 }

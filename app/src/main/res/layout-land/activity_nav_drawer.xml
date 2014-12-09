@@ -34,17 +34,20 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/player_view"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_above="@+id/miniplayer_view">
+                android:layout_above="@+id/miniplayer">
             </FrameLayout>
 
-            <FrameLayout
+            <fragment
+                android:name="com.enderwolf.spotipower.ui.MiniPlayer"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/miniplayer_view"
+                android:id="@+id/miniplayer"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
 
     </LinearLayout>
