@@ -26,6 +26,7 @@ import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.adapter.CustomeSongList;
 import com.enderwolf.spotipower.app.AppController;
+import com.enderwolf.spotipower.event.SongQueuedClientEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -83,7 +84,8 @@ public class PlaylistFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EventBus.getDefault().post(new SongUpdateEvent(Songs.get(position)));
+                EventBus.getDefault().post(new SongQueuedClientEvent(Songs.get(position)));
+
             }
         });
         Parser.ParseSearch(url, new ParseCompleteCallback() {
