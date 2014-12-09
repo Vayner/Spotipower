@@ -53,7 +53,9 @@ public class PlaylistView extends FrameLayout {
     }
 
     private void display() {
-        adapter = new CustomeSongList(this.getContext(), list);
-        listView.setAdapter(adapter);
+        if(this.list != null) {
+            adapter = new CustomeSongList(this.getContext(), list);
+            listView.setAdapter(adapter);
+        }
     }
 }
