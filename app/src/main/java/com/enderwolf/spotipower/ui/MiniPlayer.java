@@ -1,7 +1,6 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,16 +42,12 @@ public class MiniPlayer extends Fragment {
         public final int imageId;
         public final MediaButtonEvent.ButtonType type;
 
-        public static DisplayMode getOpposite (DisplayMode mode) {
-            return (mode == PLAY)? PAUSE : PLAY;
-        }
-
         public static DisplayMode getFromPlayerState (PlayerState state) {
             if(state.trackUri.equals("")) {
                 return PLAY;
             }
 
-            return (state.playing)? PLAY : PAUSE;
+            return (state.playing)? PAUSE : PLAY;
         }
     }
 

@@ -21,8 +21,6 @@ public class Song {
     private ArrayList<String> thumbnailUrl = new ArrayList<>();
     private ArrayList<String> artists = new ArrayList<>();
 
-    private int rating;
-
     public static Song newInstance(JSONObject songData) {
         Song song = new Song();
 
@@ -32,7 +30,7 @@ public class Song {
             JSONArray images = album.getJSONArray("images");
 
             song.id = songData.getString("id");
-            song.songUri = songData.getString("href");
+            song.songUri = "spotify:track:" + song.id;
             song.name = songData.getString("name");
             song.albumName = album.getString("name");
 
@@ -68,7 +66,7 @@ public class Song {
         return this.albumName;
     }
 
-    public String getSongUrl() {
+    public String getSongUri() {
         return songUri;
     }
 
@@ -91,10 +89,6 @@ public class Song {
         }
 
         return sb.toString();
-    }
-
-    public int getRating() {
-        return rating;
     }
 
     public enum Quality {

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
-import com.enderwolf.spotipower.event.SongQueuedClientEvent;
 import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
@@ -115,11 +114,13 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
                 player.getPlayerState(new PlayerStateCallback() {
                     @Override
                     public void onPlayerState(PlayerState playerState) {
-                        if (!playerState.playing && playerState.trackUri == null) {
-                            player.play(queue.get(currentTrackIndex).getSongUrl());
+                        if (!playerState.playing && playerState.trackUri.equals("")) {
+                            player.play(queue.get(currentTrackIndex).getSongUri());
                         } else {
                             player.resume();
                         }
+
+                        EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
                     }
                 });
             break;
