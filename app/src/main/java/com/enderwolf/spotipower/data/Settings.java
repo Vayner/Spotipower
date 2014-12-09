@@ -1,6 +1,8 @@
 package com.enderwolf.spotipower.data;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.enderwolf.spotipower.utility.SaveSystem;
 
 import java.io.Serializable;
@@ -12,22 +14,21 @@ import java.util.*;
 public class Settings extends Observable implements Serializable {
     public static final String FILENAME = "settings.data";
     private static Settings settings = null;
-    private Map<String, SettingsEntry> settingValues = new HashMap<>();
+    private SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
 
     // TODO change over to objects / class hierarchy?
     private Settings () {
-        this.settingValues.put("Test1", new BooleanEntry("Test1", false));
+        this.settingValues.put("Hosting", new BooleanEntry("Hosting", false));
         this.settingValues.put("Test2", new BooleanEntry("Test2", false));
         this.settingValues.put("Test3", new BooleanEntry("Test3", false));
-        //this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
+        this.settingValues.put("String test", new StringEntry("String test", "Hello"));
+        this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
     }
 
     private void overwriteSettings(Settings settings) {
         for(Map.Entry<String, SettingsEntry> e : settings.settingValues.entrySet()) {
-            this.settingValues.put(e.getKey(), e.getValue());
+            this.put(e.getValue());
         }
-
-        this.notifyObservers();
     }
 
     /**
@@ -46,6 +47,8 @@ public class Settings extends Observable implements Serializable {
     public void put(SettingsEntry entry) {
         if(this.settingValues.containsKey(entry.getName())) {
             this.settingValues.put(entry.getName(), entry);
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
@@ -103,6 +106,7 @@ public class Settings extends Observable implements Serializable {
         if(settings == null) {
             settings = new Settings();
         }
+        Log.i("GETSETTINGS", "Observers = " + settings.countObservers());
 
         return settings;
     }

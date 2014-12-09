@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.enderwolf.spotipower.ui.component.BooleanToggle;
 import com.enderwolf.spotipower.ui.component.IntegerSelector;
+import com.enderwolf.spotipower.ui.component.StringSelector;
 
 import java.util.*;
 
@@ -96,6 +97,28 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
                 }
             });
             return selector;
+        } else if (type.equals(String.class)) {
+            String value = (String) entry.getValue();
+
+            StringSelector stringSelector = new StringSelector(context, entry.getName(), value);
+
+            stringSelector.getTextField().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    entry.setValue(editable.toString());
+                    settings.put(entry);
+                }
+            });
+
+            return stringSelector;
         } else {
             Log.w("SettingsListAdapter", "Unhandled SettingsEntry");
 

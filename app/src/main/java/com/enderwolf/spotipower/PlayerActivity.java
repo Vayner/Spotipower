@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.enderwolf.spotipower.data.HostInitiator;
 import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.AboutFragment;
 import com.enderwolf.spotipower.ui.ConnectionManagerFragment;
@@ -25,6 +26,7 @@ import com.enderwolf.spotipower.ui.PlaylistFragment;
 import com.enderwolf.spotipower.ui.SearchFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
+import com.enderwolf.spotipower.data.HostInitiator;
 
 public class PlayerActivity extends Activity implements AdapterView.OnItemClickListener {
 
@@ -52,6 +54,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         setContentView(R.layout.activity_nav_drawer);
 
         Settings.loadSettings(this);
+        HostInitiator.getInstance();
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         this.initGui();
@@ -172,9 +175,9 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         getActionBar().setHomeButtonEnabled(true);
 
         drawerList.setAdapter(new ArrayAdapter<>(
-            this,
-            android.R.layout.simple_list_item_1,
-            drawerDataList
+                this,
+                android.R.layout.simple_list_item_1,
+                drawerDataList
         ));
 
         drawerList.setOnItemClickListener(this);

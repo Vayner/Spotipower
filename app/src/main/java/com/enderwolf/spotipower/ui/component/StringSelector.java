@@ -2,7 +2,6 @@ package com.enderwolf.spotipower.ui.component;
 
 import android.content.Context;
 import android.text.InputType;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -11,11 +10,11 @@ import android.widget.TextView;
 /**
  * Created by !Tulingen on 07.12.2014.
  */
-public class IntegerSelector extends LinearLayout {
-    private EditText numberField;
+public class StringSelector extends LinearLayout {
+    private EditText textField;
     private TextView text;
 
-    public IntegerSelector(Context context, String name, Integer value) {
+    public StringSelector(Context context, String name, String value) {
         super(context);
 
         this.setOrientation(LinearLayout.HORIZONTAL);
@@ -31,20 +30,20 @@ public class IntegerSelector extends LinearLayout {
 
         this.addView(this.text, paramsText);
 
-        this.numberField = new EditText(context);
-        this.numberField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        this.numberField.setText(String.valueOf(value));
+        this.textField = new EditText(context);
+        this.textField.setInputType(InputType.TYPE_CLASS_TEXT);
+        this.textField.setText(String.valueOf(value));
 
-        LayoutParams paramsNumberField = generateDefaultLayoutParams();
-        paramsNumberField.width = 0;
-        paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        paramsNumberField.weight = 1;
+        LayoutParams paramsEditText = generateDefaultLayoutParams();
+        paramsEditText.width = 0;
+        paramsEditText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsEditText.weight = 1;
 
-        this.addView(this.numberField, paramsNumberField);
+        this.addView(this.textField, paramsEditText);
     }
 
-    public EditText getNumberField() {
-        return this.numberField;
+    public EditText getTextField() {
+        return this.textField;
     }
 
     public TextView getText() {
