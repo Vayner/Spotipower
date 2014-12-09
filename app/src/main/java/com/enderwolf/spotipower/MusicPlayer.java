@@ -182,7 +182,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
      */
     @Override
     public void queueAdd(String uri) {
-        Parser.ParseUri(uri.split(":")[2], new ParseCompleteCallback() {
+        Parser.ParseLookup(uri.split(":")[2], new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 if (!playlist.isEmpty()) {

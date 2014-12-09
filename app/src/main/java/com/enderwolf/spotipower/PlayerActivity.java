@@ -91,6 +91,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         super.onConfigurationChanged(newConfig);
 
         boolean prevOrientation = dualPane;
+
         dualPane = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
         drawerToggle.onConfigurationChanged(newConfig);
 

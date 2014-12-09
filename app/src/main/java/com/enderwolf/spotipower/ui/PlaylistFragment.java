@@ -27,6 +27,8 @@ import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.adapter.CustomeSongList;
 import com.enderwolf.spotipower.app.AppController;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
+import com.enderwolf.spotipower.utility.ParseCompleteCallback;
+import com.enderwolf.spotipower.utility.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +48,6 @@ public class PlaylistFragment extends Fragment {
 
     //Test search
     private static final String url = "https://api.spotify.com/v1/search?query=flame&offset=0&limit=10&type=track";
-    private ProgressDialog pDialog;
     private AlertDialog.Builder DialogRequestSong;
     private List<Song> Songs = new ArrayList<>();
 
@@ -85,44 +86,13 @@ public class PlaylistFragment extends Fragment {
                 EventBus.getDefault().post(new SongUpdateEvent(Songs.get(position)));
             }
         });
-        pDialog = new ProgressDialog(getActivity());
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+        Parser.ParseSearch(url, new ParseCompleteCallback() {
+            @Override
+            public void OnParseComplete(Playlist playlist) {
+                showPlaylist(playlist);
+            }
+        });
 
-        // changing action bar color
-        getActivity().getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1b1b1b")));
-
-        /**
-         *
-         * Request a single JSONObject from a webresource via volley library.
-         *
-         * first JSONObject which is returned is with the tag "tracks"
-         *
-         * JSONObject[tracks] ->
-         *             JSONArray[items]->
-         *                      JSONObject[JSONArray[index]]->
-         *                                          JSONObject[album] -> JSONObject[images] (medium quality) (want to get a sharp image) But not download to must bitrate.
-         *                                          JSONArray[artists]-> JSONObject[artist] (artists.lenght())
-         *
-         *
-         *
-         *
-         *
-         */
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new SongParser(),
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        VolleyLog.d("Error: " + error.getMessage());
-                        hidePDialog();
-                    }
-                }
-        );
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(getRequest);
         return root;
     }
 
@@ -136,42 +106,6 @@ public class PlaylistFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         //EventBus.getDefault().unregister(this);
-    }
-
-    private void hidePDialog() {
-        if (pDialog != null) {
-            pDialog.dismiss();
-            pDialog = null;
-        }
-    }
-
-
-    class SongParser implements Response.Listener<JSONObject> {
-        @Override
-        public void onResponse(JSONObject response) {
-            // display response
-            hidePDialog();
-            Log.d("Response", response.toString());
-
-            try {
-                JSONObject type = response.getJSONObject(("tracks"));
-                JSONArray items = type.getJSONArray("items");
-                for (int i = 0; i < items.length(); i++) {
-                    JSONObject typeItem = items.getJSONObject(i);           // Every track
-                    Song song = Song.newInstance(typeItem);
-
-                    if(song != null) {
-                        Songs.add(song);
-                    }
-                }
-            }
-
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            adapter.notifyDataSetChanged();
-        }
     }
 
     public void showPlaylist(Playlist playlist) {

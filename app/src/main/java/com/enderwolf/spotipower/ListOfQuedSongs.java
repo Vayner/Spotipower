@@ -146,16 +146,6 @@ public class ListOfQuedSongs extends Activity {
                     Song song = Song.newInstance(typeItem);
 
                     quedSongs.add(song);
-
-                    // -- TEST CASE --
-
-
-                    ArrayList<String> TestArtistList = song.getArtist();
-                    for(String s : TestArtistList) {
-                        System.out.println(s);
-                    }
-
-                    // -- REMOVING WHEN PUBLISHED --
                 }
             }
             catch (JSONException e) {

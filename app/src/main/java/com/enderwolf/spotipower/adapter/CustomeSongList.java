@@ -29,9 +29,6 @@ public class CustomeSongList extends BaseAdapter {
 
         this.context = context;
         this.songs = songs;
-
-        System.out.println("size of songs" + songs.size());
-
     }
 
     @Override
