@@ -200,7 +200,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             drawerDataToFragments[5] = aboutFragment;
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[0]).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[drawerDataCurrent]).commit();
         getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
     }
 
@@ -209,6 +209,6 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         drawerDataCurrent = i;
         drawerLayout.closeDrawers();
 
-        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[i]).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[drawerDataCurrent]).commit();
     }
 }
