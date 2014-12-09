@@ -1,12 +1,18 @@
 package com.enderwolf.spotipower.ui.component;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.enderwolf.spotipower.data.IntegerEntry;
+import com.enderwolf.spotipower.data.Settings;
 
 /**
  * Created by !Tulingen on 07.12.2014.
@@ -15,32 +21,56 @@ public class IntegerSelector extends LinearLayout {
     private EditText numberField;
     private TextView text;
 
-    public IntegerSelector(Context context, String name, Integer value) {
+    public IntegerSelector(Context context, final IntegerEntry entry, boolean autoUpdate) {
         super(context);
 
         this.setOrientation(LinearLayout.HORIZONTAL);
 
         this.text = new TextView(context);
         this.text.setInputType(InputType.TYPE_NULL);
-        this.text.setText(name);
+        this.text.setText(entry.getName());
 
         LayoutParams paramsText = generateDefaultLayoutParams();
         paramsText.width = 0;
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsText.weight = 1;
+        paramsText.gravity = Gravity.RIGHT;
 
         this.addView(this.text, paramsText);
 
         this.numberField = new EditText(context);
         this.numberField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        this.numberField.setText(String.valueOf(value));
+        this.numberField.setText(String.valueOf(entry.getValue()));
 
         LayoutParams paramsNumberField = generateDefaultLayoutParams();
         paramsNumberField.width = 0;
         paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsNumberField.weight = 1;
+        paramsNumberField.gravity = Gravity.LEFT;
 
         this.addView(this.numberField, paramsNumberField);
+
+        if(autoUpdate) {
+            this.numberField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    entry.setValue(Integer.valueOf(editable.toString()));
+                    Settings.getSettings().put(entry);
+                }
+            });
+        }
+    }
+
+    public IntegerSelector(Context context, final IntegerEntry entry) {
+        this(context, entry, true);
     }
 
     public EditText getNumberField() {
