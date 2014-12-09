@@ -86,6 +86,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -101,6 +102,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             this.initGui();
         }
     }
+    */
 
     @Override
     protected void onNewIntent(Intent intent) {
