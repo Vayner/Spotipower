@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
+import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
 import com.spotify.sdk.android.Spotify;
@@ -78,12 +80,18 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
     @Override
     public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-
+        if(eventType == EventType.PLAY) {
+            EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
+        }
     }
 
     @Override
     public void onPlaybackError(ErrorType errorType, String s) {
 
+    }
+
+    public void onEvent(SongQueuedClientEvent event){
+        this.queue.add(event.song);
     }
 
     public void onEvent(MediaButtonEvent event) {
@@ -184,7 +192,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
      */
     @Override
     public void queueAdd(String uri) {
-        Parser.ParseUri(uri.split(":")[2], new ParseCompleteCallback() {
+        Parser.ParseLookup(uri.split(":")[2], new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 if (!playlist.isEmpty()) {
@@ -261,6 +269,7 @@ class ProgressUpdate extends TimerTask {
             @Override
             public void onPlayerState(PlayerState playerState) {
                 EventBus.getDefault().post(new PlayBackUpdateEvent(playerState));
+
             }
         });
     }

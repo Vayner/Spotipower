@@ -14,23 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment
-            android:name="com.enderwolf.spotipower.ui.MiniPlayer"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/miniplayer"/>
-
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:id="@+id/content_view"
-            android:layout_above="@+id/miniplayer">
-        </FrameLayout>
+            android:layout_above="@+id/miniplayer_view"/>
 
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/miniplayer_view"/>
 
     </RelativeLayout>
 

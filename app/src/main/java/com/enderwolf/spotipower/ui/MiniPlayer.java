@@ -1,6 +1,7 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,16 +10,24 @@ import android.view.ViewGroup;
 
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.enderwolf.spotipower.R;
+import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
+import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.spotify.sdk.android.playback.PlayerState;
 
 import de.greenrobot.event.EventBus;
 
 public class MiniPlayer extends Fragment {
+
     private ProgressBar progressBar;
     private ImageButton playPauseButton;
+
+    private Song currentSong = null;
+    private TextView title;
 
     private DisplayMode playPauseToggle = DisplayMode.PLAY;
 
@@ -84,6 +93,7 @@ public class MiniPlayer extends Fragment {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
+
             }
         });
 
@@ -96,6 +106,8 @@ public class MiniPlayer extends Fragment {
 
         progressBar = (ProgressBar) root.findViewById(R.id.mini_progress);
 
+        title = (TextView) root.findViewById((R.id.nameOfSong));
+
         return root;
     }
 
@@ -103,6 +115,13 @@ public class MiniPlayer extends Fragment {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
         progressBar.setProgress(progress);
         setDisplayMode(DisplayMode.getFromPlayerState(event.state));
+    }
+
+    public void onEvent(SongUpdateEvent event){
+        if(!event.song.equals(currentSong)){
+            currentSong = event.song;
+            title.setText(currentSong.getName());
+        }
     }
 
     private void setDisplayMode(DisplayMode mode) {

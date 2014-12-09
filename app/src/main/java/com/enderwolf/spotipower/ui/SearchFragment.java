@@ -2,7 +2,6 @@ package com.enderwolf.spotipower.ui;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 
-import com.enderwolf.spotipower.PlayerActivity;
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFragment extends Fragment implements TabHost.OnTabChangeListener {
 
@@ -97,26 +97,35 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         tabHost.addTab(albums);
         tabHost.addTab(artists);
 
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab1, playlistFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab2, trackFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab3, albumFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab4, artistFragment).commit();
-
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        List<String> list = new ArrayList<>();
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+
+        Parser.ParseLookupList(list, new ParseCompleteCallback() {
+            @Override
+            public void OnParseComplete(Playlist playlist) {
+                if (playlist == null) {
+                    Log.e("ParseCompleteCallback", "Invalid playlist");
+                    return;
+                }
+
+                trackView.showPlaylist(playlist);
+            }
+        });
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        Log.d("onAttach", "getting playlist data");
-        Parser.ParseUri("spotify:track:4VXdDBoubJhBsTuO3V3qwt", new ParseCompleteCallback() {
-            @Override
-            public void OnParseComplete(Playlist playlist) {
-                Log.d("OnParseComplete", "showing playlist data");
-                trackView.showPlaylist(playlist);
-            }
-        });
     }
 
     @Override

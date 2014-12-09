@@ -9,6 +9,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.Song;
+import com.enderwolf.spotipower.app.AppController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,13 +24,11 @@ import java.util.List;
 public class Parser {
     private static final String lookupAddres = "https://api.spotify.com/v1/tracks/?ids=";
 
-    public static void ParseUriList (List<String> uris, final ParseCompleteCallback callback) {
-        Log.d("Parser.ParseUri", "Request to parse " + uris.size()  + " uris");
-
+    public static void ParseLookupList(List<String> uris, final ParseCompleteCallback callback) {
         StringBuilder request = new StringBuilder(lookupAddres);
 
         for (String uri : uris) {
-            request.append(uri.substring(uri.lastIndexOf(':')));
+            request.append(uri.substring(uri.lastIndexOf(':') + 1));
             request.append(',');
         }
 
@@ -47,14 +46,32 @@ public class Parser {
                 }
             }
         );
+
+        AppController.getInstance().addToRequestQueue(getRequest);
     }
 
-    public static void ParseUri (String uri, ParseCompleteCallback callback) {
-        Log.d("Parser.ParseUri", "Request to parse " + uri);
+    public static void ParseLookup(String uri, ParseCompleteCallback callback) {
         List<String> dataList = new ArrayList<String>();
         dataList.add(uri);
 
-        ParseUriList(dataList, callback);
+        ParseLookupList(dataList, callback);
+    }
+
+    public static void ParseSearch(String search, ParseCompleteCallback callback) {
+        JsonObjectRequest getRequest = new JsonObjectRequest (
+            Request.Method.GET,
+            search,
+            null,
+            new SearchJSONParser(callback),
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d("Parser", "Error: " + error.getMessage());
+                }
+            }
+        );
+
+        AppController.getInstance().addToRequestQueue(getRequest);
     }
 }
 
@@ -68,7 +85,6 @@ class SongJSONParser implements Response.Listener<JSONObject> {
 
     @Override
     public void onResponse(JSONObject response) {
-        Log.d("SongJSONParser.onResponse", "Starting parsing now");
         Playlist playlist = new Playlist("");
 
         try {
@@ -83,11 +99,43 @@ class SongJSONParser implements Response.Listener<JSONObject> {
         }
 
         catch (JSONException e) {
-            Log.e("SongJSONParser","Invalid JSON",e);
+            Log.e("SongJSONParser", "Invalid JSON", e);
             playlist = null;
         }
 
-        Log.d("SongJSONParser.onResponse", "Calling callback now");
+        callback.OnParseComplete(playlist);
+    }
+}
+
+class SearchJSONParser implements Response.Listener<JSONObject> {
+
+    private ParseCompleteCallback callback;
+
+    public SearchJSONParser(ParseCompleteCallback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Playlist playlist = new Playlist("");
+
+        try {
+            JSONObject type = response.getJSONObject(("tracks"));
+            JSONArray items = type.getJSONArray("items");
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject typeItem = items.getJSONObject(i);
+
+                Song song = Song.newInstance(typeItem);
+
+                playlist.add(song);
+            }
+        }
+
+        catch (JSONException e) {
+            Log.e("SongJSONParser", "Invalid JSON", e);
+            playlist = null;
+        }
+
         callback.OnParseComplete(playlist);
     }
 }
