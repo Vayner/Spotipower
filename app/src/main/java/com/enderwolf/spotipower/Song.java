@@ -97,7 +97,7 @@ public class Song {
         return rating;
     }
 
-    enum Quality {
+    public enum Quality {
         Small(0),
         Medium(1),
         Large(2);
