@@ -12,10 +12,14 @@
         android:id="@+id/backgroundBlurred"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:scaleX="8"
+        android:scaleY="8"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:layout_marginEnd="8sp"
-        android:layout_marginRight="8sp" />
+        android:layout_marginRight="8sp"
+        android:alpha="0.80"
+        />
 
 
     <!-- Thumbnail Image -->

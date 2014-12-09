@@ -61,10 +61,6 @@ public class PlayerFragment extends Fragment {
         blurredBackground = (ImageView) root.findViewById(R.id.backgroundBlurred);
 
 
-
-
-
-
         return root;
     }
 
@@ -77,8 +73,6 @@ public class PlayerFragment extends Fragment {
                         @Override
                         public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                             blurredBackground.setImageBitmap(blurImage(imageContainer));
-                            blurredBackground.setScaleX(8.0f);
-                            blurredBackground.setScaleY(8.0f);
                         }
 
                         @Override
