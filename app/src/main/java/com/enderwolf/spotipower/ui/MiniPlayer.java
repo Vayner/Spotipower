@@ -1,6 +1,7 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -84,6 +85,7 @@ public class MiniPlayer extends Fragment {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
+
             }
         });
 
