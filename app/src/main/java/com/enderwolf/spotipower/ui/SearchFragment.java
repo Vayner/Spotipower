@@ -97,19 +97,13 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         tabHost.addTab(albums);
         tabHost.addTab(artists);
 
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab1, playlistFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab2, trackFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab3, albumFragment).commit();
-        //this.getFragmentManager().beginTransaction().replace(R.id.tab4, artistFragment).commit();
-
         return root;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        Log.d("onAttach", "getting playlist data");
         List<String> list = new ArrayList<>();
         list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
         list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
@@ -127,6 +121,11 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
                 trackView.showPlaylist(playlist);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 
     @Override

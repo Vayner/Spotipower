@@ -93,13 +93,14 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         boolean prevOrientation = dualPane;
 
         dualPane = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        drawerToggle.onConfigurationChanged(newConfig);
 
         if(prevOrientation != dualPane) {
             this.setContentView(R.layout.activity_nav_drawer);
 
             this.initGui();
         }
+
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -129,14 +130,8 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         super.onDestroy();
     }
 
-    public void deInitGui() {
-
-    }
-
     // TODO orientation things
     public void initGui() {
-
-        Log.d("initGui", "Initing gui");
 
         playerFragment = PlayerFragment.newInstance();
         miniPlayer = MiniPlayer.newInstance();
@@ -193,7 +188,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             drawerDataToFragments[4] = settingsFragment;
             drawerDataToFragments[5] = aboutFragment;
 
-            getFragmentManager().beginTransaction().add(R.id.player_view, playerFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.player_view, playerFragment).commit();
 
         } else {
 
