@@ -74,7 +74,7 @@ public class CustomeSongList extends BaseAdapter {
         Song s = songs.get(position);
 
         // thumbnail image url
-        thumbNail.setImageUrl(s.getThumbnailUrl(), imageLoader);
+        thumbNail.setImageUrl(s.getThumbnailUrl(Song.Quality.Medium), imageLoader);
 
         // title
         title.setText(s.getName());
