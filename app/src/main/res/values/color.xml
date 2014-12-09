@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="albumName">#69C5FF</color>
-    <color name="list_divider">#d9d9d9</color>
-    <color name="list_row_start_color">#6A889C</color>
-    <color name="list_row_end_color">#495D69</color>
-    <color name="list_row_hover_start_color">#ebeef0</color>
-    <color name="list_row_hover_end_color">#ebeef0</color>
+    <color name="textColor">#237674</color>
+    <color name="albumName">#237674</color>
+    <color name="list_divider">#237674</color>
+    <color name="list_row_start_color">#00676262</color>
+    <color name="list_row_end_color">#00676262</color>
+    <color name="list_row_hover_start_color">#10237674</color>
+    <color name="list_row_hover_end_color">#00ebeef0</color>
 
 </resources>

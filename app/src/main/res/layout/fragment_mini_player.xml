@@ -42,6 +42,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameOfSong"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/title"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
@@ -49,5 +58,6 @@
         android:id="@+id/mini_progress"
         android:layout_gravity="center_horizontal"
         android:progress="27"/>
+
 
 </LinearLayout>
