@@ -1,6 +1,8 @@
 package com.enderwolf.spotipower.data;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.enderwolf.spotipower.utility.SaveSystem;
 
 import java.io.Serializable;
@@ -16,7 +18,7 @@ public class Settings extends Observable implements Serializable {
 
     // TODO change over to objects / class hierarchy?
     private Settings () {
-        this.settingValues.put("Test1", new BooleanEntry("Test1", false));
+        this.settingValues.put("Hosting", new BooleanEntry("Hosting", false));
         this.settingValues.put("Test2", new BooleanEntry("Test2", false));
         this.settingValues.put("Test3", new BooleanEntry("Test3", false));
         this.settingValues.put("String test", new StringEntry("String test", "Hello"));
@@ -25,10 +27,8 @@ public class Settings extends Observable implements Serializable {
 
     private void overwriteSettings(Settings settings) {
         for(Map.Entry<String, SettingsEntry> e : settings.settingValues.entrySet()) {
-            this.settingValues.put(e.getKey(), e.getValue());
+            this.put(e.getValue());
         }
-
-        this.notifyObservers();
     }
 
     /**
@@ -47,6 +47,8 @@ public class Settings extends Observable implements Serializable {
     public void put(SettingsEntry entry) {
         if(this.settingValues.containsKey(entry.getName())) {
             this.settingValues.put(entry.getName(), entry);
+            this.setChanged();
+            this.notifyObservers();
         }
     }
 
@@ -104,6 +106,7 @@ public class Settings extends Observable implements Serializable {
         if(settings == null) {
             settings = new Settings();
         }
+        Log.i("GETSETTINGS", "Observers = " + settings.countObservers());
 
         return settings;
     }
