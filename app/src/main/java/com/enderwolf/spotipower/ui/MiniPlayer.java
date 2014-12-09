@@ -48,6 +48,10 @@ public class MiniPlayer extends Fragment {
         }
 
         public static DisplayMode getFromPlayerState (PlayerState state) {
+            if(state.trackUri == null) {
+                return PLAY;
+            }
+
             return (state.playing)? PLAY : PAUSE;
         }
     }
@@ -93,7 +97,6 @@ public class MiniPlayer extends Fragment {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
-
             }
         });
 
