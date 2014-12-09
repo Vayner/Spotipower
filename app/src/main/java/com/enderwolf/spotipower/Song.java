@@ -98,9 +98,9 @@ public class Song {
     }
 
     public enum Quality {
-        Small(0),
+        Small(2),
         Medium(1),
-        Large(2);
+        Large(0);
 
         private int quality;
 

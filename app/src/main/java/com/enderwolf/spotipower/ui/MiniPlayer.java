@@ -113,6 +113,7 @@ public class MiniPlayer extends Fragment {
 
     public void onEvent(PlayBackUpdateEvent event) {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
+        System.out.println("progress bar value  " + String.valueOf(progress));
         progressBar.setProgress(progress);
         setDisplayMode(DisplayMode.getFromPlayerState(event.state));
     }

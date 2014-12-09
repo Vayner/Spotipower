@@ -1,20 +1,25 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.app.AppController;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
+import com.enderwolf.spotipower.utility.LruBitmapCache;
 
 import de.greenrobot.event.EventBus;
 
@@ -23,6 +28,8 @@ public class PlayerFragment extends Fragment {
     private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private Song currentSong = null;
     NetworkImageView thumbNail;
+    ImageView blurredBackground;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -51,6 +58,11 @@ public class PlayerFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_player, container, false);
 
         thumbNail = (NetworkImageView) root.findViewById(R.id.albumHighCenter);
+        blurredBackground = (ImageView) root.findViewById(R.id.backgroundBlurred);
+
+
+
+
 
 
         return root;
@@ -59,8 +71,22 @@ public class PlayerFragment extends Fragment {
     public void onEvent(SongUpdateEvent event){
         if(!event.song.equals(currentSong)){
             currentSong = event.song;
-            thumbNail.setImageUrl(currentSong.getThumbnailUrl(Song.Quality.Medium), imageLoader);
 
+           //System.out.println("Image url large: " + currentSong.getThumbnailUrl(Song.Quality.Large));
+            imageLoader.get(currentSong.getThumbnailUrl(Song.Quality.Small), new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            blurredBackground.setImageBitmap(blurImage(imageContainer));
+                            blurredBackground.setScaleX(8.0f);
+                            blurredBackground.setScaleY(8.0f);
+                        }
+
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+
+                        }
+                    });
+            thumbNail.setImageUrl(currentSong.getThumbnailUrl(Song.Quality.Large), imageLoader);
         }
     }
     @Override
@@ -84,4 +110,21 @@ public class PlayerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    private Bitmap blurImage(ImageLoader.ImageContainer imageLoader){
+
+
+        if(imageLoader.getBitmap() != null) {
+
+
+            Bitmap blurred = imageLoader.getBitmap();
+            blurred = Bitmap.createScaledBitmap(blurred, blurred.getWidth() / 4, blurred.getHeight() / 4, true);
+            blurred = Bitmap.createScaledBitmap(blurred, blurred.getWidth() * 4, blurred.getHeight() * 4, true);
+
+            return blurred;
+        }else return null;
+
+    }
 }
+
+
