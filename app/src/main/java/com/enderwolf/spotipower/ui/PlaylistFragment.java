@@ -119,3 +119,4 @@ public class PlaylistFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 }
+

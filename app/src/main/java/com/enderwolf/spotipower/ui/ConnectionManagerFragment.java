@@ -1,40 +1,39 @@
 package com.enderwolf.spotipower.ui;
-
+import me.sbstensby.spotipowerhost.RemoteHostData;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.adapter.CustomServerList;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import de.greenrobot.event.EventBus;
 
 public class ConnectionManagerFragment extends Fragment {
 
-    private Spinner spinnerListWithServers;
-    private ListView listViewOfServers;
-    List<Map<String, String>> serverList = new ArrayList<Map<String,String>>();
+
+
+
+
+
+    private ListView serList;
+    private CustomServerList adapter;
+
+    //Test search
+
     private AlertDialog.Builder dialogRequestJoin;
-    SimpleAdapter adapter;
+    private List<RemoteHostData> remoteHostDatas = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
@@ -63,20 +62,27 @@ public class ConnectionManagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_connection_manager, container, false);
 
-        final ListView servers = (ListView) root.findViewById(R.id.listOfServers);
 
 
-                serverList.add(createNewServer("server", "Server 1"));
-                serverList.add(createNewServer("server", "Server 2"));
-                serverList.add(createNewServer("server", "Server 3"));
+        serList = (ListView) root.findViewById(R.id.listOfServers);
 
-            dialogRequestJoin = new AlertDialog.Builder(getActivity());
 
-                adapter = new SimpleAdapter(getActivity(), serverList, android.R.layout.simple_list_item_1, new String[]{"server"}, new int[]{android.R.id.text1});
+        RemoteHostData s1 = new RemoteHostData();
+        s1.name = "somthing";
+        try {
+            InetAddress addr = InetAddress.getByName("127.0.0.1");
+            s1.address = addr;
+            remoteHostDatas.add(s1);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
-                servers.setAdapter(adapter);
 
-        servers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dialogRequestJoin = new AlertDialog.Builder(getActivity());  // User dialog to request a song into playlist
+
+        adapter = new CustomServerList(getActivity(), remoteHostDatas);
+        serList.setAdapter(adapter);
+        serList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -85,12 +91,11 @@ public class ConnectionManagerFragment extends Fragment {
                /* Toast.makeText(getApplicationContext(), "You clicked " + songList.get(position).getName(),
                         Toast.LENGTH_LONG).show(); */
 
-                HashMap map =  (HashMap) adapter.getItem(position);
 
-                dialogRequestJoin.setMessage(String.valueOf(map.get("server")))
-                        .setPositiveButton("Join this server", new DialogInterface.OnClickListener() {
+                dialogRequestJoin.setMessage(remoteHostDatas.get(position).name)
+                        .setPositiveButton("Join server", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
+                                //TODO
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
