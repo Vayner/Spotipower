@@ -31,12 +31,16 @@ public class HostInitiator implements Observer{
 
         Log.i("HostInitiator", "update");
         if ((Boolean) Settings.getSettings().get("Hosting").getValue() && !HostServer.getInstance().isHosting()) {
-            //TODO: get a proper name!
             Log.i("HostInitiator", "host now!");
-            HostServer.getInstance().startHosting("She's crazy like a fool. What about daddy cool?");
+            HostServer.getInstance().startHosting((String)Settings.getSettings().get("Host name").getValue());
         }
         else if (!(Boolean) Settings.getSettings().get("Hosting").getValue() && HostServer.getInstance().isHosting()) {
             HostServer.getInstance().stopHosting();
+        }
+
+        // Update the hostname
+        if ((Boolean) Settings.getSettings().get("Hosting").getValue() && !HostServer.getInstance().getHostname().equals((String)Settings.getSettings().get("Host name").getValue())) {
+            HostServer.getInstance().setHostname((String)Settings.getSettings().get("Host name").getValue());
         }
     }
 }
