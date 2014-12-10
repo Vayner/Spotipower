@@ -2,6 +2,7 @@ package com.enderwolf.spotipower.ui;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -68,6 +69,12 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         trackView = new PlaylistView(this.getActivity());
         albumView = new PlaylistView(this.getActivity());
         artistView = new PlaylistView(this.getActivity());
+
+        playlistView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
 
         searchButton = (Button) root.findViewById(R.id.search_button);
         searchInput = (EditText) root.findViewById(R.id.search_input);
