@@ -19,6 +19,7 @@ import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.adapter.CustomeSongList;
+import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.event.SongQueuedClientEvent;
 import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
@@ -93,7 +94,11 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Client.getInstance().sendSong(song.getSongUri());
+                        if ((Boolean) Settings.getSettings().get("Hosting").getValue()) {
+                            EventBus.getDefault().post(new SongQueuedEvent(song));
+                        } else {
+                            Client.getInstance().sendSong(song.getSongUri());
+                        }
                     }
                 }).setNegativeButton("No", null);
 
