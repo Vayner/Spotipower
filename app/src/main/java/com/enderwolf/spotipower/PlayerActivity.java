@@ -44,6 +44,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
+    private static int[] drawerIconList = {R.drawable.}
     private static String[] drawerDataList = {"Home", "Search", "Playlist", "Connections", "Settings", "About"};
     private Fragment[] drawerDataToFragments = new Fragment[drawerDataList.length];
     private int drawerDataCurrent = 0;
