@@ -22,10 +22,7 @@ public class Settings extends Observable implements Serializable {
 
     private static SettingsEntry[] defaultValues = {
         new BooleanEntry("Hosting", false),
-        new BooleanEntry("Test2", false),
-        new BooleanEntry("Test3", false),
         new StringEntry("Host name", "MyHostName"),
-        new IntegerEntry("Numbers", 1337)
     };
 
     // TODO change over to objects / class hierarchy?
