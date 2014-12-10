@@ -57,12 +57,12 @@ public class Parser {
         ParseLookupList(dataList, callback);
     }
 
-    public static void ParseSearch(String search, ParseCompleteCallback callback) {
+    public static void ParseSearch(final String search, final SearchConstructor.Type searchType, ParseCompleteCallback callback) {
         JsonObjectRequest getRequest = new JsonObjectRequest (
             Request.Method.GET,
             search,
             null,
-            new SearchJSONParser(callback),
+            new SearchTrackJSONParser(callback),
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -107,11 +107,11 @@ class SongJSONParser implements Response.Listener<JSONObject> {
     }
 }
 
-class SearchJSONParser implements Response.Listener<JSONObject> {
+class SearchTrackJSONParser implements Response.Listener<JSONObject> {
 
     private ParseCompleteCallback callback;
 
-    public SearchJSONParser(ParseCompleteCallback callback) {
+    public SearchTrackJSONParser(ParseCompleteCallback callback) {
         this.callback = callback;
     }
 
@@ -120,7 +120,7 @@ class SearchJSONParser implements Response.Listener<JSONObject> {
         Playlist playlist = new Playlist("");
 
         try {
-            JSONObject type = response.getJSONObject(("tracks"));
+            JSONObject type = response.getJSONObject("tracks");
             JSONArray items = type.getJSONArray("items");
             for (int i = 0; i < items.length(); i++) {
                 JSONObject typeItem = items.getJSONObject(i);

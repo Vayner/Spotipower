@@ -16,6 +16,10 @@ public class Settings extends Observable implements Serializable {
     private static Settings settings = null;
     private SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
 
+    private static SettingsEntry[] overrideDefault = {
+        new BooleanEntry("Hosting", false)
+    };
+
     // TODO change over to objects / class hierarchy?
     private Settings () {
         this.settingValues.put("Hosting", new BooleanEntry("Hosting", false));
@@ -27,8 +31,15 @@ public class Settings extends Observable implements Serializable {
 
     private void overwriteSettings(Settings settings) {
         for(Map.Entry<String, SettingsEntry> e : settings.settingValues.entrySet()) {
-            this.put(e.getValue());
+            this.put(e.getValue(), false);
         }
+
+        for(SettingsEntry entry : overrideDefault) {
+            this.put(entry, false);
+        }
+
+        this.setChanged();
+        this.notifyObservers();
     }
 
     /**
@@ -45,10 +56,16 @@ public class Settings extends Observable implements Serializable {
      * @param entry
      */
     public void put(SettingsEntry entry) {
+        this.put(entry, true);
+    }
+
+    private void put(SettingsEntry entry, boolean notify) {
         if(this.settingValues.containsKey(entry.getName())) {
             this.settingValues.put(entry.getName(), entry);
-            this.setChanged();
-            this.notifyObservers();
+            if(notify) {
+                this.setChanged();
+                this.notifyObservers();
+            }
         }
     }
 
