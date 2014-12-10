@@ -85,6 +85,10 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         if(eventType == EventType.PLAY) {
             EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
         }
+        if(eventType == EventType.TRACK_END) {
+            queue.remove(0);
+            play();
+        }
     }
 
     @Override
@@ -96,33 +100,41 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         this.queue.add(event.song);
     }
 
+    private void play() {
+        if(queue.size() == 0) {
+            return;
+        }
+
+        player.getPlayerState(new PlayerStateCallback() {
+            @Override
+            public void onPlayerState(PlayerState playerState) {
+                if (!playerState.playing && playerState.trackUri.equals("")) {
+                    player.play(queue.get(0).getSongUri());
+                } else {
+                    player.resume();
+                }
+
+                EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
+            }
+        });
+    }
+
     public void onEvent(MediaButtonEvent event) {
         switch (event.type) {
             case NEXT:
-
+                if (queue.size() >= 2) {
+                    queue.remove(0);
+                    player.play(queue.get(0).getSongUri());
+                    EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
+                }
                 break;
 
             case PREVIOUS:
-
+                player.seekToPosition(0);
                 break;
 
             case PLAY:
-                if(queue.size() == 0) {
-                    return;
-                }
-
-                player.getPlayerState(new PlayerStateCallback() {
-                    @Override
-                    public void onPlayerState(PlayerState playerState) {
-                        if (!playerState.playing && playerState.trackUri.equals("")) {
-                            player.play(queue.get(currentTrackIndex).getSongUri());
-                        } else {
-                            player.resume();
-                        }
-
-                        EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
-                    }
-                });
+                play();
             break;
 
             case PAUSE:
