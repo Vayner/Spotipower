@@ -20,13 +20,19 @@ public class Settings extends Observable implements Serializable {
         new BooleanEntry("Hosting", false)
     };
 
+    private static SettingsEntry[] defaultValues = {
+        new BooleanEntry("Hosting", false),
+        new BooleanEntry("Test2", false),
+        new BooleanEntry("Test3", false),
+        new StringEntry("String test", "Hello"),
+        new IntegerEntry("Numbers", 1337)
+    };
+
     // TODO change over to objects / class hierarchy?
     private Settings () {
-        this.settingValues.put("Hosting", new BooleanEntry("Hosting", false));
-        this.settingValues.put("Test2", new BooleanEntry("Test2", false));
-        this.settingValues.put("Test3", new BooleanEntry("Test3", false));
-        this.settingValues.put("String test", new StringEntry("String test", "Hello"));
-        this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
+        for(SettingsEntry entry : defaultValues) {
+            this.put(entry, false);
+        }
     }
 
     private void overwriteSettings(Settings settings) {

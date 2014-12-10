@@ -25,5 +25,20 @@ public abstract class SettingsEntry<T> implements Serializable {
     public abstract T getValue();
 
     public abstract void setValue(T value);
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || !(o instanceof SettingsEntry)) && ((SettingsEntry) o).name.equals(this.name);
+    }
 }
 
