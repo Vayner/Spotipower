@@ -29,8 +29,6 @@ import com.enderwolf.spotipower.ui.SearchFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
 
-import me.sbstensby.spotipowerhost.HostDiscoverer;
-
 public class PlayerActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private boolean dualPane = false;
@@ -66,7 +64,6 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         setContentView(R.layout.activity_nav_drawer);
 
         Settings.loadSettings(this);
-        HostDiscoverer.init(this);
         HostInitiator.getInstance();
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 

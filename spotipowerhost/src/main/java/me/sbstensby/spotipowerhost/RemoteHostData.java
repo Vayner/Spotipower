@@ -8,12 +8,18 @@ import java.net.InetAddress;
  * Filename: RemoteHostData.java
  * Created by stensby on 02/12/14.
  *
- * Struct for saving info about remote hosts.
+ * "Struct" for saving info about remote hosts. Implements some self explanatory
+ * functions.
  */
 public class RemoteHostData {
     public final String name;
     public final InetAddress address;
 
+    /**
+     * Constructor
+     * @param name The name of the host.
+     * @param address InetAddress of the host.
+     */
     public RemoteHostData(String name, InetAddress address) {
         this.address = address;
         this.name = name;
