@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import me.sbstensby.spotipowerhost.Client;
 
 public class SearchFragment extends Fragment implements TabHost.OnTabChangeListener {
 
@@ -92,7 +93,7 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        EventBus.getDefault().post(new SongQueuedClientEvent(song));
+                        Client.getInstance().sendSong(song.getSongUri());
                     }
                 }).setNegativeButton("No", null);
 
