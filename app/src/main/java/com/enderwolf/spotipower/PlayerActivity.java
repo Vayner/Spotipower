@@ -8,14 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.enderwolf.spotipower.data.DrawerEntry;
+import com.enderwolf.spotipower.data.DrawerListAdapter;
 import com.enderwolf.spotipower.data.HostInitiator;
 import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.AboutFragment;
@@ -26,7 +26,6 @@ import com.enderwolf.spotipower.ui.PlaylistFragment;
 import com.enderwolf.spotipower.ui.SearchFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
-import com.enderwolf.spotipower.data.HostInitiator;
 
 import me.sbstensby.spotipowerhost.HostDiscoverer;
 
@@ -46,8 +45,16 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
-    private static String[] drawerDataList = {"Home", "Search", "Playlist", "Connections", "Settings", "About"};
-    private Fragment[] drawerDataToFragments = new Fragment[drawerDataList.length];
+    private static DrawerEntry[] drawerEntries = {
+        new DrawerEntry(R.drawable.ic_home_white_24dp, "Home"),
+        new DrawerEntry(R.drawable.ic_search_white_24dp, "Search"),
+        new DrawerEntry(R.drawable.ic_my_library_music_white_24dp, "Playlist"),
+        new DrawerEntry(R.drawable.ic_wifi_tethering_white_24dp, "Connections"),
+        new DrawerEntry(R.drawable.ic_settings_applications_white_24dp, "Settings"),
+        new DrawerEntry(R.drawable.ic_help_white_24dp, "About")
+    };
+
+    private Fragment[] drawerDataToFragments = new Fragment[drawerEntries.length];
     private int drawerDataCurrent = 0;
 
     @Override
@@ -177,11 +184,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        drawerList.setAdapter(new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                drawerDataList
-        ));
+        drawerList.setAdapter(new DrawerListAdapter(this, drawerEntries));
 
         drawerList.setOnItemClickListener(this);
 

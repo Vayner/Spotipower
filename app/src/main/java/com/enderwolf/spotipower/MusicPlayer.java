@@ -160,6 +160,10 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         return musicPlayer;
     }
 
+    public Playlist getPlaylist(){
+        return queue;
+    }
+
     public static void initMusicPlayer(PlayerActivity app) {
         SpotifyAuthentication.openAuthWindow(
             app.getString(R.string.spotify_client_id),
