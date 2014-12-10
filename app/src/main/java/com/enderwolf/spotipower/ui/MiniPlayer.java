@@ -24,6 +24,8 @@ public class MiniPlayer extends Fragment {
 
     private ProgressBar progressBar;
     private ImageButton playPauseButton;
+    private TextView timerCurrent;
+    private TextView timerMax;
 
     private Song currentSong = null;
     private TextView title;
@@ -81,6 +83,10 @@ public class MiniPlayer extends Fragment {
         playPauseButton = (ImageButton) root.findViewById(R.id.mini_play);
         ImageButton prev = (ImageButton) root.findViewById(R.id.mini_prev);
 
+        timerCurrent = (TextView) root.findViewById(R.id.currentSongPlayed);
+        timerCurrent = (TextView) root.findViewById(R.id.songLenght);
+
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +117,7 @@ public class MiniPlayer extends Fragment {
 
     public void onEvent(PlayBackUpdateEvent event) {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
+        timerCurrent.setText( String.valueOf((float) event.state.durationInMs / 1000.f));
         progressBar.setProgress(progress);
         setDisplayMode(DisplayMode.getFromPlayerState(event.state));
     }
@@ -118,6 +125,7 @@ public class MiniPlayer extends Fragment {
     public void onEvent(SongUpdateEvent event){
         if(!event.song.equals(currentSong)){
             currentSong = event.song;
+            timerMax.setText(String.valueOf( ((currentSong.getTotalTime())/ 1000 ) / 60 ));
             title.setText(currentSong.getName());
         }
     }

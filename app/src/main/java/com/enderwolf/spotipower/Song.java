@@ -17,6 +17,7 @@ public class Song {
     private String name;
     private String albumName;
     private String songUri;
+    private int totalTime;
 
     private ArrayList<String> thumbnailUrl = new ArrayList<>();
     private ArrayList<String> artists = new ArrayList<>();
@@ -27,9 +28,11 @@ public class Song {
         try {
             JSONObject album = songData.getJSONObject("album");
             JSONArray artists = songData.getJSONArray("artists");
+
             JSONArray images = album.getJSONArray("images");
 
             song.id = songData.getString("id");
+            song.totalTime = songData.getInt("duration_ms");
             song.songUri = "spotify:track:" + song.id;
             song.name = songData.getString("name");
             song.albumName = album.getString("name");
@@ -41,6 +44,8 @@ public class Song {
             for (int i = 0; i < images.length(); i++) {
                 song.thumbnailUrl.add(images.getJSONObject(i).getString("url"));
             }
+
+
 
         } catch (JSONException e) {
             Log.e("Song init", "Invalid JSON object given to constructor", e);
@@ -65,6 +70,8 @@ public class Song {
     public String getAlbumName() {
         return this.albumName;
     }
+
+    public int getTotalTime(){ return this.totalTime; }
 
     public String getSongUri() {
         return songUri;
