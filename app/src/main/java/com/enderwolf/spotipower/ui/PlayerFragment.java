@@ -68,21 +68,25 @@ public class PlayerFragment extends Fragment {
         if(!event.song.equals(currentSong)){
             currentSong = event.song;
 
-           //System.out.println("Image url large: " + currentSong.getThumbnailUrl(Song.Quality.Large));
-            imageLoader.get(currentSong.getThumbnailUrl(Song.Quality.Small), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            blurredBackground.setImageBitmap(blurImage(imageContainer));
-                        }
-
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });
-            thumbNail.setImageUrl(currentSong.getThumbnailUrl(Song.Quality.Large), imageLoader);
+            initImage();
         }
     }
+
+    private void initImage() {
+        imageLoader.get(currentSong.getThumbnailUrl(Song.Quality.Small), new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                blurredBackground.setImageBitmap(blurImage(imageContainer));
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        thumbNail.setImageUrl(currentSong.getThumbnailUrl(Song.Quality.Large), imageLoader);
+    }
+
     @Override
     public void onResume() {
         super.onResume();

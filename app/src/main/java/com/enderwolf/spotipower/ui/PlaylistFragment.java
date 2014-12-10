@@ -28,6 +28,7 @@ import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.adapter.CustomeSongList;
 import com.enderwolf.spotipower.app.AppController;
 import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.event.SongQueuedServerEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -83,13 +84,14 @@ public class PlaylistFragment extends Fragment {
 
         adapter = new CustomeSongList(getActivity(), MusicPlayer.getMusicPlayer().getPlaylist());
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EventBus.getDefault().post(new SongUpdateEvent(Songs.get(position)));
-
             }
         });
+        */
 
         return root;
 
@@ -108,26 +110,13 @@ public class PlaylistFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(SongUpdateEvent event){
-        adapter.notifyDataSetChanged();
+    public void onEvent(SongUpdateEvent event) {
+        adapter = new CustomeSongList(getActivity(), MusicPlayer.getMusicPlayer().getPlaylist());
+        listView.setAdapter(adapter);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        //EventBus.getDefault().unregister(this);
-    }
-
-    public void showPlaylist(Playlist playlist) {
-
-
-        adapter = new CustomeSongList(this.getActivity(), playlist);
+    public void onEvent(SongQueuedServerEvent event) {
+        adapter = new CustomeSongList(getActivity(), MusicPlayer.getMusicPlayer().getPlaylist());
         listView.setAdapter(adapter);
     }
 }

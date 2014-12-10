@@ -18,7 +18,7 @@ public class Client {
     private static class Holder {
         static final Client INSTANCE = new Client();
     }
-    private RemoteHostData connectedHost;
+    private RemoteHostData connectedHost = null;
 
     public static Client getInstance() {
         return Holder.INSTANCE;
@@ -42,6 +42,10 @@ public class Client {
 
     public void sendMessage(String _message) {
         final String message = _message;
+        if(connectedHost == null) {
+            return;
+        }
+
         new Thread() {
             @Override
             public void run() {
