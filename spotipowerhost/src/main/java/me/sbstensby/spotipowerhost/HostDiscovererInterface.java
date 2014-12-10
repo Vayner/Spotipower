@@ -9,5 +9,5 @@ import java.util.ArrayList;
  * Created by stensby on 02/12/14.
  */
 public interface HostDiscovererInterface {
-    public void pushBackHosts(ArrayList<RemoteHostData> hosts);
+    public void notifyListUpdate();
 }

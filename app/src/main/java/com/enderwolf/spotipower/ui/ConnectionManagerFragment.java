@@ -19,8 +19,14 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ConnectionManagerFragment extends Fragment {
+import de.greenrobot.event.EventBus;
+import me.sbstensby.spotipowerhost.HostDiscoverer;
+import me.sbstensby.spotipowerhost.HostDiscovererInterface;
+import me.sbstensby.spotipowerhost.RemoteHostData;
+
+public class ConnectionManagerFragment extends Fragment implements HostDiscovererInterface {
 
 
 
@@ -32,6 +38,8 @@ public class ConnectionManagerFragment extends Fragment {
 
     //Test search
 
+
+    private List<RemoteHostData> hostDataList = null;
     private AlertDialog.Builder dialogRequestJoin;
     private List<RemoteHostData> remoteHostDatas = new ArrayList<>();
 
@@ -61,9 +69,6 @@ public class ConnectionManagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_connection_manager, container, false);
-
-
-
         serList = (ListView) root.findViewById(R.id.listOfServers);
 
 
@@ -78,7 +83,11 @@ public class ConnectionManagerFragment extends Fragment {
         }
 
 
-        dialogRequestJoin = new AlertDialog.Builder(getActivity());  // User dialog to request a song into playlist
+        dialogRequestJoin = new AlertDialog.Builder(getActivity());
+
+
+
+
 
         adapter = new CustomServerList(getActivity(), remoteHostDatas);
         serList.setAdapter(adapter);
@@ -88,8 +97,7 @@ public class ConnectionManagerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id){
 
-               /* Toast.makeText(getApplicationContext(), "You clicked " + songList.get(position).getName(),
-                        Toast.LENGTH_LONG).show(); */
+
 
 
                 dialogRequestJoin.setMessage(remoteHostDatas.get(position).name)
@@ -107,27 +115,31 @@ public class ConnectionManagerFragment extends Fragment {
             }
         });
 
-                return root;
-            }
+        return root;
+    }
 
 
-            @Override
-            public void onAttach(Activity activity) {
-                super.onAttach(activity);
-            }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
-            @Override
-            public void onDetach() {
-                super.onDetach();
-            }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 
-            private HashMap<String, String> createNewServer(String servername, String address) {
-                HashMap<String, String> server = new HashMap<String, String>();
-                server.put(servername, address);
-                return server;
-            }
+    private HashMap<String, String> createNewServer(String servername, String address) {
+        HashMap<String, String> server = new HashMap<String, String>();
+        server.put(servername, address);
+        return server;
+    }
 
 
-
+    @Override
+    public void notifyListUpdate() {
+        if (this.isResumed()) {
 
         }
+    }
+}
