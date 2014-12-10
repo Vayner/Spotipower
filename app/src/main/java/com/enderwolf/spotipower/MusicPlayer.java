@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.enderwolf.spotipower.event.MediaButtonEvent;
 import com.enderwolf.spotipower.event.PlayBackUpdateEvent;
-import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -24,6 +24,7 @@ import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
+import me.sbstensby.spotipowerhost.HostReceiver;
 import me.sbstensby.spotipowerhost.HostRecieverInterface;
 
 /**
@@ -46,6 +47,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
     private MusicPlayer () {
         timer = new Timer();
         queue = new Playlist("queue");
+        HostReceiver.getInstance().setReturnInterface(this);
     }
 
     @Override
@@ -83,6 +85,10 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         if(eventType == EventType.PLAY) {
             EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
         }
+        if(eventType == EventType.TRACK_END) {
+            queue.remove(0);
+            play();
+        }
     }
 
     @Override
@@ -90,35 +96,45 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
     }
 
-    public void onEvent(SongQueuedClientEvent event){
+    public void onEvent(SongQueuedEvent event){
         this.queue.add(event.song);
+    }
+
+    private void play() {
+        if(queue.size() == 0) {
+            return;
+        }
+
+        player.getPlayerState(new PlayerStateCallback() {
+            @Override
+            public void onPlayerState(PlayerState playerState) {
+                if (!playerState.playing && playerState.trackUri.equals("")) {
+                    player.play(queue.get(0).getSongUri());
+                } else {
+                    player.resume();
+                }
+
+                EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
+            }
+        });
     }
 
     public void onEvent(MediaButtonEvent event) {
         switch (event.type) {
             case NEXT:
-
+                if (queue.size() >= 2) {
+                    queue.remove(0);
+                    player.play(queue.get(0).getSongUri());
+                    EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
+                }
                 break;
 
             case PREVIOUS:
-
+                player.seekToPosition(0);
                 break;
 
             case PLAY:
-                if(queue.size() == 0) {
-                    return;
-                }
-
-                player.getPlayerState(new PlayerStateCallback() {
-                    @Override
-                    public void onPlayerState(PlayerState playerState) {
-                        if (!playerState.playing && playerState.trackUri == null) {
-                            player.play(queue.get(currentTrackIndex).getSongUrl());
-                        } else {
-                            player.resume();
-                        }
-                    }
-                });
+                play();
             break;
 
             case PAUSE:
@@ -158,8 +174,6 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         Config playerConfig = new Config(app, response.getAccessToken(), app.getString(R.string.spotify_client_id));
 
         musicPlayer = getMusicPlayer();
-
-        System.out.println(" Music player " + String.valueOf(musicPlayer.currentTrackIndex));
         musicPlayer.player = spotify.getPlayer(playerConfig, app, new Player.InitializationObserver() {
             @Override
             public void onInitialized() {
@@ -197,9 +211,8 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         Parser.ParseLookup(uri.split(":")[2], new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
-                if (!playlist.isEmpty()) {
-                    queue.add(playlist.get(0));
-                }
+                queue.add(playlist.get(0));
+                Log.i("MusicPlayer", "Queued " + playlist.get(0).getName());
             }
         });
     }
@@ -270,7 +283,6 @@ class ProgressUpdate extends TimerTask {
         player.getPlayerState(new PlayerStateCallback() {
             @Override
             public void onPlayerState(PlayerState playerState) {
-                System.out.println("PlayerState uri " + playerState.trackUri);
                 EventBus.getDefault().post(new PlayBackUpdateEvent(playerState));
 
             }

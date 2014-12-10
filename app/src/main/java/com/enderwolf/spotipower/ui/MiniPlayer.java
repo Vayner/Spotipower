@@ -1,7 +1,6 @@
 package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,12 +42,12 @@ public class MiniPlayer extends Fragment {
         public final int imageId;
         public final MediaButtonEvent.ButtonType type;
 
-        public static DisplayMode getOpposite (DisplayMode mode) {
-            return (mode == PLAY)? PAUSE : PLAY;
-        }
-
         public static DisplayMode getFromPlayerState (PlayerState state) {
-            return (state.playing)? PLAY : PAUSE;
+            if(state.trackUri.equals("")) {
+                return PLAY;
+            }
+
+            return (state.playing)? PAUSE : PLAY;
         }
     }
 
@@ -93,7 +92,6 @@ public class MiniPlayer extends Fragment {
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new MediaButtonEvent(playPauseToggle.type, true));
-
             }
         });
 
@@ -113,7 +111,6 @@ public class MiniPlayer extends Fragment {
 
     public void onEvent(PlayBackUpdateEvent event) {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
-        System.out.println("progress bar value  " + String.valueOf(progress));
         progressBar.setProgress(progress);
         setDisplayMode(DisplayMode.getFromPlayerState(event.state));
     }

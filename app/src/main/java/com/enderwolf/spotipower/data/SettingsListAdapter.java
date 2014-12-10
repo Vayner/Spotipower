@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.enderwolf.spotipower.ui.component.BooleanToggle;
@@ -62,63 +63,12 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
         final SettingsEntry entry = list[i];
         Class type = entry.getType();
 
-
         if(type.equals(Boolean.TYPE)) {
-            boolean value = (Boolean) entry.getValue();
-
-            BooleanToggle toggle = new BooleanToggle(context, entry.getName(), value);
-
-            toggle.getButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    entry.setValue(((ToggleButton) view).isChecked());
-                    settings.put(entry);
-                }
-            });
-
-            return toggle;
+            return new BooleanToggle(context, (BooleanEntry) entry);
         } else if (type.equals(Integer.TYPE)) {
-            int value = (Integer) entry.getValue();
-
-            IntegerSelector selector = new IntegerSelector(context, entry.getName(), value);
-            selector.getNumberField().addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    entry.setValue(Integer.valueOf(editable.toString()));
-                    settings.put(entry);
-                }
-            });
-            return selector;
+            return new IntegerSelector(context, (IntegerEntry) entry);
         } else if (type.equals(String.class)) {
-            String value = (String) entry.getValue();
-
-            StringSelector stringSelector = new StringSelector(context, entry.getName(), value);
-
-            stringSelector.getTextField().addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    entry.setValue(editable.toString());
-                    settings.put(entry);
-                }
-            });
-
-            return stringSelector;
+            return new StringSelector(context, (StringEntry) entry);
         } else {
             Log.w("SettingsListAdapter", "Unhandled SettingsEntry");
 

@@ -4,12 +4,14 @@ import android.util.Log;
 
 import java.util.Observable;
 import java.util.Observer;
+
+import me.sbstensby.spotipowerhost.HostReceiver;
 import me.sbstensby.spotipowerhost.HostServer;
 
 /**
  * Package: com.enderwolf.spotipower.data
  * Project: Spotipower
- * Filename:
+ * Filename: HostInitiator.java
  * Created by stensby on 09/12/14.
  */
 public class HostInitiator implements Observer{

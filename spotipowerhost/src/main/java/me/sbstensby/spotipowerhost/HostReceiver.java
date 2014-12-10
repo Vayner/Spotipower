@@ -24,12 +24,21 @@ public class HostReceiver implements Runnable {
     private ServerSocket serverSocket;
     private Socket socket;
     private HostRecieverInterface returnInterface;
+    private BufferedReader bufferedReader;
 
     public static HostReceiver getInstance() {
         return Holder.INSTANCE;
     }
 
     private HostReceiver() {
+        try {
+            serverSocket = new ServerSocket(0);
+            serverSocket.close();
+            socket = new Socket();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setReturnInterface (HostRecieverInterface _returnInterface) {
@@ -38,6 +47,12 @@ public class HostReceiver implements Runnable {
 
     public void startHosting() {
         hosting = true;
+        try {
+            if (!socket.isClosed()) socket.close();
+            if (!serverSocket.isClosed()) serverSocket.close();
+        } catch (IOException e) {
+            //SOMETHING
+        }
         thread = new Thread(this);
         thread.start();
     }
@@ -55,6 +70,7 @@ public class HostReceiver implements Runnable {
 
     @Override
     public void run() {
+        Log.i("HostReciever", "START");
         try {
 
             // Makes a ServerSocket on port 36250, used to receive inquiries.
@@ -63,17 +79,17 @@ public class HostReceiver implements Runnable {
 
             // While there is communications
             while (hosting && (socket = serverSocket.accept())!=null) {
-
                 // Makes an object to read from the stream.
-                BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (socket.getInputStream()));
+                bufferedReader = new BufferedReader (new InputStreamReader (socket.getInputStream()));
 
                 // Reads a line from the client.
                 String inputTmp = bufferedReader.readLine();
 
-                // Split on /
+                // Split on :
                 String[] splitTmp = {""};
                 if(inputTmp != null){
                     splitTmp = inputTmp.split(":");
+                    Log.i("HostReceiver", "RECIEVED: " + inputTmp);
                 }
 
                 switch(splitTmp[0]) {
@@ -81,25 +97,21 @@ public class HostReceiver implements Runnable {
                         //Things to do with the queue.
                         if (!HostServer.getInstance().isOP(socket.getInetAddress()) && !splitTmp[1].equals("ADD")) {
                             //The user is not allowed in here.
-                            Log.i("HostReciever", "QUEUE_NO_OP_NO_ADD");
                             break;
                         }
                         switch (splitTmp[1]) {
                             case "ADD":
                                 //Add a song to the back of the queue.
-                                Log.i("HostReciever", "ADD");
                                 returnInterface.queueAdd(splitTmp[2] + ":" + splitTmp[3] + ":" + splitTmp[4]);
                                 break;
 
                             case "REMOVE":
                                 //Remove a song from the queue.
-                                Log.i("HostReciever", "REMOVE");
                                 returnInterface.queueRemove(Integer.getInteger(splitTmp[2]));
                                 break;
 
                             case "REPLACE":
                                 //Replace the queue playlist.
-                                Log.i("HostReciever", "REPLACE");
                                 returnInterface.queueReplace(splitTmp[2] + ":" + splitTmp[3] + ":" + splitTmp[4]);
                                 break;
 
@@ -111,25 +123,21 @@ public class HostReceiver implements Runnable {
                         //Things to do with playback control.
                         if (!HostServer.getInstance().isOP(socket.getInetAddress())) {
                             //The user is not allowed in here.
-                            Log.i("HostReciever", "CONTROL_NOT_OP");
                             break;
                         }
                         switch (splitTmp[1]) {
                             case "PAUSE":
                                 //Pause playback.
-                                Log.i("HostReciever", "PAUSE");
                                 returnInterface.controlPause();
                                 break;
 
                             case "RESUME":
                                 //Resume playback.
-                                Log.i("HostReciever", "RESUME");
                                 returnInterface.controlResume();
                                 break;
 
                             case "SKIP":
                                 //Skip the current song.
-                                Log.i("HostReciever", "SKIP");
                                 returnInterface.controlSkip();
                                 break;
 
@@ -149,14 +157,17 @@ public class HostReceiver implements Runnable {
 
 
                 // Close sockets
-                socket.close();
-                bufferedReader.close();
             }
+            socket.close();
+            bufferedReader.close();
             serverSocket.close();
 
             // Exceptions
         } catch (IOException | NullPointerException e) {
+            Log.e("HostReciever", "Something is wrong here!");
             e.printStackTrace();
         }
+
+        Log.i("HostReciever", "STOP");
     }
 }
