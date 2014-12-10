@@ -48,4 +48,8 @@ public class PlaylistView extends FrameLayout {
             listView.setAdapter(adapter);
         }
     }
+
+    public ListView getListView() {
+        return this.listView;
+    }
 }
