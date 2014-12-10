@@ -62,7 +62,10 @@ public class IntegerSelector extends LinearLayout {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    entry.setValue(Integer.valueOf(editable.toString()));
+                    String value = editable.toString();
+                    value = (value.equals("")) ? "0" : value;
+
+                    entry.setValue(Integer.valueOf(value));
                     Settings.getSettings().put(entry);
                 }
             });

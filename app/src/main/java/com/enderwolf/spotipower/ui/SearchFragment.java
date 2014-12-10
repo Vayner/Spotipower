@@ -2,12 +2,15 @@ package com.enderwolf.spotipower.ui;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TabHost;
 
 import com.enderwolf.spotipower.Playlist;
@@ -15,16 +18,22 @@ import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
+import com.enderwolf.spotipower.utility.SearchConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TabHost.OnTabChangeListener {
 
+
+
     private PlaylistView playlistView;
     private PlaylistView trackView;
     private PlaylistView albumView;
     private PlaylistView artistView;
+
+    private Button searchButton;
+    private EditText searchInput;
 
     private TabHost tabHost;
 
@@ -60,6 +69,32 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         trackView = new PlaylistView(this.getActivity());
         albumView = new PlaylistView(this.getActivity());
         artistView = new PlaylistView(this.getActivity());
+
+        playlistView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+        searchButton = (Button) root.findViewById(R.id.search_button);
+        searchInput = (EditText) root.findViewById(R.id.search_input);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String input = searchInput.getText().toString();
+
+                String playlistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Playlist);
+                String trackSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Track);
+                String almubSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Album);
+                String artistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Artist);
+
+                //search(playlistSearch, SearchConstructor.Type.Playlist, playlistView);
+                search(trackSearch, SearchConstructor.Type.Track, trackView);
+                //search(almubSearch, SearchConstructor.Type.Album, albumView);
+                //search(artistSearch, SearchConstructor.Type.Artist, artistView);
+            }
+        });
 
         tabHost.setup();
 
@@ -101,16 +136,12 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onTabChanged(String s) {
 
-        List<String> list = new ArrayList<>();
-        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
-        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
-        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
-        list.add("spotify:track:2061tUGBzVsZvRdJS3D4hD");
+    }
 
-        Parser.ParseLookupList(list, new ParseCompleteCallback() {
+    private void search(String seachInput, SearchConstructor.Type searchType, final PlaylistView targetList) {
+        Parser.ParseSearch(seachInput, searchType, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 if (playlist == null) {
@@ -118,18 +149,8 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
                     return;
                 }
 
-                trackView.showPlaylist(playlist);
+                targetList.showPlaylist(playlist);
             }
         });
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onTabChanged(String s) {
-
     }
 }

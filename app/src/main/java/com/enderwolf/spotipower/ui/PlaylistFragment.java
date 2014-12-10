@@ -30,6 +30,7 @@ import com.enderwolf.spotipower.event.SongQueuedClientEvent;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
+import com.enderwolf.spotipower.utility.SearchConstructor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,7 +89,7 @@ public class PlaylistFragment extends Fragment {
 
             }
         });
-        Parser.ParseSearch(url, new ParseCompleteCallback() {
+        Parser.ParseSearch(url, SearchConstructor.Type.Track, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 Songs = playlist;

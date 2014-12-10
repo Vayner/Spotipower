@@ -23,29 +23,30 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
 
     private Settings settings;
     private Context context;
-    private SettingsEntry[] list;
+    private List<SettingsEntry> list;
 
     public SettingsListAdapter(Context context, Settings settings) {
         super();
 
         this.context = context;
         this.settings = settings;
-        list = this.settings.getAsList();
+        list = new ArrayList<SettingsEntry>( Arrays.asList(this.settings.getAsList()) );
+        Collections.sort(list);
     }
 
     @Override
     public int getCount() {
-        return list.length;
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list[position];
+        return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return list[position].getName().hashCode();
+        return list.get(position).getName().hashCode();
     }
 
     @Override
@@ -56,11 +57,7 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        if(view != null) {
-            return view;
-        }
-
-        final SettingsEntry entry = list[i];
+        final SettingsEntry entry = list.get(i);
         Class type = entry.getType();
 
         if(type.equals(Boolean.TYPE)) {

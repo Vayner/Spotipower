@@ -16,19 +16,36 @@ public class Settings extends Observable implements Serializable {
     private static Settings settings = null;
     private SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
 
+    private static SettingsEntry[] overrideDefault = {
+        new BooleanEntry("Hosting", false)
+    };
+
+    private static SettingsEntry[] defaultValues = {
+        new BooleanEntry("Hosting", false),
+        new BooleanEntry("Test2", false),
+        new BooleanEntry("Test3", false),
+        new StringEntry("Host name", "MyHostName"),
+        new IntegerEntry("Numbers", 1337)
+    };
+
     // TODO change over to objects / class hierarchy?
     private Settings () {
-        this.settingValues.put("Hosting", new BooleanEntry("Hosting", false));
-        this.settingValues.put("Test2", new BooleanEntry("Test2", false));
-        this.settingValues.put("Test3", new BooleanEntry("Test3", false));
-        this.settingValues.put("String test", new StringEntry("String test", "Hello"));
-        this.settingValues.put("Numbers", new IntegerEntry("Numbers", 1337));
+        for(SettingsEntry entry : defaultValues) {
+            this.put(entry, false, true);
+        }
     }
 
     private void overwriteSettings(Settings settings) {
         for(Map.Entry<String, SettingsEntry> e : settings.settingValues.entrySet()) {
-            this.put(e.getValue());
+            this.put(e.getValue(), false, false);
         }
+
+        for(SettingsEntry entry : overrideDefault) {
+            this.put(entry, false, true);
+        }
+
+        this.setChanged();
+        this.notifyObservers();
     }
 
     /**
@@ -45,10 +62,16 @@ public class Settings extends Observable implements Serializable {
      * @param entry
      */
     public void put(SettingsEntry entry) {
-        if(this.settingValues.containsKey(entry.getName())) {
+        this.put(entry, true, false);
+    }
+
+    private void put(SettingsEntry entry, boolean notify, boolean overrideCheck) {
+        if(overrideCheck || this.settingValues.containsKey(entry.getName())) {
             this.settingValues.put(entry.getName(), entry);
-            this.setChanged();
-            this.notifyObservers();
+            if(notify) {
+                this.setChanged();
+                this.notifyObservers();
+            }
         }
     }
 
