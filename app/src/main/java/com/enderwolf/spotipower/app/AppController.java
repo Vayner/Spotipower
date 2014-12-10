@@ -17,6 +17,11 @@ public class AppController extends Application {
     public static final String TAG = AppController.class
             .getSimpleName();
 
+    /**
+     *
+     *  Class that loads and keeps
+     *
+     */
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
