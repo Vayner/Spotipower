@@ -3,18 +3,24 @@ package com.enderwolf.spotipower.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
 
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
+import com.enderwolf.spotipower.Song;
+import com.enderwolf.spotipower.adapter.CustomeSongList;
+import com.enderwolf.spotipower.event.SongQueuedClientEvent;
+import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
@@ -22,6 +28,8 @@ import com.enderwolf.spotipower.utility.SearchConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 public class SearchFragment extends Fragment implements TabHost.OnTabChangeListener {
 
@@ -63,6 +71,9 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 
+
+
+
         tabHost = (TabHost) root.findViewById(R.id.tabHost);
 
         playlistView = new PlaylistView(this.getActivity());
@@ -70,9 +81,22 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
         albumView = new PlaylistView(this.getActivity());
         artistView = new PlaylistView(this.getActivity());
 
-        playlistView.setOnClickListener(new View.OnClickListener() {
+        trackView.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Song song = (Song) adapterView.getItemAtPosition(i);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setCancelable(true).setIcon(R.drawable.ic_queue_music_white_24dp).setTitle("Add this song to queue?");
+                builder.setMessage(song.getName() + " - " + song.getAlbumName());
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        EventBus.getDefault().post(new SongQueuedClientEvent(song));
+                    }
+                }).setNegativeButton("No", null);
+
+                builder.create().show();
             }
         });
 
