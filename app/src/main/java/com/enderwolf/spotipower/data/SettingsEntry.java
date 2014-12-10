@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by !Tulingen on 07.12.2014.
  */
-public abstract class SettingsEntry<T> implements Serializable {
+public abstract class SettingsEntry<T> implements Serializable, Comparable<SettingsEntry> {
     private final String name;
     private final Class type;
 
@@ -45,6 +45,11 @@ public abstract class SettingsEntry<T> implements Serializable {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(SettingsEntry settingsEntry) {
+        return this.name.compareTo(settingsEntry.name);
     }
 }
 
