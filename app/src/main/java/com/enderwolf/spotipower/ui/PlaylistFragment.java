@@ -4,6 +4,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.enderwolf.spotipower.MusicPlayer;
 import com.enderwolf.spotipower.Song;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,7 +50,7 @@ public class PlaylistFragment extends Fragment {
     private CustomeSongList adapter;
 
     //Test search
-    private static final String url = "https://api.spotify.com/v1/search?query=flame&offset=0&limit=10&type=track";
+
     private AlertDialog.Builder DialogRequestSong;
     private List<Song> Songs = new ArrayList<>();
 
@@ -80,7 +81,7 @@ public class PlaylistFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_playlist, container, false);
         listView = (ListView) root.findViewById(R.id.listSearched);
 
-        adapter = new CustomeSongList(getActivity(), Songs);
+        adapter = new CustomeSongList(getActivity(), MusicPlayer.getMusicPlayer().getPlaylist());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,15 +90,26 @@ public class PlaylistFragment extends Fragment {
 
             }
         });
-        Parser.ParseSearch(url, SearchConstructor.Type.Track, new ParseCompleteCallback() {
-            @Override
-            public void OnParseComplete(Playlist playlist) {
-                Songs = playlist;
-                showPlaylist(playlist);
-            }
-        });
 
         return root;
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(SongUpdateEvent event){
+        adapter.notifyDataSetChanged();
     }
 
     @Override
