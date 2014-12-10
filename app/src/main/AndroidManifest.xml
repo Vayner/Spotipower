@@ -5,6 +5,7 @@
     package="com.enderwolf.spotipower">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         tools:replace="android:icon"
