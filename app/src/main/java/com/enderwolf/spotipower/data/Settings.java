@@ -31,17 +31,17 @@ public class Settings extends Observable implements Serializable {
     // TODO change over to objects / class hierarchy?
     private Settings () {
         for(SettingsEntry entry : defaultValues) {
-            this.put(entry, false);
+            this.put(entry, false, true);
         }
     }
 
     private void overwriteSettings(Settings settings) {
         for(Map.Entry<String, SettingsEntry> e : settings.settingValues.entrySet()) {
-            this.put(e.getValue(), false);
+            this.put(e.getValue(), false, false);
         }
 
         for(SettingsEntry entry : overrideDefault) {
-            this.put(entry, false);
+            this.put(entry, false, true);
         }
 
         this.setChanged();
@@ -62,11 +62,11 @@ public class Settings extends Observable implements Serializable {
      * @param entry
      */
     public void put(SettingsEntry entry) {
-        this.put(entry, true);
+        this.put(entry, true, false);
     }
 
-    private void put(SettingsEntry entry, boolean notify) {
-        if(this.settingValues.containsKey(entry.getName())) {
+    private void put(SettingsEntry entry, boolean notify, boolean overrideCheck) {
+        if(overrideCheck || this.settingValues.containsKey(entry.getName())) {
             this.settingValues.put(entry.getName(), entry);
             if(notify) {
                 this.setChanged();

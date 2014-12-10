@@ -38,7 +38,13 @@ public abstract class SettingsEntry<T> implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return !(o == null || !(o instanceof SettingsEntry)) && ((SettingsEntry) o).name.equals(this.name);
+        if(o == null || !(o instanceof SettingsEntry)) {
+            return false;
+        } else if(((SettingsEntry) o).name.equals(this.name)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
