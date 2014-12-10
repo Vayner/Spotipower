@@ -14,13 +14,15 @@ import java.net.Socket;
  * Project: Spotipower
  * Filename: HostReceiver.java
  * Created by stensby on 07/12/14.
+ *
+ * Listens for tcp packets, and interprets them.
+ * Contacts the rest of the world via the returnInterface
  */
 public class HostReceiver implements Runnable {
     private static class Holder {
         static final HostReceiver INSTANCE = new HostReceiver();
     }
     private boolean hosting;
-    private Thread thread;
     private ServerSocket serverSocket;
     private Socket socket;
     private HostRecieverInterface returnInterface;
@@ -33,6 +35,7 @@ public class HostReceiver implements Runnable {
     private HostReceiver() {
         try {
             serverSocket = new ServerSocket(0);
+            // Makes sure the sockets are closed (I sometimes had trouble with them starting open).
             serverSocket.close();
             socket = new Socket();
             socket.close();
@@ -41,9 +44,16 @@ public class HostReceiver implements Runnable {
         }
     }
 
+    /**
+     * Sets the return interface.
+     */
     public void setReturnInterface (HostRecieverInterface _returnInterface) {
         this.returnInterface = _returnInterface;
     }
+
+    /**
+     * Start the hosting.
+     */
 
     public void startHosting() {
         hosting = true;
@@ -53,10 +63,13 @@ public class HostReceiver implements Runnable {
         } catch (IOException e) {
             //SOMETHING
         }
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 
+    /**
+     * Stop the hosting.
+     */
     public void stopHosting() {
         hosting = false;
         try {
@@ -68,6 +81,9 @@ public class HostReceiver implements Runnable {
     }
 
 
+    /**
+     * The actual parser.
+     */
     @Override
     public void run() {
         Log.i("HostReciever", "START");
@@ -92,6 +108,7 @@ public class HostReceiver implements Runnable {
                     Log.i("HostReceiver", "RECIEVED: " + inputTmp);
                 }
 
+                // check to see what needs doing, and do it.
                 switch(splitTmp[0]) {
                     case "QUEUE":
                         //Things to do with the queue.

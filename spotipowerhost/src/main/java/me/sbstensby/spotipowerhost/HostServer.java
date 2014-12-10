@@ -23,7 +23,6 @@ public class HostServer implements Runnable {
 
     private boolean hosting;
     private String hostname;
-    private Thread thread;
     private ArrayList<InetAddress> OPs = new ArrayList<>(); //List of connected clients with OP permissions.
 
     /**
@@ -88,7 +87,7 @@ public class HostServer implements Runnable {
         this.hostname = hostname;
         this.hosting = true;
 
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 

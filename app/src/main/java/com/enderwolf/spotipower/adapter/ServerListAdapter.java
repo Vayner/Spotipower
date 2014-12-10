@@ -15,7 +15,13 @@ import java.util.List;
 
 
 /**
+<<<<<<< HEAD:app/src/main/java/com/enderwolf/spotipower/adapter/ServerListAdapter.java
  * Adapter for the server list.
+=======
+ * A custom adapter list with with RemoteHostData that is used to show a list and hold information
+ * on different connections the user can connect to
+ *
+>>>>>>> 97de61bc3829d0557fcf196d70755d7fb1e20ee7:app/src/main/java/com/enderwolf/spotipower/adapter/CustomServerList.java
  * Created by chris on 10.12.2014.
  */
 public class ServerListAdapter extends BaseAdapter {
@@ -47,6 +53,7 @@ public class ServerListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        // Inflating
         if (inflater == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -55,6 +62,7 @@ public class ServerListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_server, parent);
         }
 
+        // Set object used by and should be updated by CustomServerlist
         TextView title = (TextView) convertView.findViewById(R.id.serverTitle);
 
         title.setText(remoteHostDataList.get(position).name);

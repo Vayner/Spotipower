@@ -78,8 +78,8 @@ public class MiniPlayer extends Fragment {
         playPauseButton = (ImageButton) root.findViewById(R.id.mini_play);
         ImageButton prev = (ImageButton) root.findViewById(R.id.mini_prev);
 
-        timerCurrent = (TextView) root.findViewById(R.id.currentSongPlayed);
-        timerMax = (TextView) root.findViewById(R.id.songLenght);
+        timerCurrent = (TextView) root.findViewById(R.id.current_song_time);
+        timerMax = (TextView) root.findViewById(R.id.song_length);
 
 
         next.setOnClickListener(new View.OnClickListener() {

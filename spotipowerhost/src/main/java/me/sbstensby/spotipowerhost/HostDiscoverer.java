@@ -1,14 +1,10 @@
 package me.sbstensby.spotipowerhost;
 
-import android.content.Context;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -26,31 +22,25 @@ import java.net.ServerSocket;
  * Created by stensby on 02/12/14.
  *
  * Broadcasts UDP package "SPOTIPOWER_HOST_DISCOVERY" on port 36251
- * Listens for three seconds (todo better solution)
+ * Listens for three seconds
  * for the reply "SPOTIPOWER_HOST_HERE:[hostname]"
- * returns an ArrayList<RemoteHostData> of hosts via the returnInterface.
+ * Notifies the interface whenever it finds a new host.
  */
 public class HostDiscoverer implements Runnable {
-    private static HostDiscoverer instance = null;
+    private static HostDiscoverer instance = new HostDiscoverer();
     private HostDiscovererInterface returnInterface = null;
-    private Thread thread;
-    private ArrayList<RemoteHostData> hostList;
-    private Context mContext;
-    private static final byte[] sendData = "SPOTIPOWER_HOST_DISCOVERY".getBytes();
+    private ArrayList<RemoteHostData> hostList = new ArrayList<>();
 
     private HostDiscoverer() {
         hostList = new ArrayList<>();
     }
 
-    public static void init(Context mContext) {
-        instance = new HostDiscoverer();
-        instance.mContext = mContext;
-    }
-
+    /**
+     * Sets the return interface
+     */
     public void setReturnInterface(HostDiscovererInterface returnInterface) {
         this.returnInterface = returnInterface;
     }
-
 
     public static HostDiscoverer getInstance() {
         return instance;
@@ -64,9 +54,9 @@ public class HostDiscoverer implements Runnable {
         ServerSocket serverSocet;
         try {
             serverSocet = new ServerSocket(36252);
-            serverSocet.setSoTimeout(100000);
+            serverSocet.setSoTimeout(10000);
 
-            Socket socket = new Socket();
+            Socket socket;
 
             // While there is communications
             while ((socket = serverSocet.accept())!=null) {
@@ -103,13 +93,21 @@ public class HostDiscoverer implements Runnable {
         Log.i("HostDiscoverer", "STOPPED");
     }
 
+    /**
+     * Getter for the host list
+     * @return the host list
+     */
     public ArrayList<RemoteHostData> getHostList() {
         return hostList;
     }
 
+    /**
+     * The thread you want to call. Remember to set the return interface first.
+     * Starts the necessary threads for finding hosts on the network.
+     */
     public void requestHosts() {
         //Start listening
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
 
         //Send request to any hosts out there
@@ -164,30 +162,10 @@ public class HostDiscoverer implements Runnable {
                     datagramSocket.close();
 
                 } catch (IOException ex) {
-
+                    ex.printStackTrace();
                 }
             }
         }.start();
     }
 
-    /**
-     * Gets the broadcast address.
-     *
-     * Modified from https://code.google.com/p/boxeeremote/wiki/AndroidUDP
-     *
-     * @return the broadcast address.
-     * @throws IOException
-     */
-    private InetAddress getBroadcastAddress() throws IOException {
-        WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-        if (wifi == null) throw new IOException("Could not get WifiManager");
-
-        DhcpInfo dhcp = wifi.getDhcpInfo();
-        if (dhcp == null) throw new IOException("could not get dhcp");
-
-        int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
-        byte[] quads = new byte[4];
-        for (int k = 0; k < 4; k++) quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
-        return InetAddress.getByAddress(quads);
-    }
 }

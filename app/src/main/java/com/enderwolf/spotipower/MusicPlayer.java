@@ -270,7 +270,6 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
      */
     @Override
     public boolean joinOP() {
-        //TODO: SOMETHING
         return true;
     }
 }
