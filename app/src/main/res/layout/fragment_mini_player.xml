@@ -29,7 +29,9 @@
             android:background="@null"
             android:alpha="0.60"
             android:layout_weight="3"
-            android:contentDescription="@string/playpause"/>
+            android:contentDescription="@string/playpause"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -49,7 +51,9 @@
         android:id="@+id/nameOfSong"
         android:textSize="@dimen/title"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -57,7 +61,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/mini_progress"
         android:layout_gravity="center_horizontal"
-        android:progress="27"/>
+        android:progress="27"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp" />
+
 
 
 
