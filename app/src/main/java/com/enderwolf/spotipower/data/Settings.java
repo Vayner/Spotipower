@@ -24,7 +24,7 @@ public class Settings extends Observable implements Serializable {
         new BooleanEntry("Hosting", false),
         new BooleanEntry("Test2", false),
         new BooleanEntry("Test3", false),
-        new StringEntry("String test", "Hello"),
+        new StringEntry("Host name", "MyHostName"),
         new IntegerEntry("Numbers", 1337)
     };
 
