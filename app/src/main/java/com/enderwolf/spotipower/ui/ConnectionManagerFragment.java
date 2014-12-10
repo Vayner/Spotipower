@@ -27,11 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
+import me.sbstensby.spotipowerhost.HostDiscoverer;
+import me.sbstensby.spotipowerhost.HostDiscovererInterface;
+import me.sbstensby.spotipowerhost.RemoteHostData;
 
-public class ConnectionManagerFragment extends Fragment {
+public class ConnectionManagerFragment extends Fragment implements HostDiscovererInterface {
 
     private Spinner spinnerListWithServers;
     private ListView listViewOfServers;
+    private List<RemoteHostData> hostDataList = null;
     List<Map<String, String>> serverList = new ArrayList<Map<String,String>>();
     private AlertDialog.Builder dialogRequestJoin;
     SimpleAdapter adapter;
@@ -66,15 +70,15 @@ public class ConnectionManagerFragment extends Fragment {
         final ListView servers = (ListView) root.findViewById(R.id.listOfServers);
 
 
-                serverList.add(createNewServer("server", "Server 1"));
-                serverList.add(createNewServer("server", "Server 2"));
-                serverList.add(createNewServer("server", "Server 3"));
+        serverList.add(createNewServer("server", "Server 1"));
+        serverList.add(createNewServer("server", "Server 2"));
+        serverList.add(createNewServer("server", "Server 3"));
 
-            dialogRequestJoin = new AlertDialog.Builder(getActivity());
+        dialogRequestJoin = new AlertDialog.Builder(getActivity());
 
-                adapter = new SimpleAdapter(getActivity(), serverList, android.R.layout.simple_list_item_1, new String[]{"server"}, new int[]{android.R.id.text1});
+        adapter = new SimpleAdapter(getActivity(), serverList, android.R.layout.simple_list_item_1, new String[]{"server"}, new int[]{android.R.id.text1});
 
-                servers.setAdapter(adapter);
+        servers.setAdapter(adapter);
 
         servers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -82,8 +86,7 @@ public class ConnectionManagerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id){
 
-               /* Toast.makeText(getApplicationContext(), "You clicked " + songList.get(position).getName(),
-                        Toast.LENGTH_LONG).show(); */
+
 
                 HashMap map =  (HashMap) adapter.getItem(position);
 
@@ -102,27 +105,31 @@ public class ConnectionManagerFragment extends Fragment {
             }
         });
 
-                return root;
-            }
+        return root;
+    }
 
 
-            @Override
-            public void onAttach(Activity activity) {
-                super.onAttach(activity);
-            }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
-            @Override
-            public void onDetach() {
-                super.onDetach();
-            }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 
-            private HashMap<String, String> createNewServer(String servername, String address) {
-                HashMap<String, String> server = new HashMap<String, String>();
-                server.put(servername, address);
-                return server;
-            }
+    private HashMap<String, String> createNewServer(String servername, String address) {
+        HashMap<String, String> server = new HashMap<String, String>();
+        server.put(servername, address);
+        return server;
+    }
 
 
-
+    @Override
+    public void notifyListUpdate() {
+        if (this.isResumed()) {
 
         }
+    }
+}
