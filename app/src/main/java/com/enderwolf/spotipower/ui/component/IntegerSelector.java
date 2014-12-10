@@ -31,14 +31,17 @@ public class IntegerSelector extends LinearLayout {
         this.setOrientation(LinearLayout.HORIZONTAL);
 
         this.text = new TextView(context);
+        this.text.setTextAppearance(context, android.R.style.TextAppearance_Holo_Medium);
         this.text.setInputType(InputType.TYPE_NULL);
         this.text.setText(entry.getName());
+        this.text.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        this.text.setPadding(5,5,5,5);
 
         LayoutParams paramsText = generateDefaultLayoutParams();
         paramsText.width = 0;
-        paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsText.height = ViewGroup.LayoutParams.MATCH_PARENT;
         paramsText.weight = 1;
-        paramsText.gravity = Gravity.END;
+        paramsText.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
 
         this.addView(this.text, paramsText);
 
@@ -48,9 +51,9 @@ public class IntegerSelector extends LinearLayout {
 
         LayoutParams paramsNumberField = generateDefaultLayoutParams();
         paramsNumberField.width = 0;
-        paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        paramsNumberField.height = ViewGroup.LayoutParams.MATCH_PARENT;
         paramsNumberField.weight = 1;
-        paramsNumberField.gravity = Gravity.START;
+        paramsNumberField.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
 
         this.addView(this.numberField, paramsNumberField);
 

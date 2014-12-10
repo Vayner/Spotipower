@@ -20,7 +20,7 @@ import com.spotify.sdk.android.playback.PlayerState;
 
 import de.greenrobot.event.EventBus;
 
-public class MiniPlayer extends Fragment {
+public class PlayerControlFragment extends Fragment {
 
     private ProgressBar progressBar;
     private ImageButton playPauseButton;
@@ -57,16 +57,16 @@ public class MiniPlayer extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment MiniPlayer.
+     * @return A new instance of fragment PlayerControlFragment.
      */
-    public static MiniPlayer newInstance() {
-        MiniPlayer fragment = new MiniPlayer();
+    public static PlayerControlFragment newInstance() {
+        PlayerControlFragment fragment = new PlayerControlFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public MiniPlayer() {
+    public PlayerControlFragment() {
         // Required empty public constructor
     }
 

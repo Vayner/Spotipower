@@ -66,7 +66,7 @@ public class PlaylistListAdapter extends BaseAdapter {
 
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
-        TextView album = (TextView) convertView.findViewById(R.id.albumn_name);
+        TextView album = (TextView) convertView.findViewById(R.id.album_name);
         TextView time = (TextView) convertView.findViewById(R.id.time);
 
         // getting which song position

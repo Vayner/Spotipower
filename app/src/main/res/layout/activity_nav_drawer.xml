@@ -20,14 +20,14 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:id="@+id/content_view"
-            android:layout_above="@+id/miniplayer_view"/>
+            android:layout_above="@+id/player_control_view"/>
 
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:id="@+id/miniplayer_view"/>
+            android:id="@+id/player_control_view"/>
 
     </RelativeLayout>
 

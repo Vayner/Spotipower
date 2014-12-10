@@ -22,7 +22,7 @@ import com.enderwolf.spotipower.data.HostInitiator;
 import com.enderwolf.spotipower.data.Settings;
 import com.enderwolf.spotipower.ui.AboutFragment;
 import com.enderwolf.spotipower.ui.ConnectionManagerFragment;
-import com.enderwolf.spotipower.ui.MiniPlayer;
+import com.enderwolf.spotipower.ui.PlayerControlFragment;
 import com.enderwolf.spotipower.ui.PlayerFragment;
 import com.enderwolf.spotipower.ui.PlaylistFragment;
 import com.enderwolf.spotipower.ui.SearchFragment;
@@ -33,7 +33,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
     private boolean dualPane = false;
 
-    private MiniPlayer miniPlayer = null;
+    private PlayerControlFragment playerControlFragment = null;
     private PlayerFragment playerFragment = null;
     private SearchFragment searchFragment = null;
     private PlaylistFragment playlistFragment = null;
@@ -138,7 +138,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
     public void initGui() {
 
         playerFragment = PlayerFragment.newInstance();
-        miniPlayer = MiniPlayer.newInstance();
+        playerControlFragment = PlayerControlFragment.newInstance();
         searchFragment = SearchFragment.newInstance();
         playlistFragment = PlaylistFragment.newInstance();
         connectionManagerFragment = ConnectionManagerFragment.newInstance();
@@ -201,7 +201,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         }
 
         getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[drawerDataCurrent]).commit();
-        getFragmentManager().beginTransaction().replace(R.id.miniplayer_view, miniPlayer).commit();
+        getFragmentManager().beginTransaction().replace(R.id.player_control_view, playerControlFragment).commit();
     }
 
     @Override
