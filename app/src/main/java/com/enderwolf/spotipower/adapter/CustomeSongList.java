@@ -66,6 +66,7 @@ public class CustomeSongList extends BaseAdapter {
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
         TextView album = (TextView) convertView.findViewById(R.id.albumnName);
+        TextView time = (TextView) convertView.findViewById(R.id.time);
 
         // getting which song position
         Song s = songs.get(position);
@@ -81,6 +82,20 @@ public class CustomeSongList extends BaseAdapter {
 
         // release album
         album.setText(String.valueOf(s.getAlbumName()));
+
+        StringBuilder timeString = new StringBuilder();
+        timeString.append(String.valueOf( s.getTotalTime() / 60000 ));
+        timeString.append(':');
+
+        String sec = String.valueOf( (s.getTotalTime() / 1000) % 60 );
+
+        if(sec.length() == 1) {
+            timeString.append('0');
+        }
+
+        timeString.append(sec);
+
+        time.setText(timeString.toString());
 
         return convertView;
     }

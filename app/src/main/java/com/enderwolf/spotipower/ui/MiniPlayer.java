@@ -84,7 +84,7 @@ public class MiniPlayer extends Fragment {
         ImageButton prev = (ImageButton) root.findViewById(R.id.mini_prev);
 
         timerCurrent = (TextView) root.findViewById(R.id.currentSongPlayed);
-        timerCurrent = (TextView) root.findViewById(R.id.songLenght);
+        timerMax = (TextView) root.findViewById(R.id.songLenght);
 
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +117,19 @@ public class MiniPlayer extends Fragment {
 
     public void onEvent(PlayBackUpdateEvent event) {
         int progress = (int) (((float) event.state.positionInMs / (float) event.state.durationInMs) * 100.f);
-        timerCurrent.setText( String.valueOf((float) event.state.durationInMs / 1000.f));
+        StringBuilder time = new StringBuilder();
+        time.append(String.valueOf( event.state.positionInMs / 60000 ));
+        time.append(':');
+
+        String sec = String.valueOf( (event.state.positionInMs / 1000) % 60 );
+
+        if(sec.length() == 1) {
+            time.append('0');
+        }
+
+        time.append(sec);
+
+        timerCurrent.setText(time.toString());
         progressBar.setProgress(progress);
         setDisplayMode(DisplayMode.getFromPlayerState(event.state));
     }
@@ -125,7 +137,19 @@ public class MiniPlayer extends Fragment {
     public void onEvent(SongUpdateEvent event){
         if(!event.song.equals(currentSong)){
             currentSong = event.song;
-            timerMax.setText(String.valueOf( ((currentSong.getTotalTime())/ 1000 ) / 60 ));
+            StringBuilder time = new StringBuilder();
+            time.append(String.valueOf( currentSong.getTotalTime() / 60000 ));
+            time.append(':');
+
+            String sec = String.valueOf( (currentSong.getTotalTime() / 1000) % 60 );
+
+            if(sec.length() == 1) {
+                time.append('0');
+            }
+
+            time.append(sec);
+
+            timerMax.setText(time.toString());
             title.setText(currentSong.getName());
         }
     }
