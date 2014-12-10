@@ -8,6 +8,8 @@ package com.enderwolf.spotipower.utility;
  * ref:
  * http://developer.android.com/reference/android/util/LruCache.html
  *
+ * Standard LruBitmapCace
+ *
  *
 
  */

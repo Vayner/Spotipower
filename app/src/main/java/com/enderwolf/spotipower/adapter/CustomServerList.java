@@ -7,10 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.Song;
-import com.enderwolf.spotipower.app.AppController;
+
 
 import me.sbstensby.spotipowerhost.RemoteHostData;
 
@@ -18,6 +17,9 @@ import java.util.List;
 
 
 /**
+ * A custom adapter list with with RemoteHostData that is used to show a list and hold information
+ * on different connections the user can connect to
+ *
  * Created by chris on 10.12.2014.
  */
 public class CustomServerList extends BaseAdapter {
@@ -50,6 +52,7 @@ public class CustomServerList extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        // Inflating
         if (inflater == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -59,7 +62,7 @@ public class CustomServerList extends BaseAdapter {
         }
 
 
-
+        // Set object used by and should be updated by CustomServerlist
         TextView title = (TextView) convertView.findViewById(R.id.serverTitle);
 
         title.setText(remoteHostData.get(position).name);

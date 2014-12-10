@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="1"
-            android:text="10.00"
+            android:text="0.0"
             android:textAlignment="center"
             android:minWidth="50sp"
             android:id="@+id/currentSongPlayed"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/mini_progress"
             android:layout_gravity="center_horizontal"
-            android:progress="27"
+            android:progress="0"
             android:layout_toLeftOf="@+id/songLenght"
             android:layout_toRightOf="@+id/currentSongPlayed"
             android:layout_centerVertical="true" />
