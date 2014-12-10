@@ -31,8 +31,8 @@ public class MiniPlayer extends Fragment {
     private DisplayMode playPauseToggle = DisplayMode.PLAY;
 
     private enum DisplayMode {
-        PLAY(R.drawable.ic_play_arrow_white_24dp, MediaButtonEvent.ButtonType.PLAY),
-        PAUSE(R.drawable.ic_pause_white_24dp, MediaButtonEvent.ButtonType.PAUSE);
+        PLAY(R.drawable.ic_play_circle_outline_white_36dp, MediaButtonEvent.ButtonType.PLAY),
+        PAUSE(R.drawable.ic_pause_circle_outline_white_36dp, MediaButtonEvent.ButtonType.PAUSE);
 
         DisplayMode (int imageId, MediaButtonEvent.ButtonType type) {
             this.imageId = imageId;
