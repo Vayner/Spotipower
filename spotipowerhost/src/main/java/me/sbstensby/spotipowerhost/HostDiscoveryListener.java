@@ -30,7 +30,6 @@ public class HostDiscoveryListener implements Runnable {
     }
 
     private DatagramSocket socket;
-    private Thread thread;
     private boolean hosting;
 
     /**
@@ -87,7 +86,7 @@ public class HostDiscoveryListener implements Runnable {
      */
     public void startHosting() {
         hosting = true;
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 

@@ -29,7 +29,6 @@ import java.net.ServerSocket;
 public class HostDiscoverer implements Runnable {
     private static HostDiscoverer instance = new HostDiscoverer();
     private HostDiscovererInterface returnInterface = null;
-    private Thread thread;
     private ArrayList<RemoteHostData> hostList = new ArrayList<>();
 
     private HostDiscoverer() {
@@ -108,7 +107,7 @@ public class HostDiscoverer implements Runnable {
      */
     public void requestHosts() {
         //Start listening
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
 
         //Send request to any hosts out there

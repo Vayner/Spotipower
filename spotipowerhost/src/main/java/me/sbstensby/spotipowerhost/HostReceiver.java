@@ -23,7 +23,6 @@ public class HostReceiver implements Runnable {
         static final HostReceiver INSTANCE = new HostReceiver();
     }
     private boolean hosting;
-    private Thread thread;
     private ServerSocket serverSocket;
     private Socket socket;
     private HostRecieverInterface returnInterface;
@@ -64,7 +63,7 @@ public class HostReceiver implements Runnable {
         } catch (IOException e) {
             //SOMETHING
         }
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 
