@@ -47,7 +47,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
-    private static DrawerEntry[] drawerEntries = {
+    private static final DrawerEntry[] drawerEntries = {
         new DrawerEntry(R.drawable.ic_home_white_24dp, "Home"),
         new DrawerEntry(R.drawable.ic_search_white_24dp, "Search"),
         new DrawerEntry(R.drawable.ic_my_library_music_white_24dp, "Playlist"),
@@ -57,7 +57,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         new DrawerEntry(R.drawable.ic_vpn_key_white_24dp, "Log on")
     };
 
-    private Fragment[] drawerDataToFragments = new Fragment[drawerEntries.length];
+    private final Fragment[] drawerDataToFragments = new Fragment[drawerEntries.length];
     private int drawerDataCurrent = 0;
 
     @Override
@@ -89,13 +89,8 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -156,7 +151,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         drawerList = (ListView) this.findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
 
-        drawerToggle = new ActionBarDrawerToggle(
+        drawerToggle = new ActionBarDrawerToggle (
             this,                   /* host Activity */
             drawerLayout,           /* DrawerLayout object */
             R.drawable.ic_drawer,   /* nav drawer icon to replace 'Up' caret */
@@ -234,14 +229,14 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder
-                .setTitle("Log on to spotify?")
+                .setTitle("Log on to Spotify?")
                 .setMessage("This will open the web-browser with a login screen for authentication. The drawer has the login button if you choose No.")
                 .setIcon(R.drawable.ic_vpn_key_white_24dp)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         MusicPlayer.initMusicPlayer(PlayerActivity.this);
-                        drawerEntries[6] = new DrawerEntry(R.drawable.ic_album_white_24dp, "Logged into spotify");
+                        drawerEntries[6] = new DrawerEntry(R.drawable.ic_album_white_24dp, "Logged into Spotify");
                         drawerList.setAdapter(new DrawerListAdapter(PlayerActivity.this, drawerEntries));
                     }
                 }).setNegativeButton("No", null).create().show();

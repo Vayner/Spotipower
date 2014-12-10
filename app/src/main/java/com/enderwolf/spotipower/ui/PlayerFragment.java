@@ -1,16 +1,12 @@
 package com.enderwolf.spotipower.ui;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -19,13 +15,12 @@ import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
 import com.enderwolf.spotipower.app.AppController;
 import com.enderwolf.spotipower.event.SongUpdateEvent;
-import com.enderwolf.spotipower.utility.LruBitmapCache;
 
 import de.greenrobot.event.EventBus;
 
 public class PlayerFragment extends Fragment {
 
-    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private final ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private Song currentSong = null;
     NetworkImageView thumbNail;
     ImageView blurredBackground;
@@ -49,17 +44,11 @@ public class PlayerFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_player, container, false);
 
         thumbNail = (NetworkImageView) root.findViewById(R.id.albumHighCenter);
         blurredBackground = (ImageView) root.findViewById(R.id.backgroundBlurred);
-
 
         return root;
     }
@@ -73,7 +62,7 @@ public class PlayerFragment extends Fragment {
     }
 
     private void initImage() {
-        imageLoader.get(currentSong.getThumbnailUrl(Song.Quality.Small), new ImageLoader.ImageListener() {
+        imageLoader.get(currentSong.getThumbnailUrl(Song.Quality.Large), new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                 blurredBackground.setImageBitmap(blurImage(imageContainer));
@@ -97,16 +86,6 @@ public class PlayerFragment extends Fragment {
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     private Bitmap blurImage(ImageLoader.ImageContainer imageLoader){

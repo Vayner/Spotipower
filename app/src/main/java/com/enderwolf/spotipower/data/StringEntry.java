@@ -1,6 +1,7 @@
 package com.enderwolf.spotipower.data;
 
 /**
+ * Represents a string settings object
  * Created by vayner on 09.12.14.
  */
 public class StringEntry extends SettingsEntry<String> {
@@ -19,6 +20,6 @@ public class StringEntry extends SettingsEntry<String> {
 
     @Override
     public void setValue(String value) {
-        this.value = (String) value;
+        this.value = value;
     }
 }

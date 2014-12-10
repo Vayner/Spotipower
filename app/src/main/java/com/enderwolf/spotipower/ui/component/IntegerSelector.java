@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -15,11 +14,16 @@ import com.enderwolf.spotipower.data.IntegerEntry;
 import com.enderwolf.spotipower.data.Settings;
 
 /**
- * Created by !Tulingen on 07.12.2014.
+ * Visual component for manipulating a IntegerEntry
+ * Created by vayner on 07.12.2014.
  */
 public class IntegerSelector extends LinearLayout {
     private EditText numberField;
     private TextView text;
+
+    public IntegerSelector(Context context) {
+        super(context);
+    }
 
     public IntegerSelector(Context context, final IntegerEntry entry, boolean autoUpdate) {
         super(context);
@@ -34,7 +38,7 @@ public class IntegerSelector extends LinearLayout {
         paramsText.width = 0;
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsText.weight = 1;
-        paramsText.gravity = Gravity.RIGHT;
+        paramsText.gravity = Gravity.END;
 
         this.addView(this.text, paramsText);
 
@@ -46,7 +50,7 @@ public class IntegerSelector extends LinearLayout {
         paramsNumberField.width = 0;
         paramsNumberField.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsNumberField.weight = 1;
-        paramsNumberField.gravity = Gravity.LEFT;
+        paramsNumberField.gravity = Gravity.START;
 
         this.addView(this.numberField, paramsNumberField);
 

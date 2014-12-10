@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
+ * Abstract data representation of a song, contains all needed information for displaying it and the uri needed to play it.
  * Created by chris on 03.12.2014.
  */
 public class Song {
@@ -19,8 +20,8 @@ public class Song {
     private String songUri;
     private int totalTime;
 
-    private ArrayList<String> thumbnailUrl = new ArrayList<>();
-    private ArrayList<String> artists = new ArrayList<>();
+    private final ArrayList<String> thumbnailUrl = new ArrayList<>();
+    private final ArrayList<String> artists = new ArrayList<>();
 
     public static Song newInstance(JSONObject songData) {
         Song song = new Song();
@@ -91,7 +92,7 @@ public class Song {
         for(int i = 0; i < artists.size(); i++) {
             sb.append(artists.get(i));
 
-            // If the last artist. dont and comma but add . instead.
+            // If the last artist. don't and comma but add a dot instead.
             sb.append((i < artists.size() - 1)?  ", " : ".");
         }
 
@@ -103,9 +104,9 @@ public class Song {
         Medium(1),
         Large(0);
 
-        private int quality;
+        private final int quality;
 
-        Quality(int q) {
+        private Quality(int q) {
             this.quality = q;
         }
 

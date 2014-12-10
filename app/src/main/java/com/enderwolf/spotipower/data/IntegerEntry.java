@@ -1,5 +1,9 @@
 package com.enderwolf.spotipower.data;
 
+/**
+ * Represents a integer settings object
+ * Created by vayner on 08.12.14.
+ */
 public class IntegerEntry extends SettingsEntry<Integer> {
     private int value;
 

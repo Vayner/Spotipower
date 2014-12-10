@@ -7,15 +7,14 @@ import android.widget.BaseAdapter;
 
 import com.enderwolf.spotipower.ui.component.DrawerEntryView;
 
-import java.util.List;
-
 /**
+ * Adapter for the DrawerEntry list for displaying the list in the drawer.
  * Created by vayner on 10.12.14.
  */
 public class DrawerListAdapter extends BaseAdapter {
 
     private DrawerEntry[] list;
-    private Context context;
+    private final Context context;
 
     public DrawerListAdapter (Context context, DrawerEntry[] list) {
         super();

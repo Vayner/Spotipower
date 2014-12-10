@@ -1,13 +1,12 @@
 package com.enderwolf.spotipower.utility;
 
-import android.text.Html;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 
 /**
+ * Helper class used to make the search url.
  * Created by vayner on 10.12.14.
  */
 public class SearchConstructor {
@@ -49,9 +48,9 @@ public class SearchConstructor {
         Artist("artist"),
         Playlist("playlist");
 
-        private String part;
+        private final String part;
 
-        Type(String part) {
+        private Type(String part) {
             this.part = part;
         }
 

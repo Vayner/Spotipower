@@ -1,5 +1,9 @@
 package com.enderwolf.spotipower.data;
 
+/**
+ * Represents a boolean settings object
+ * Created by vayner on 08.12.14.
+ */
 public class BooleanEntry extends SettingsEntry<Boolean> {
     private Boolean value;
 

@@ -1,6 +1,5 @@
 package com.enderwolf.spotipower.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +16,17 @@ import com.enderwolf.spotipower.app.AppController;
 import java.util.List;
 
 /**
+ * ListAdapter for a Playlist for fancy viewing
  * Created by chris on 06.12.2014.
  */
-public class CustomeSongList extends BaseAdapter {
-    private Context context;
-    private LayoutInflater inflater;
-    private List<Song> songs;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+public class PlaylistListAdapter extends BaseAdapter {
+    private final Context context;
+    private final List<Song> songs;
 
-    public CustomeSongList(Context context, List<Song> songs) {
+    private LayoutInflater inflater;
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+
+    public PlaylistListAdapter(Context context, List<Song> songs) {
 
         this.context = context;
         this.songs = songs;
@@ -65,7 +66,7 @@ public class CustomeSongList extends BaseAdapter {
 
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
-        TextView album = (TextView) convertView.findViewById(R.id.albumnName);
+        TextView album = (TextView) convertView.findViewById(R.id.albumn_name);
         TextView time = (TextView) convertView.findViewById(R.id.time);
 
         // getting which song position

@@ -1,9 +1,12 @@
 package com.enderwolf.spotipower.data;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 /**
- * Created by !Tulingen on 07.12.2014.
+ * Abstract representation of a type of setting value.
+ * Created by vayner on 07.12.2014.
  */
 public abstract class SettingsEntry<T> implements Serializable, Comparable<SettingsEntry> {
     private final String name;
@@ -38,17 +41,11 @@ public abstract class SettingsEntry<T> implements Serializable, Comparable<Setti
 
     @Override
     public boolean equals(Object o) {
-        if(o == null || !(o instanceof SettingsEntry)) {
-            return false;
-        } else if(((SettingsEntry) o).name.equals(this.name)) {
-            return true;
-        } else {
-            return false;
-        }
+        return !(o == null || !(o instanceof SettingsEntry)) && ((SettingsEntry) o).name.equals(this.name);
     }
 
     @Override
-    public int compareTo(SettingsEntry settingsEntry) {
+    public int compareTo(@NonNull SettingsEntry settingsEntry) {
         return this.name.compareTo(settingsEntry.name);
     }
 }

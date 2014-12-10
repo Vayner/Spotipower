@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.Observable;
 import java.util.Observer;
 
-import me.sbstensby.spotipowerhost.HostReceiver;
 import me.sbstensby.spotipowerhost.HostServer;
 
 /**
@@ -39,7 +38,7 @@ public class HostInitiator implements Observer{
         }
 
         // Update the hostname
-        if ((Boolean) Settings.getSettings().get("Hosting").getValue() && !HostServer.getInstance().getHostname().equals((String)Settings.getSettings().get("Host name").getValue())) {
+        if ((Boolean) Settings.getSettings().get("Hosting").getValue() && !HostServer.getInstance().getHostname().equals(Settings.getSettings().get("Host name").getValue())) {
             HostServer.getInstance().setHostname((String)Settings.getSettings().get("Host name").getValue());
         }
     }

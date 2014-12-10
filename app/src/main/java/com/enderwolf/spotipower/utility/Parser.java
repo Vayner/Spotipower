@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * JSON parser for Spotify request results. Generates a Playlist if the JSON was valid, null otherwise.
  * Created by vayner on 08.12.14.
  */
 public class Parser {
-    private static final String lookupAddres = "https://api.spotify.com/v1/tracks/?ids=";
+    private static final String lookupAddress = "https://api.spotify.com/v1/tracks/?ids=";
 
     public static void ParseLookupList(List<String> uris, final ParseCompleteCallback callback) {
-        StringBuilder request = new StringBuilder(lookupAddres);
+        StringBuilder request = new StringBuilder(lookupAddress);
 
         for (String uri : uris) {
             request.append(uri.substring(uri.lastIndexOf(':') + 1));
@@ -51,7 +52,7 @@ public class Parser {
     }
 
     public static void ParseLookup(String uri, ParseCompleteCallback callback) {
-        List<String> dataList = new ArrayList<String>();
+        List<String> dataList = new ArrayList<>();
         dataList.add(uri);
 
         ParseLookupList(dataList, callback);
@@ -77,7 +78,7 @@ public class Parser {
 
 class SongJSONParser implements Response.Listener<JSONObject> {
 
-    private ParseCompleteCallback callback;
+    private final ParseCompleteCallback callback;
 
     public SongJSONParser(ParseCompleteCallback callback) {
         this.callback = callback;
@@ -109,7 +110,7 @@ class SongJSONParser implements Response.Listener<JSONObject> {
 
 class SearchTrackJSONParser implements Response.Listener<JSONObject> {
 
-    private ParseCompleteCallback callback;
+    private final ParseCompleteCallback callback;
 
     public SearchTrackJSONParser(ParseCompleteCallback callback) {
         this.callback = callback;

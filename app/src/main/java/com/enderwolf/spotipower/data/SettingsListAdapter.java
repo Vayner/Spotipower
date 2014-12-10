@@ -1,36 +1,39 @@
 package com.enderwolf.spotipower.data;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import com.enderwolf.spotipower.ui.component.BooleanToggle;
 import com.enderwolf.spotipower.ui.component.IntegerSelector;
 import com.enderwolf.spotipower.ui.component.StringSelector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 
 /**
- * Created by !Tulingen on 07.12.2014.
+ * Adapter for viewing all the settings.
+ * Created by vayner on 07.12.2014.
  */
 public class SettingsListAdapter extends BaseAdapter implements Observer {
 
-    private Settings settings;
-    private Context context;
-    private List<SettingsEntry> list;
+    private final Settings settings;
+    private final Context context;
+    private final List<SettingsEntry> list;
 
     public SettingsListAdapter(Context context, Settings settings) {
         super();
 
         this.context = context;
         this.settings = settings;
-        list = new ArrayList<SettingsEntry>( Arrays.asList(this.settings.getAsList()) );
+        list = new ArrayList<>( Arrays.asList(this.settings.getAsList()) );
         Collections.sort(list);
     }
 
@@ -47,11 +50,6 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
     @Override
     public long getItemId(int position) {
         return list.get(position).getName().hashCode();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
     }
 
     @Override
@@ -77,6 +75,6 @@ public class SettingsListAdapter extends BaseAdapter implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-
+        this.notifyDataSetInvalidated();
     }
 }

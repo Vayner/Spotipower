@@ -1,22 +1,24 @@
 package com.enderwolf.spotipower.ui.component;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.adapter.CustomeSongList;
+import com.enderwolf.spotipower.adapter.PlaylistListAdapter;
 
 /**
- * Created by !Tulingen on 09.12.2014.
+ * Visual component for viewing a playlist.
+ * Created by vayner on 09.12.2014.
  */
 public class PlaylistView extends FrameLayout {
 
     private Playlist list = null;
     private ListView listView = null;
-    private CustomeSongList adapter = null;
+    private PlaylistListAdapter adapter = null;
 
     public PlaylistView(Context context) {
         super(context);
@@ -34,7 +36,7 @@ public class PlaylistView extends FrameLayout {
     }
 
     @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
 
         if(visibility == View.VISIBLE) {
@@ -44,7 +46,7 @@ public class PlaylistView extends FrameLayout {
 
     private void display() {
         if(this.list != null) {
-            adapter = new CustomeSongList(this.getContext(), list);
+            adapter = new PlaylistListAdapter(this.getContext(), list);
             listView.setAdapter(adapter);
         }
     }

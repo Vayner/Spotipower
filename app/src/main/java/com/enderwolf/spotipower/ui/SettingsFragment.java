@@ -1,6 +1,5 @@
 package com.enderwolf.spotipower.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -51,15 +50,5 @@ public class SettingsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return root;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 }

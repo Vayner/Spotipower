@@ -11,15 +11,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.enderwolf.spotipower.data.Settings;
-import com.enderwolf.spotipower.data.SettingsEntry;
 import com.enderwolf.spotipower.data.StringEntry;
 
 /**
- * Created by !Tulingen on 07.12.2014.
+ * Visual component for manipulating a StringEntry
+ * Created by vayner on 07.12.2014.
  */
 public class StringSelector extends LinearLayout {
     private EditText textField;
     private TextView text;
+
+    public StringSelector(Context context) {
+        super(context);
+    }
 
     public StringSelector(Context context, final StringEntry entry, boolean autoUpdate) {
         super(context);
@@ -34,7 +38,7 @@ public class StringSelector extends LinearLayout {
         paramsText.width = 0;
         paramsText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsText.weight = 1;
-        paramsText.gravity = Gravity.RIGHT;
+        paramsText.gravity = Gravity.END;
 
         this.addView(this.text, paramsText);
 
@@ -45,7 +49,7 @@ public class StringSelector extends LinearLayout {
         paramsEditText.width = 0;
         paramsEditText.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         paramsEditText.weight = 1;
-        paramsEditText.gravity = Gravity.LEFT;
+        paramsEditText.gravity = Gravity.START;
 
         this.addView(this.textField, paramsEditText);
 

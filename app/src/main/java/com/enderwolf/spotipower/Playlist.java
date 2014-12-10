@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Playlist extends ArrayList<Song> {
 
-    private String name;
+    private final String name;
 
     public Playlist(String name) {
         super();

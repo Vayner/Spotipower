@@ -7,10 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.Song;
-import com.enderwolf.spotipower.app.AppController;
 
 import me.sbstensby.spotipowerhost.RemoteHostData;
 
@@ -18,28 +15,28 @@ import java.util.List;
 
 
 /**
+ * Adapter for the server list.
  * Created by chris on 10.12.2014.
  */
-public class CustomServerList extends BaseAdapter {
+public class ServerListAdapter extends BaseAdapter {
 
-    private Context context;
+    final private Context context;
     private LayoutInflater inflater;
-    private List<RemoteHostData> remoteHostData;
+    private List<RemoteHostData> remoteHostDataList;
 
-    public CustomServerList(Context context, List<RemoteHostData> remoteHostDatas) {
-
+    public ServerListAdapter(Context context, List<RemoteHostData> remoteHostDataList) {
         this.context = context;
-        this.remoteHostData = remoteHostDatas;
+        this.remoteHostDataList = remoteHostDataList;
     }
 
     @Override
     public int getCount() {
-        return remoteHostData.size();
+        return remoteHostDataList.size();
     }
 
     @Override
     public Object getItem(int location) {
-        return remoteHostData.get(location);
+        return remoteHostDataList.get(location);
     }
 
     @Override
@@ -55,14 +52,12 @@ public class CustomServerList extends BaseAdapter {
         }
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_server, null);
+            convertView = inflater.inflate(R.layout.list_server, parent);
         }
-
-
 
         TextView title = (TextView) convertView.findViewById(R.id.serverTitle);
 
-        title.setText(remoteHostData.get(position).name);
+        title.setText(remoteHostDataList.get(position).name);
 
         return convertView;
     }

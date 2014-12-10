@@ -1,7 +1,6 @@
 package com.enderwolf.spotipower.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.enderwolf.spotipower.utility.SaveSystem;
 
@@ -9,23 +8,23 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by !Tulingen on 07.12.2014.
+ * Backbone of the settings system, handles all settings, loading, saving and notification on changes.
+ * Created by vayner on 07.12.2014.
  */
 public class Settings extends Observable implements Serializable {
     public static final String FILENAME = "settings.data";
     private static Settings settings = null;
-    private SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
+    private final SortedMap<String, SettingsEntry> settingValues = new TreeMap<>();
 
-    private static SettingsEntry[] overrideDefault = {
+    private static final SettingsEntry[] overrideDefault = {
         new BooleanEntry("Hosting", false)
     };
 
-    private static SettingsEntry[] defaultValues = {
+    private static final SettingsEntry[] defaultValues = {
         new BooleanEntry("Hosting", false),
         new StringEntry("Host name", "MyHostName"),
     };
 
-    // TODO change over to objects / class hierarchy?
     private Settings () {
         for(SettingsEntry entry : defaultValues) {
             this.put(entry, false, true);
@@ -56,7 +55,7 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Checks if the key is a valid settings parameter and sets is value if it is.
-     * @param entry
+     * @param entry the entry to add / update
      */
     public void put(SettingsEntry entry) {
         this.put(entry, true, false);
@@ -80,7 +79,7 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Loads the settings from the default file and overwrites the current settings with it.
-     * @param context
+     * @param context context reference for filesystem access
      */
     public static void loadSettings(Context context) {
         loadSettings(FILENAME, context);
@@ -88,8 +87,8 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Loads the settings from file and overwrites the current settings with it.
-     * @param fileName
-     * @param context
+     * @param fileName the file to load from
+     * @param context context reference for filesystem access
      */
     public static void loadSettings(String fileName, Context context) {
         Settings loaded = SaveSystem.LoadData(fileName, context);
@@ -103,7 +102,7 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Saves the settings to the default file.
-     * @param context
+     * @param context context reference for filesystem access
      */
     public static void saveSettings(Context context) {
         saveSettings(FILENAME, context);
@@ -111,8 +110,8 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Saves the settings to file.
-     * @param fileName
-     * @param context
+     * @param fileName the file to save to
+     * @param context context reference for filesystem access
      */
     public static void saveSettings(String fileName, Context context) {
         SaveSystem.SaveData(fileName, context, getSettings());
@@ -120,7 +119,7 @@ public class Settings extends Observable implements Serializable {
 
     /**
      * Gets the settings object
-     * @return
+     * @return the settings singleton
      */
     public static Settings getSettings() {
         if(settings == null) {

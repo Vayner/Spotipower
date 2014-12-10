@@ -59,20 +59,15 @@ public class MiniPlayer extends Fragment {
      *
      * @return A new instance of fragment MiniPlayer.
      */
-    // TODO: Rename and change types and number of parameters
     public static MiniPlayer newInstance() {
         MiniPlayer fragment = new MiniPlayer();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+
     public MiniPlayer() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.enderwolf.spotipower.ui;
 import me.sbstensby.spotipowerhost.Client;
 import me.sbstensby.spotipowerhost.HostDiscoverer;
 import me.sbstensby.spotipowerhost.RemoteHostData;
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.enderwolf.spotipower.R;
-import com.enderwolf.spotipower.adapter.CustomServerList;
+import com.enderwolf.spotipower.adapter.ServerListAdapter;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import me.sbstensby.spotipowerhost.HostDiscovererInterface;
 public class ConnectionManagerFragment extends Fragment implements HostDiscovererInterface {
 
     private ListView serverListView;
-    private CustomServerList adapter;
+    private ServerListAdapter adapter;
     private AlertDialog.Builder dialogRequestJoin;
     private List<RemoteHostData> remoteHostData = null;
 
@@ -66,7 +66,7 @@ public class ConnectionManagerFragment extends Fragment implements HostDiscovere
         dialogRequestJoin = new AlertDialog.Builder(getActivity());
 
 
-        adapter = new CustomServerList(getActivity(), HostDiscoverer.getInstance().getHostList());
+        adapter = new ServerListAdapter(getActivity(), HostDiscoverer.getInstance().getHostList());
         serverListView.setAdapter(adapter);
         serverListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

@@ -31,7 +31,7 @@ import me.sbstensby.spotipowerhost.HostRecieverInterface;
 /**
  * Created by vayner on 07.12.14.
  *
- * is the connection point between the application and the spotify player.
+ * is the connection point between the application and the Spotify player.
  */
 public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateCallback, HostRecieverInterface {
     private static final String REDIRECT_URI = "spotipower-login://callback";
@@ -40,10 +40,8 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
     private static boolean init = false;
 
     private Player player;
-    private Timer timer;
-
-    private Playlist queue;
-    private int currentTrackIndex = 0;
+    private final Timer timer;
+    private final Playlist queue;
 
     private MusicPlayer () {
         timer = new Timer();
@@ -84,7 +82,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
     @Override
     public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
         if(eventType == EventType.PLAY) {
-            EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
+            EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
         }
         if(eventType == EventType.TRACK_END && !playerState.playing) {
             if (queue.size() >= 2) {
@@ -97,7 +95,6 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
     @Override
     public void onPlaybackError(ErrorType errorType, String s) {
-
     }
 
     public void onEvent(SongQueuedEvent event){
@@ -204,9 +201,9 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
         return init;
     }
 
-    /*
+    /**
      * ------------------------------
-     * Callbacks from HostReciever.
+     * Callbacks from HostReceiver.
      * ------------------------------
      */
 
@@ -280,7 +277,7 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
 
 class ProgressUpdate extends TimerTask {
 
-    private Player player;
+    private final Player player;
 
     ProgressUpdate(Player player) {
         this.player = player;

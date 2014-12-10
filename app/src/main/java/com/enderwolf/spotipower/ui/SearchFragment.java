@@ -1,7 +1,6 @@
 package com.enderwolf.spotipower.ui;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,17 +17,12 @@ import android.widget.TabHost;
 import com.enderwolf.spotipower.Playlist;
 import com.enderwolf.spotipower.R;
 import com.enderwolf.spotipower.Song;
-import com.enderwolf.spotipower.adapter.CustomeSongList;
 import com.enderwolf.spotipower.data.Settings;
-import com.enderwolf.spotipower.event.SongQueuedClientEvent;
 import com.enderwolf.spotipower.event.SongQueuedEvent;
 import com.enderwolf.spotipower.ui.component.PlaylistView;
 import com.enderwolf.spotipower.utility.ParseCompleteCallback;
 import com.enderwolf.spotipower.utility.Parser;
 import com.enderwolf.spotipower.utility.SearchConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import me.sbstensby.spotipowerhost.Client;
@@ -65,16 +59,8 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
-
-
-
 
         tabHost = (TabHost) root.findViewById(R.id.tabHost);
 
@@ -114,14 +100,14 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
             public void onClick(View view) {
                 String input = searchInput.getText().toString();
 
-                String playlistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Playlist);
+                //String playlistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Playlist);
                 String trackSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Track);
-                String almubSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Album);
-                String artistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Artist);
+                //String albumSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Album);
+                //String artistSearch = SearchConstructor.search(input, 0, 20, SearchConstructor.Type.Artist);
 
                 //search(playlistSearch, SearchConstructor.Type.Playlist, playlistView);
                 search(trackSearch, SearchConstructor.Type.Track, trackView);
-                //search(almubSearch, SearchConstructor.Type.Album, albumView);
+                //search(albumSearch, SearchConstructor.Type.Album, albumView);
                 //search(artistSearch, SearchConstructor.Type.Artist, artistView);
             }
         });
@@ -141,37 +127,37 @@ public class SearchFragment extends Fragment implements TabHost.OnTabChangeListe
             }
         }
 
-        TabHost.TabSpec playlists = tabHost.newTabSpec("Playlist");
-        playlists.setIndicator("Playlist");
-        playlists.setContent(new FakeFactory(playlistView));
+        TabHost.TabSpec playlistTab = tabHost.newTabSpec("Playlist");
+        playlistTab.setIndicator("Playlist");
+        playlistTab.setContent(new FakeFactory(playlistView));
 
-        TabHost.TabSpec tracks = tabHost.newTabSpec("Track");
-        tracks.setIndicator("Track");
-        tracks.setContent(new FakeFactory(trackView));
+        TabHost.TabSpec trackTab = tabHost.newTabSpec("Track");
+        trackTab.setIndicator("Track");
+        trackTab.setContent(new FakeFactory(trackView));
 
-        TabHost.TabSpec albums = tabHost.newTabSpec("Album");
-        albums.setIndicator("Album");
-        albums.setContent(new FakeFactory(albumView));
+        TabHost.TabSpec albumTab = tabHost.newTabSpec("Album");
+        albumTab.setIndicator("Album");
+        albumTab.setContent(new FakeFactory(albumView));
 
-        TabHost.TabSpec artists = tabHost.newTabSpec("Artist");
-        artists.setIndicator("Artist");
-        artists.setContent(new FakeFactory(artistView));
+        TabHost.TabSpec artistTab = tabHost.newTabSpec("Artist");
+        artistTab.setIndicator("Artist");
+        artistTab.setContent(new FakeFactory(artistView));
 
-        tabHost.addTab(playlists);
-        tabHost.addTab(tracks);
-        tabHost.addTab(albums);
-        tabHost.addTab(artists);
+        tabHost.addTab(playlistTab);
+        tabHost.addTab(trackTab);
+        tabHost.addTab(albumTab);
+        tabHost.addTab(artistTab);
 
         return root;
     }
 
     @Override
     public void onTabChanged(String s) {
-
+        // unused for now
     }
 
-    private void search(String seachInput, SearchConstructor.Type searchType, final PlaylistView targetList) {
-        Parser.ParseSearch(seachInput, searchType, new ParseCompleteCallback() {
+    private void search(String searchInput, SearchConstructor.Type searchType, final PlaylistView targetList) {
+        Parser.ParseSearch(searchInput, searchType, new ParseCompleteCallback() {
             @Override
             public void OnParseComplete(Playlist playlist) {
                 if (playlist == null) {

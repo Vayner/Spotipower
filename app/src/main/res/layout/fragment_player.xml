@@ -12,18 +12,14 @@
 
 
      <ImageView
+         android:contentDescription="@string/album"
          android:id="@+id/backgroundBlurred"
          android:layout_width="fill_parent"
          android:layout_height="match_parent"
          android:scaleX="8"
          android:scaleY="8"
-         android:layout_centerInParent="true"
          android:layout_gravity="center"
-         android:layout_marginEnd="0dp"
-         android:layout_marginRight="0dp"
-         android:alpha="0.80"
-         android:layout_marginLeft="0dp"
-         android:layout_marginBottom="0dp"/>
+         android:alpha="0.80" />
 
 
      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,9 +28,7 @@
          android:layout_height="match_parent"
          android:background="@drawable/border_white"
          android:padding="1dip"
-         android:alpha="0.30">
-
-     </LinearLayout>
+         android:alpha="0.30"/>
 
      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:orientation="vertical"
@@ -43,32 +37,16 @@
          android:background="@drawable/border_black"
          android:padding="1dip"
          android:layout_margin="1dp"
-         android:alpha="0.30">
-
-     </LinearLayout>
-
+         android:alpha="0.30"/>
 
      <!-- Thumbnail Image -->
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/albumHighCenter"
-        android:layout_width="200sp"
-        android:layout_height="200sp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         android:background="@drawable/ic_album_white_48dp"
-        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
         android:layout_gravity="center"
-        android:layout_marginEnd="8sp"
-        android:layout_marginRight="8sp" />
-
-
-
-
-
-
-
-
-
-
-
-
+        android:scaleType="fitCenter" />
 
 </FrameLayout>

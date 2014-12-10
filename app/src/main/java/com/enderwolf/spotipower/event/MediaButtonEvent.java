@@ -1,7 +1,8 @@
 package com.enderwolf.spotipower.event;
 
 /**
- * Created by !Tulingen on 03.12.2014.
+ * Event for broadcasting media button actions
+ * Created by vayner on 03.12.2014.
  */
 public class MediaButtonEvent {
     public final ButtonType type;

@@ -3,7 +3,6 @@ package com.enderwolf.spotipower.ui.component;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import com.enderwolf.spotipower.data.DrawerEntry;
 
 /**
+ * The visual representation of an entry in the drawer menu.
  * Created by vayner on 10.12.14.
  */
 public class DrawerEntryView extends LinearLayout {
@@ -18,6 +18,10 @@ public class DrawerEntryView extends LinearLayout {
     private ImageView iconView;
     private TextView textView;
     private DrawerEntry drawerEntry;
+
+    public DrawerEntryView(Context context) {
+        super(context);
+    }
 
     public DrawerEntryView(Context context, DrawerEntry entry) {
         super(context);
@@ -34,7 +38,7 @@ public class DrawerEntryView extends LinearLayout {
         this.iconView.setMaxWidth(24);
 
         LinearLayout.LayoutParams iconParams = generateDefaultLayoutParams();
-        iconParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+        iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
         iconParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         iconParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         this.addView(this.iconView, iconParams);
