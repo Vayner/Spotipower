@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -30,18 +31,29 @@ import java.net.ServerSocket;
  * returns an ArrayList<RemoteHostData> of hosts via the returnInterface.
  */
 public class HostDiscoverer implements Runnable {
-    private HostDiscovererInterface returnInterface;
+    private static HostDiscoverer instance = null;
+    private HostDiscovererInterface returnInterface = null;
     private Thread thread;
     private ArrayList<RemoteHostData> hostList;
-    private DatagramSocket socket;
     private Context mContext;
-    private boolean listening;
     private static final byte[] sendData = "SPOTIPOWER_HOST_DISCOVERY".getBytes();
 
-    public HostDiscoverer(HostDiscovererInterface returnInterface, Context mContext) {
+    private HostDiscoverer() {
+        hostList = new ArrayList<>();
+    }
+
+    public static void init(Context mContext) {
+        instance = new HostDiscoverer();
+        instance.mContext = mContext;
+    }
+
+    public void setReturnInterface(HostDiscovererInterface returnInterface) {
         this.returnInterface = returnInterface;
-        this.mContext = mContext;
-        hostList = new ArrayList<RemoteHostData>();
+    }
+
+
+    public static HostDiscoverer getInstance() {
+        return instance;
     }
 
     @Override
@@ -49,9 +61,10 @@ public class HostDiscoverer implements Runnable {
         Log.i("HostDiscoverer", "START");
 
         // Makes a serversocket on port 23457, used to receive inquiries.
-        ServerSocket serverSocet = null;
+        ServerSocket serverSocet;
         try {
             serverSocet = new ServerSocket(36252);
+            serverSocet.setSoTimeout(100000);
 
             Socket socket = new Socket();
 
@@ -77,13 +90,21 @@ public class HostDiscoverer implements Runnable {
                     rh.name = splitTmp[1];
                     rh.address = socket.getInetAddress();
                     hostList.add(rh);
-                    returnInterface.pushBackHosts(hostList);
+                    if (returnInterface != null) {
+                        returnInterface.notifyListUpdate();
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        returnInterface.pushBackHosts(hostList);
+
+
+        Log.i("HostDiscoverer", "STOPPED");
+    }
+
+    public ArrayList<RemoteHostData> getHostList() {
+        return hostList;
     }
 
     public void requestHosts() {

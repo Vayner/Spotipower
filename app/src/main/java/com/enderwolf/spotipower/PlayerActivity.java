@@ -8,12 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.enderwolf.spotipower.data.DrawerEntry;
@@ -28,9 +26,8 @@ import com.enderwolf.spotipower.ui.PlaylistFragment;
 import com.enderwolf.spotipower.ui.SearchFragment;
 import com.enderwolf.spotipower.ui.SettingsFragment;
 import com.spotify.sdk.android.Spotify;
-import com.enderwolf.spotipower.data.HostInitiator;
 
-import java.util.Arrays;
+import me.sbstensby.spotipowerhost.HostDiscoverer;
 
 public class PlayerActivity extends Activity implements AdapterView.OnItemClickListener {
 
@@ -66,6 +63,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         setContentView(R.layout.activity_nav_drawer);
 
         Settings.loadSettings(this);
+        HostDiscoverer.init(this);
         HostInitiator.getInstance();
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
