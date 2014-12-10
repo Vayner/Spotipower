@@ -1,7 +1,9 @@
 package com.enderwolf.spotipower;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -51,7 +53,8 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         new DrawerEntry(R.drawable.ic_my_library_music_white_24dp, "Playlist"),
         new DrawerEntry(R.drawable.ic_wifi_tethering_white_24dp, "Connections"),
         new DrawerEntry(R.drawable.ic_settings_applications_white_24dp, "Settings"),
-        new DrawerEntry(R.drawable.ic_help_white_24dp, "About")
+        new DrawerEntry(R.drawable.ic_help_white_24dp, "About"),
+        new DrawerEntry(R.drawable.ic_vpn_key_white_24dp, "Log on")
     };
 
     private Fragment[] drawerDataToFragments = new Fragment[drawerEntries.length];
@@ -68,11 +71,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         this.initGui();
-
-        if(!MusicPlayer.getInit()) {
-            //authenticate user
-            MusicPlayer.initMusicPlayer(this);
-        }
+        logonSpotify();
     }
 
     @Override
@@ -221,7 +220,31 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
             return;
         }
 
+        if(i == 6) {
+            logonSpotify();
+            return;
+        }
+
         drawerDataCurrent = i;
         getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[drawerDataCurrent]).addToBackStack(null).commit();
+    }
+
+    private void logonSpotify() {
+        if(!MusicPlayer.getInit()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder
+                .setTitle("Log on to spotify?")
+                .setMessage("This will open the web-browser with a login screen for authentication. The drawer has the login button if you choose No.")
+                .setIcon(R.drawable.ic_vpn_key_white_24dp)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MusicPlayer.initMusicPlayer(PlayerActivity.this);
+                        drawerEntries[6] = new DrawerEntry(R.drawable.ic_album_white_24dp, "Logged into spotify");
+                        drawerList.setAdapter(new DrawerListAdapter(PlayerActivity.this, drawerEntries));
+                    }
+                }).setNegativeButton("No", null).create().show();
+        }
     }
 }

@@ -36,6 +36,10 @@ public class Client {
         this.connectedHost = host;
     }
 
+    public void sendSong(String _uri) {
+        this.sendMessage("QUEUE:ADD:"+_uri);
+    }
+
     public void sendMessage(String _message) {
         final String message = _message;
         new Thread() {
@@ -57,5 +61,6 @@ public class Client {
     }
 
     private Client() {
+
     }
 }
