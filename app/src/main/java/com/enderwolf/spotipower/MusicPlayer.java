@@ -86,8 +86,11 @@ public class MusicPlayer implements PlayerNotificationCallback, ConnectionStateC
             EventBus.getDefault().post(new SongUpdateEvent(queue.get(currentTrackIndex)));
         }
         if(eventType == EventType.TRACK_END) {
-            queue.remove(0);
-            play();
+            if (queue.size() >= 2) {
+                queue.remove(0);
+                player.play(queue.get(0).getSongUri());
+                EventBus.getDefault().post(new SongUpdateEvent(queue.get(0)));
+            }
         }
     }
 
