@@ -71,6 +71,7 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         dualPane = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         this.initGui();
+        logonSpotify();
     }
 
     @Override
@@ -220,25 +221,30 @@ public class PlayerActivity extends Activity implements AdapterView.OnItemClickL
         }
 
         if(i == 6) {
-            if(!MusicPlayer.getInit()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                builder
-                    .setTitle("Log on to spotify?")
-                    .setMessage("This will open the web-browser with a login screen for authentication.")
-                    .setIcon(R.drawable.ic_vpn_key_white_24dp)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            MusicPlayer.initMusicPlayer(PlayerActivity.this);
-                        }
-                    }).setNegativeButton("No", null).create().show();
-            }
-
+            logonSpotify();
             return;
         }
 
         drawerDataCurrent = i;
         getFragmentManager().beginTransaction().replace(R.id.content_view, drawerDataToFragments[drawerDataCurrent]).addToBackStack(null).commit();
+    }
+
+    private void logonSpotify() {
+        if(!MusicPlayer.getInit()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder
+                .setTitle("Log on to spotify?")
+                .setMessage("This will open the web-browser with a login screen for authentication. The drawer has the login button if you choose No.")
+                .setIcon(R.drawable.ic_vpn_key_white_24dp)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MusicPlayer.initMusicPlayer(PlayerActivity.this);
+                        drawerEntries[6] = new DrawerEntry(R.drawable.ic_album_white_24dp, "Logged into spotify");
+                        drawerList.setAdapter(new DrawerListAdapter(PlayerActivity.this, drawerEntries));
+                    }
+                }).setNegativeButton("No", null).create().show();
+        }
     }
 }
